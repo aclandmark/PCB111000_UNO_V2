@@ -6,7 +6,7 @@ Clock/stop watch functions and arithmetic.
 
 
 
-I2C opperation:	The PCB_A 328 hosts the master I2C block
+I2C operation:	The PCB_A 328 hosts the master I2C block
 The UNO 328 hosts the slave I2C block.  The master is permanently active however slave is only
 turned on when the user project needs to initiate a transaction.   In this way the user project controls
 the I2C bus without hosting the master.  It was done this way because a PIC 16F640 was originally chosen to host
