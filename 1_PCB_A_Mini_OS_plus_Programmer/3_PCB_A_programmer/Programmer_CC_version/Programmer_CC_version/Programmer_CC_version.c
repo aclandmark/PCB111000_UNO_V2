@@ -130,7 +130,7 @@ sendString ("\n\rRestore Arduino code?");break;}
 if(keypress == 'r')										//Keypress q program Arduino code (Use Arduino Config bytes)
 {eeprom_write_byte((uint8_t*)0x3FC, 0x2);				//Read Arduino code starting at 0x7E00
 sendString ("\n\rReading Arduino_Code\r\n");
-asm("jmp 0x5C00");}
+asm("jmp 0x6080");}
 }
 
 
@@ -154,7 +154,7 @@ eeprom_write_byte((uint8_t*)0x3F6, cmd_counter >> 8);
 eeprom_write_byte((uint8_t*)0x3F5, cmd_counter);	
 
 
-asm("jmp 0x5C00");}}									//Jump to flash verification routine
+asm("jmp 0x6080");}}									//Jump to flash verification routine
 
 }return 1;}
 
