@@ -16,19 +16,19 @@ char I2C_master_receive(char);
 
 
 
-#define Get_ready_to_calibrate; \
+#define Get_ready_to_calibrate \
 TIMSK2 |= (1 << TOIE2);\
 TIMSK1 |= (1 << TOIE1);\
 initialise_timers_for_cal_error();\
 start_timers_for_cal_error();
 
 
-#define close_calibration; \
+#define close_calibration \
 initialise_timers_for_cal_error();\
 TIMSK2 &= (~(1 << TOIE2));\
 TIMSK1 &= (~(1 << TOIE1));
 
-#define calibrate_without_sign_plus_warm_up_time; \
+#define calibrate_without_sign_plus_warm_up_time \
 cal_mode = 5;\
 cal_error = compute_error(0,cal_mode,0);\
 cal_error = compute_error(0,cal_mode,0);\
@@ -118,7 +118,7 @@ Initialise_I2C_master_write;
 I2C_master_transmit(cal_error >> 8);
 I2C_master_transmit(cal_error);
 TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWSTO);}
-TIMSK0 |= (1 << TOIE0);								//Restore multplexer interrupt
+TIMSK0 |= (1 << TOIE0);								//Restore multiplexer interrupt
 }
 
 
