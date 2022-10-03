@@ -71,7 +71,7 @@ char Ten_mS_tick_counter;
 
 
 
-#define setup_watchdog;\
+#define setup_watchdog \
 wdr();\
 MCUSR &= ~(1<<WDRF);\
 WDTCSR |= (1 <<WDCE) | (1<< WDE);\
@@ -86,7 +86,7 @@ if ((eeprom_read_byte((uint8_t*)0x3FE) > 0x0F)\
 == eeprom_read_byte((uint8_t*)0x3FF))) {OSCCAL = eeprom_read_byte((uint8_t*)0x3FE);}
 
 
-#define initialise_IO;\
+#define initialise_IO \
 MCUCR &= (~(1 << PUD));\
 DDRB = 0;\
 DDRC = 0;\
@@ -105,7 +105,7 @@ DDRC &= (~(1 << DDC3));\
 PORTC |= (1 << PC3);
 
 
-#define initialise_Arithmetic_variables; \
+#define initialise_Arithmetic_variables \
 exponent_BKP[0]=0; exponent_BKP[1]=0;\
 expnt=0;\
 Op = 0;\
@@ -116,16 +116,15 @@ RHSofDP = 0;expnt_result = 0;
 
 
 
-#define two_fifty_mS_delay; timer_T1_sub_with_interrupt(T1_delay_250ms);while (T1_ovf_flag == 0);T1_ovf_flag = 0;
-#define T1_delay_250ms 5,0xF861
-#define two_fifty_mS_delay_with_interrupts; TIMSK1 |= (1 << TOIE1);two_fifty_mS_delay; TIMSK1 &= (~(1 << TOIE1));
+#define two_fifty_mS_delay						timer_T1_sub_with_interrupt(T1_delay_250ms);while (T1_ovf_flag == 0);T1_ovf_flag = 0;
+#define two_fifty_mS_delay_with_interrupts		TIMSK1 |= (1 << TOIE1);two_fifty_mS_delay; TIMSK1 &= (~(1 << TOIE1));
 
-#define one_sec_delay; timer_T1_sub_with_interrupt(T1_delay_1sec);while (T1_ovf_flag == 0);T1_ovf_flag = 0;
-#define T1_delay_1sec 5,0xE17B
-#define one_sec_delay_with_interrupts; TIMSK1 |= (1 << TOIE1);one_sec_delay; TIMSK1 &= (~(1 << TOIE1));
+#define one_sec_delay							timer_T1_sub_with_interrupt(T1_delay_1sec);while (T1_ovf_flag == 0);T1_ovf_flag = 0;
+
+#define one_sec_delay_with_interrupts			TIMSK1 |= (1 << TOIE1);one_sec_delay; TIMSK1 &= (~(1 << TOIE1));
 
 
-#define Initialise_dislay_brightness; \
+#define Initialise_dislay_brightness \
 if ((eeprom_read_byte((uint8_t*)(0x3FB)) != 0xFF) &&\
 (eeprom_read_byte((uint8_t*)(0x3FB)) != 0xFE) &&\
 (eeprom_read_byte((uint8_t*)(0x3FB)) != 0xFD))\
@@ -135,11 +134,11 @@ T0_interupt_cnt = 0;
 
 
 
-#define	digit_3		PORTB |= (1 << PB0);
-#define	digit_2		PORTB |= (1 << PB2);
-#define	digit_1		PORTB |= (1 << PB3);
-#define	digit_0		PORTB |= (1 << PB4);
-#define	toggle_digit_0	PORTB ^= (1 << PB4);
+#define	digit_3				PORTB |= (1 << PB0);
+#define	digit_2				PORTB |= (1 << PB2);
+#define	digit_1				PORTB |= (1 << PB3);
+#define	digit_0				PORTB |= (1 << PB4);
+#define	toggle_digit_0		PORTB ^= (1 << PB4);
 
 
 #define	digit_7		PORTB |= (1 << PB5);
@@ -155,18 +154,21 @@ T0_interupt_cnt = 0;
 #define	seg_f 	(1 << PD6)
 #define	seg_g 	(1 << PD7)
 
-#define set_digit_drivers;\
+#define set_digit_drivers \
 DDRB |= (1 << DDB0) | (1 << DDB1) | (1 << DDB2) | (1 << DDB3) | (1 << DDB4) | (1 << DDB5);\
 DDRC |= (1 << DDC0) | (1 << DDC1) | (1 << DDC2);\
 DDRD |= (1 << DDD2) | (1 << DDD3) | (1 << DDD4) | (1 << DDD5) | (1 << DDD6) | (1 << DDD7);
 
-#define clear_digits; PORTB &= (~((1 << PB0) | (1 << PB2) | (1 << PB3) | (1 << PB4) | (1 << PB5)));\
+#define clear_digits \
+PORTB &= (~((1 << PB0) | (1 << PB2) | (1 << PB3) | (1 << PB4) | (1 << PB5)));\
 PORTC &= (~((1 << PC0) | (1 << PC1) | (1 << PC2)));
 
-#define clear_display; PORTB |= (seg_a );\
+#define clear_display \
+PORTB |= (seg_a );\
 PORTD |= (seg_b | seg_c | seg_d | seg_e | seg_f | seg_g);
 
-#define clear_display_buffer; for(int m = 0; m<=7; m++)display_buf[m] = 0;
+#define clear_display_buffer \
+for(int m = 0; m<=7; m++)display_buf[m] = 0;
 
 
 #define one_U 	PORTD &= ~(seg_b);
@@ -206,44 +208,48 @@ PORTD |= (seg_b | seg_c | seg_d | seg_e | seg_f | seg_g);
 #define T0_delay_250us 2,6
 #define T0_delay_125us 3,240
 
-
 #define T1_delay_3S 5, 0xA492
+#define T1_delay_1sec 5,0xE17B
 #define T1_delay_500ms 5, 0xF0C3
 #define T1_delay_250ms 5, 0xF862
 #define T1_delay_125ms 5, 0xFC31
 #define T1_delay_100ms 5,0xFCF2
 #define T1_delay_10ms 3, 0xF63C
 
-#define refresh_clock_display;   for (int n = 0; n < 8; n++){display_buf[n] = clock_buf[n];}
-#define refresh_stop_watch_display;  for (int n = 0; n < 8; n++){display_buf[n] = stop_watch_buf[n];}
-#define initiate_stop_watch_display;  for (int n = 0; n < 8; n++){stop_watch_buf[n] = '0';}
+#define refresh_clock_display			for (int n = 0; n < 8; n++){display_buf[n] = clock_buf[n];}
+#define refresh_stop_watch_display		for (int n = 0; n < 8; n++){display_buf[n] = stop_watch_buf[n];}
+#define initiate_stop_watch_display		for (int n = 0; n < 8; n++){stop_watch_buf[n] = '0';}
 
-#define increment_seconds;	if (clock_buf[0] < '9') clock_buf[0]++; else {clock_buf[0] = '0';\
+#define increment_seconds \
+if (clock_buf[0] < '9') clock_buf[0]++; else {clock_buf[0] = '0';\
 if (clock_buf[1] < '5') clock_buf[1]++;else {clock_buf[1] = '0';\
 if (clock_buf[3] < '9') clock_buf[3]++; else {clock_buf[3] = '0';\
 if (clock_buf[4] < '5') clock_buf[4]++;else {clock_buf[4] = '0';}}}}
 
-#define decrement_seconds; if (clock_buf[0] > '0') clock_buf[0]--; else {clock_buf[0] = '9';\
+#define decrement_seconds \
+if (clock_buf[0] > '0') clock_buf[0]--; else {clock_buf[0] = '9';\
 if (clock_buf[1] > '0') clock_buf[1]--; else {clock_buf[1] = '5';\
 if (clock_buf[3] > '0') clock_buf[3]--; else {clock_buf[3] = '9';\
 if (clock_buf[4] > '0') clock_buf[4]--;else {clock_buf[4] = '5';}}}}
 
 
-#define increment_minutes; if (clock_buf[3] < '9') clock_buf[3]++; else {clock_buf[3] = '0';\
+#define increment_minutes \
+if (clock_buf[3] < '9') clock_buf[3]++; else {clock_buf[3] = '0';\
 if (clock_buf[4] < '5') clock_buf[4]++;else {clock_buf[4] = '0';\
 switch (clock_buf[7]){\
 case '0': case '1': if (clock_buf[6] < '9') clock_buf[6]++; else {clock_buf[6] = '0';clock_buf[7]++;}break;\
 case '2': if (clock_buf[6] < '3') clock_buf[6]++; else {clock_buf[6] = '0';clock_buf[7] = '0';}}}}
 
 
-#define decrement_minutes; if (clock_buf[3] > '0') clock_buf[3]--; else {clock_buf[3] = '9';\
+#define decrement_minutes \
+if (clock_buf[3] > '0') clock_buf[3]--; else {clock_buf[3] = '9';\
 if (clock_buf[4] > '0') clock_buf[4]--;else {clock_buf[4] = '5';\
 switch (clock_buf[7]){\
 case '1': case '2': if (clock_buf[6] > '0') clock_buf[6]--; else {clock_buf[6] = '9';clock_buf[7]--;}break;\
 case '0': if (clock_buf[6] > '0') clock_buf[6]--; else {clock_buf[6] = '3';clock_buf[7] = '2';}}}}
 
 
-#define Initialise_I2C_master_write;\
+#define Initialise_I2C_master_write \
 	while(1){\
 	TWCR = (1 << TWINT) | (1 << TWSTA) | (1 << TWEN);\
 	while (!(TWCR & (1 << TWINT)));\
@@ -252,7 +258,7 @@ case '0': if (clock_buf[6] > '0') clock_buf[6]--; else {clock_buf[6] = '3';clock
 	while (!(TWCR & (1 << TWINT)));\
 	if (TWSR == 0x18)break;	}	
 	
-#define Initialise_I2C_master_read;\
+#define Initialise_I2C_master_read \
 	while(1){\
 	TWCR = (1 << TWINT) | (1 << TWSTA) | (1 << TWEN);\
 	while (!(TWCR & (1 << TWINT)));\
@@ -262,7 +268,7 @@ case '0': if (clock_buf[6] > '0') clock_buf[6]--; else {clock_buf[6] = '3';clock
 	if (TWSR == 0x40)break;	}
 
 
-#define long_to_slave_I2C;\
+#define long_to_slave_I2C \
 	while(1){\
 	TWCR = (1 << TWINT) | (1 << TWSTA) | (1 << TWEN);\
 	while (!(TWCR & (1 << TWINT)));\
