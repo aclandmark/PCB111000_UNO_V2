@@ -7,19 +7,19 @@ void Clock_period(void){for(int p = 0; p<= 3; p++){asm("nop");}}
 #define PGClock_H  Clock_period();
 
 
-#define delay_30ms 5,20
-#define delay_20ms 5,100
-#define delay_10ms 5,183
-#define delay_5ms 5,220
-#define delay_2ms 4,195
+#define delay_30ms	5,20
+#define delay_20ms	5,100
+#define delay_10ms	5,183
+#define delay_5ms	5,220
+#define delay_2ms	4,195
 
-#define two_msec_delay;				timer_T0_sub_x_M(delay_2ms,1);
-#define five_msec_delay;			timer_T0_sub_x_M(delay_5ms,1);
-#define ten_msec_delay;				timer_T0_sub_x_M(delay_10ms,1);
-#define twenty_msec_delay;			timer_T0_sub_x_M(delay_20ms,1);
-#define thirty_msec_delay;			timer_T0_sub_x_M(delay_30ms,1);
-#define three_hundred_msec_delay;	timer_T0_sub_x_M(delay_30ms,10);
-#define one_second_delay;			timer_T0_sub_x_M(delay_10ms,100);
+#define two_msec_delay				timer_T0_sub_x_M(delay_2ms,1);
+#define five_msec_delay				timer_T0_sub_x_M(delay_5ms,1);
+#define ten_msec_delay				timer_T0_sub_x_M(delay_10ms,1);
+#define twenty_msec_delay			timer_T0_sub_x_M(delay_20ms,1);
+#define thirty_msec_delay			timer_T0_sub_x_M(delay_30ms,1);
+#define three_hundred_msec_delay	timer_T0_sub_x_M(delay_30ms,10);
+#define one_second_delay			timer_T0_sub_x_M(delay_10ms,100);
 
 
 void USART_Rx_init (unsigned char, unsigned char);
@@ -47,7 +47,7 @@ void Load_page(char, int, unsigned char);
 void timer_T0_sub_x_M(char, char, char);
 
 
-#define inc_r_pointer;\
+#define inc_r_pointer \
 r_pointer++;\
 r_pointer = r_pointer & 0b00011111;
 
@@ -69,7 +69,6 @@ int Hex_address;											//Address read from the hex file
 int HW_address;												//Hard ware address (usually tracks Hex_address)
 signed int page_address;									//Address of first location on a page of flash 
 volatile int write_address;									//Address on page_buffer to which next command will be written
-//signed int FlashSZ;											//Amount of flash memory supplied on target device
 signed int PAmask;											//Used to obtain the flash page address from the hex address
 signed int PageSZ;											//Size of a page of flash
 
@@ -82,7 +81,7 @@ signed char record_length;									//Num commands one one line of hex file (i.e.
 signed char record_length_old;								//If record length changes, length of the previous one is important
 signed char orphan;											//Indicates that the contents of a record span two flash pages
 signed char section_break;									//Set to 1 if at least one page of flash memory will be unused.
-signed char page_break;										//Page only partialy filled before programming next one starts
+signed char page_break;										//Page only partially filled before programming next one starts
 volatile signed char line_offset;							//LSB of address of first command in record (usually zero)
 unsigned int prog_led_control;								//Used to control Leds as hex file is downloaded
 
@@ -117,18 +116,19 @@ volatile char Flash_readout;
 
 
 /********HW V 1.3 Define target Pin & CC LED definitions START for boot loader**********/
-#define PGD_cmd_H PORTB |= cmd_pin
-#define PGD_cmd_L PORTB &= ~(cmd_pin)
-#define PGD_resp_H PINB & resp_pin
-#define PGC_L PORTB &= ~(clock_pin)
-#define PGC_H PORTB |= clock_pin
-#define Reset_L PORTC &= ~(reset_pin)
-#define Reset_H PORTC |= reset_pin
+#define PGD_cmd_H		PORTB |= cmd_pin
+#define PGD_cmd_L		PORTB &= ~(cmd_pin)
+#define PGD_resp_H		PINB & resp_pin
+#define PGC_L			PORTB &= ~(clock_pin)
+#define PGC_H			PORTB |= clock_pin
+#define Reset_L			PORTC &= ~(reset_pin)
+#define Reset_H			PORTC |= reset_pin
 
-#define boot_target; cmd_pin =  0x08; resp_pin = 0x10; clock_pin =  0x20; reset_pin = 0x08; DDRB |= 0x28; DDRC |= 0x08;
+#define boot_target \
+cmd_pin =  0x08; resp_pin = 0x10; clock_pin =  0x20; reset_pin = 0x08; DDRB |= 0x28; DDRC |= 0x08;
 
 
-#define Atmel_powerup;\
+#define Atmel_powerup \
 {two_msec_delay;}\
 Reset_L;\
 PGC_L;\
@@ -139,27 +139,27 @@ Reset_L;\
 {twenty_msec_delay;}
 
 
-#define Atmel_powerup_and_target_detect;\
+#define Atmel_powerup_and_target_detect \
 Atmel_powerup;\
 if((Atmel_config(Prog_enable_h, 0)==0x53) && (Atmel_config(signature_bit_1_h, 0) == 0x1E))target_detected=1;\
 else target_detected=0;
 
 
 
-#define Initialise_variables_for_programming_flash;\
+#define Initialise_variables_for_programming_flash \
 prog_counter=0; prog_led_control = 0; cmd_counter = 0; record_length_old=0;\
 Flash_flag = 0;  HW_address = 0;  section_break = 0; orphan = 0;\
 w_pointer = 0; r_pointer = 0;short_record=0;\
 counter = 1;
 
-#define set_up_WDT;\
+#define set_up_WDT \
 wdr();\
 MCUSR &= ~(1<<WDRF);\
 WDTCSR |= (1 <<WDCE) | (1<< WDE);\
 WDTCSR = 0;
 
 
-#define initialise_IO;\
+#define initialise_IO \
 MCUCR &= (~(1 << PUD));\
 DDRB = 0;\
 DDRC = 0;\
@@ -188,18 +188,18 @@ PORTC |= (1 << PC3);
 
 
 
-#define initialise_leds;\
+#define initialise_leds \
 DDRD |= (1 << PD7);
 
 
-#define led_off;\
+#define led_off \
 PORTD &= (~(1 << PD7));
 
 
-#define led_on;\
+#define led_on \
 PORTD |= (1 << PD7);
 
-#define cal_device;\
+#define cal_device \
 eeprom_write_byte((uint8_t*)0x3FD,OSCCAL);\
 if ((eeprom_read_byte((uint8_t*)0x3FE) > 0x0F)\
 &&  (eeprom_read_byte((uint8_t*)0x3FE) < 0xF0)\
