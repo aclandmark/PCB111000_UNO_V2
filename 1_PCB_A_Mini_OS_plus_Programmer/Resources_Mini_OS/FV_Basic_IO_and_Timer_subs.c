@@ -81,8 +81,8 @@ return 1;}
 
 
 
-void binUnwantedChars (void){char bin_char;
-while(1){if (isCharavailable(2)==1)bin_char = receiveChar();else break;}}
+void binUnwantedChars (void){
+while(1){if (isCharavailable(2)==1)receiveChar();else break;}}
 
 
 
