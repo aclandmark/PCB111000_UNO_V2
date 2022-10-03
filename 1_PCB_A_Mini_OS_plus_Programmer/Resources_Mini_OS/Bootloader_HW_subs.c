@@ -54,12 +54,12 @@ return Echo;}
 /********************************************************************************************/
 void Load_page(char high_low, int address_on_page, unsigned char data){
 int cmd = 0;
-unsigned char n,Echo;
+unsigned char n;
 
 switch (high_low){
 case 'H': cmd = 0x4800; break;
 case 'L': cmd = 0x4000; break;}
-Echo = 0;
+
 
 for (n=0; n<=15; n++){PGC_L;PGClock_L;  
 if((cmd<<n) & 0x8000)PGD_cmd_H; else 	PGD_cmd_L;
