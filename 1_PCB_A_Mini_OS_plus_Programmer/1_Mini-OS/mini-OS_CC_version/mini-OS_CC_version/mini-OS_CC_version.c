@@ -1,6 +1,13 @@
 /*********************
-Display control part of PCB_A_Mini_OS_I2C_V16_1_CC.
-Also offers services which the user app calls over the I2C bus
+PCB111000_UNO consists of a UNO and plug in pcb PCB-A
+
+The mini-OS resides on PCB-A together with PCB_A programmer and flash verification.
+These program the UNO usually to update the UNO bootloader or restore it to its original state.
+
+NOTE: PCB_A programmer is sometimes erroneously referred to as a bootloader.
+
+
+Mini_OS drives the display and offers services which the user app calls over the I2C bus
 Services include display of binary or decimal numbers, display of individual segments
 Clock/stop watch functions and arithmetic.
 
@@ -73,20 +80,20 @@ int main (void){
 
 	MCUSR &= (~(1 << PORF));
 
-	ADMUX |= (1 << REFS0);								//select internal ADC ref and remove external supply on AREF pin
+	ADMUX |= (1 << REFS0);									//select internal ADC ref and remove external supply on AREF pin
 	setup_watchdog;
-	initialise_IO;										//Ensures that all IO is initially set to WPU
+	initialise_IO;											//Ensures that all IO is initially set to WPU
 	set_digit_drivers;
 	clear_digits;
 	clear_display;
 
-	TWBR = 32;											//gives 100KHz I2C clock for TWSR
-	ASSR = (1 << AS2); 								//initialise T2 for crystal
-	timer_2_counter=0;									//Initialsise timer_2_counter to zero
+	TWBR = 32;												//gives 100KHz I2C clock for TWSR
+	ASSR = (1 << AS2); 										//initialise T2 for crystal
+	timer_2_counter=0;										//Initialise timer_2_counter to zero
 	sei();
 
-	if(!(eeprom_read_byte((uint8_t*)0x3F4)))			//If PCB_A has just been programmed with I2C_V16_CC using the project programmer
-	{eeprom_write_byte((uint8_t*)0x3F4, 0xFF);			//the UNO device is automatically reset so the the project programer can be removed
+	if(!(eeprom_read_byte((uint8_t*)0x3F4)))				//If PCB_A has just been programmed with I2C_V16_CC using the project programmer
+	{eeprom_write_byte((uint8_t*)0x3F4, 0xFF);				//the UNO device is automatically reset so the the project programer can be removed
 
 		if(!(eeprom_read_byte((uint8_t*)0x3F1)))			//Only auto-cal after programming flash not eeprom
 		{eeprom_write_byte((uint8_t*)0x3F1, 0xFF);
@@ -96,10 +103,10 @@ int main (void){
 		Reset_UNO_low;
 		Timer_T1_sub(T1_delay_10ms);						//After its release from reset the UNO selects its boot loader
 		Reset_UNO_high;
-	Timer_T1_sub(T1_delay_125ms);}						//Delay required due to UNO Start Up Time of 65mS
+	Timer_T1_sub(T1_delay_125ms);}							//Delay required due to UNO Start Up Time of 65mS
 
-	OSCCAL_DV = OSCCAL;									//Save default value of OSCCAL
-	cal_PCB_A_328;										//Select User value of OSCCAL if one exists
+	OSCCAL_DV = OSCCAL;										//Save default value of OSCCAL
+	cal_PCB_A_328;											//Select User value of OSCCAL if one exists
 	OSCCAL_WV = OSCCAL;
 
 	Initialise_dislay_brightness;
@@ -115,23 +122,23 @@ int main (void){
 		case 0xFF: timer_T0_sub_with_interrupt(T0_delay_2ms); break;			//High intensity: Each of the 8 digits is active for 2mS in 16ms
 		case 0xFE: timer_T0_sub_with_interrupt(T0_delay_500us); break;			//Normal intensity:  Each digit is refreshed every 16mS but only for 500uS
 		case 0xFD: timer_T0_sub_with_interrupt(T0_delay_125us); break;			//Low intensity: Each digit is refreshed for 125uS every 16mS
-		default: 	eeprom_write_byte((uint8_t*)(0x3FB), 0xFE);				//BUG Extra line added post publication
+		default: 	eeprom_write_byte((uint8_t*)(0x3FB), 0xFE);
 	timer_T0_sub_with_interrupt(T0_delay_2ms); break;}
 
 	
 	while(1){
 
-		while((mode == 'F') || (mode == 'K'));				//Multiplexer continues to work, otherwise requires reset to escape.
+		while((mode == 'F') || (mode == 'K'));									//Multiplexer continues to work, otherwise requires reset to escape.
 
 		
 		/********Code parks here following WDT, POR and Brown-out***************/
 		while(1){
-			TWCR = (1 << TWINT)|(1 << TWSTA)|(1 << TWEN);		//send a start condition  (this identical to a "repeated start")
-			while (!(TWCR & (1 << TWINT)));					//Wait for TWINT flag
-			TWDR = 0x03;										//Address of slave (master read operation)  SLA + R
-			TWCR = (1 << TWINT) | (1 << TWEN);					//Clear TWINT bit to start transmission of address
-			while (!(TWCR & (1 << TWINT)));					//Wait for TWINT flag
-			if (TWSR == 0x40)break;								//SLA + R successfully transmitted ACK recveived
+			TWCR = (1 << TWINT)|(1 << TWSTA)|(1 << TWEN);						//send a start condition  (this identical to a "repeated start")
+			while (!(TWCR & (1 << TWINT)));										//Wait for TWINT flag
+			TWDR = 0x03;														//Address of slave (master read operation)  SLA + R
+			TWCR = (1 << TWINT) | (1 << TWEN);									//Clear TWINT bit to start transmission of address
+			while (!(TWCR & (1 << TWINT)));										//Wait for TWINT flag
+			if (TWSR == 0x40)break;												//SLA + R successfully transmitted ACK received
 			if(clock_flag==1){refresh_clock_display;}}
 
 			clock_flag=0;
@@ -139,15 +146,15 @@ int main (void){
 			if(payload_size)mode = I2C_master_receive(1);
 			else mode = I2C_master_receive(0);
 
-			if (mode != 8) display_mask=0;						//dissable flashing digits
+			if (mode != 8) display_mask=0;										//disable flashing digits
 
-			if(payload_size){									//payload is zero for mode 'F'
+			if(payload_size){													//payload is zero for mode 'F'
 
-				for (int m = 0; m < payload_size; m++){			//payload_size = Num digits to be downloaded
+				for (int m = 0; m < payload_size; m++){							//payload_size = Num digits to be downloaded
 					if (m == (payload_size-1))
 					I2C_data[m] = I2C_master_receive(0);
 				else I2C_data[m] = I2C_master_receive(1);}
-			TWCR = (1 << TWINT )|(1 << TWEN )|(1 << TWSTO );}	//Send stop bit
+			TWCR = (1 << TWINT )|(1 << TWEN )|(1 << TWSTO );}					//Send stop bit
 
 			switch(mode){
 
@@ -159,52 +166,52 @@ int main (void){
 
 			switch (mode){
 
-				case 1:	I2C_Tx_2_integers; break;					//Uses the 32 vertical segments to display two binary numbers
+				case 1:	I2C_Tx_2_integers; break;								//Uses the 32 vertical segments to display two binary numbers
 
 				case 2:
-				case 3: I2C_Tx_any_segment;	break;					//Illuminates/clears any of the 56 segments
+				case 3: I2C_Tx_any_segment;	break;								//Illuminates/clears any of the 56 segments
 				
-				case 4: I2C_Tx_8_byte_array; break;					//Display a string of 8 digits
+				case 4: I2C_Tx_8_byte_array; break;								//Display a string of 8 digits
 
-				case 5:	I2C_Tx_display_char; break;					//Displays +/- char as number and binary
+				case 5:	I2C_Tx_display_char; break;								//Displays +/- char as number and binary
 
-				case 6: I2C_Tx_long;break;							//Displays 8 digit number
+				case 6: I2C_Tx_long;break;										//Displays 8 digit number
 
-				case 7: I2C_Tx_Compile_tables();break;				//I2C_Tx_Initiate_tables() and I2C_Tx_Inc/dec_tables()
+				case 7: I2C_Tx_Compile_tables();break;							//I2C_Tx_Initiate_tables() and I2C_Tx_Inc/dec_tables()
 
-				case 8: I2C_Tx_2URNs_from_IO();break;				//Generates numbers of type 0.1234 With an exponent
+				case 8: I2C_Tx_2URNs_from_IO();break;							//Generates numbers of type 0.1234 With an exponent
 				
-				case 9: I2C_Tx_Uarithmetic_OP();break;				//Takes numbers entered using mode B and does some arithmetic
+				case 9: I2C_Tx_Uarithmetic_OP();break;							//Takes numbers entered using mode B and does some arithmetic
 
-				case 'A': I2C_Tx_accumulator_1();	break;			//Implements add, subtract and clear modes
+				case 'A': I2C_Tx_accumulator_1();	break;						//Implements add, subtract and clear modes
 
-				case 'B': I2C_Tx_accumulator_2();break;				//Aquires data for use by accumulator
+				case 'B': I2C_Tx_accumulator_2();break;							//Acquires data for use by accumulator
 
-				case 'C': basic_clock(); break;						//I2C_Tx_OS_timer(AT_clock_mode, start_time): Starts the timer/clock
+				case 'C': basic_clock(); break;									//I2C_Tx_OS_timer(AT_clock_mode, start_time): Starts the timer/clock
 
-				case 'D': multi_mode_clock(); break;				//Used with subroutine I2C_Tx_Clock_command(char timer_mode, char command): Controls the timer/clock
+				case 'D': multi_mode_clock(); break;							//Used with subroutine I2C_Tx_Clock_command(char timer_mode, char command): Controls the timer/clock
 
-				case 'E': stop_watch(); break;						//Used by I2C_Tx_Clock_command(one100ms_mode) and I2C_Tx_Clock_command(ten_ms_mode)
+				case 'E': stop_watch(); break;									//Used by I2C_Tx_Clock_command(one100ms_mode) and I2C_Tx_Clock_command(ten_ms_mode)
 
-				case 'F': I2C_initiate_10mS_ref;break;				//Ten_mS_interrupt for combined clock and stopwatch;
+				case 'F': I2C_initiate_10mS_ref;break;							//Ten_mS_interrupt for combined clock and stopwatch;
 				
-				case 'G': I2C_Tx_BWops; break;						//Used to illustarte bit wise logic operations
+				case 'G': I2C_Tx_BWops; break;									//Used to illustrate bit wise logic operations
 
-				case 'H': Message_from_the_OS();break;				//Messages compiled by user and saved to pcb_A Atmrga 328 EEPROM
+				case 'H': Message_from_the_OS();break;							//Messages compiled by user and saved to pcb_A Atmega 328 EEPROM
 
-				case 'I': I2C_displayToLong;break;					//Converts display to long number and transmits it to the UNO device
+				case 'I': I2C_displayToLong;break;								//Converts display to long number and transmits it to the UNO device
 
-				case 'J': I2C_Tx_real_num;break;					//Displays a real number
+				case 'J': I2C_Tx_real_num;break;								//Displays a real number
 
-				case 'K': I2C_Tx_float_num;break;					//Scrolls scientific number accross the display
+				case 'K': I2C_Tx_float_num;break;								//Scrolls scientific number across the display
 
 				case 'L': Multiplexer_demo; break;
 
-				case 'M': cal_plot_328(); break;						//Scans 328 cal-factor fronmm 0x10 to 0xF0
+				case 'M': cal_plot_328(); break;								//Scans 328 cal-factor from 0x10 to 0xF0
 
 				case 'N': manual_cal_PCB_A_device(); break;
 
-				case 'O': PCB_test; break;							//For manufacturing test: Dissables the multiplexer
+				case 'O': PCB_test; break;										//For manufacturing test: disables the multiplexer
 
 				case 'P': I2C_Rx_get_version; break;
 
