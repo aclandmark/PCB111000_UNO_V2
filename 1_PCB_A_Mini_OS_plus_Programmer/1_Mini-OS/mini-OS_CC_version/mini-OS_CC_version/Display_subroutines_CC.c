@@ -29,7 +29,7 @@ case '.':
 case '_': PORTD |= (seg_d); break;
 case '-': PORTD |= (seg_g); break;
 case 'E': case 'e':
-case 'X': PORTB |= (seg_a); PORTD |= (seg_d | seg_e | seg_f | seg_g );break;}} //E the exponential function
+case 'X': PORTB |= (seg_a); PORTD |= (seg_d | seg_e | seg_f | seg_g );break;}}		//E the exponential function
 
 
 
