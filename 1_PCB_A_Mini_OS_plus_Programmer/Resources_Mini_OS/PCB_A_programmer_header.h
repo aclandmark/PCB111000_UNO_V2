@@ -53,7 +53,7 @@ r_pointer = r_pointer & 0b00011111;
 
 int  cmd_counter;											//Counts commands as they are downloaded from the PC
 int prog_counter;											//Counts commands burned to flash
-volatile int counter;										//Counts characters in a record as they are downloded from the PC
+volatile int counter;										//Counts characters in a record as they are downloaded from the PC
 volatile int char_count;									//The number of askii character in a single record
 volatile char Count_down;									//Counts commands as record is programmed
 volatile int   tempInt1, tempInt2;							//Used to assemble commands and addresses as the are downloaded
@@ -92,27 +92,27 @@ volatile char Flash_readout;
 
 
 
-#define Prog_enable 0xAC530000
-#define Prog_enable_h 0xAC53
+#define Prog_enable						0xAC530000
+#define Prog_enable_h					0xAC53
 
-#define signature_bit_1 0x30000000
-#define signature_bit_1_h 0x3000
+#define signature_bit_1					0x30000000
+#define signature_bit_1_h				0x3000
 
 
-#define write_lock_bits 0xACE00000
-#define write_lock_bits_h 0xACE0
+#define write_lock_bits					0xACE00000
+#define write_lock_bits_h				0xACE0
 
-#define write_fuse_bits_H 0xACA80000
-#define write_fuse_bits_H_h 0xACA8
+#define write_fuse_bits_H				0xACA80000
+#define write_fuse_bits_H_h				0xACA8
 
-#define write_fuse_bits 0xACA00000
-#define write_fuse_bits_h 0xACA0
+#define write_fuse_bits					0xACA00000
+#define write_fuse_bits_h				0xACA0
 
-#define write_extended_fuse_bits 0xACA40000
-#define write_extended_fuse_bits_h 0xACA4
+#define write_extended_fuse_bits		0xACA40000
+#define write_extended_fuse_bits_h		0xACA4
 
-#define Chip_erase 0xAC800000
-#define Chip_erase_h 0xAC80
+#define Chip_erase						0xAC800000
+#define Chip_erase_h					0xAC80
 
 
 /********HW V 1.3 Define target Pin & CC LED definitions START for boot loader**********/
