@@ -32,12 +32,12 @@ Hex_address:		An address obtained from the hex file; usually the address of the 
 HW_address:			This address will track the Hex_Address provided that there are no gaps in the hex file.
 
 Line_length:		This is the number of commands present in a single line of the hex file.
-Line_length_old:	The program needs to know the line length of the curent line and the previous one.	
+Line_length_old:	The program needs to know the line length of the current line and the previous one.	
 
 Record:				The hex file is processed by the programmer one line at a time.  Each line is also known as a record.
 
 section_break:		This is set to 1 when at least one page of flash memory will be unused.
-page_break:			This is set to 1 when a page is only partialy filled before programming of the next page starts
+page_break:			This is set to 1 when a page is only partially filled before programming of the next page starts
 orphan:				This is set to 1 when the commands in a record are shared between one page and the next
 **********************************************************************************************************************/
 
@@ -80,12 +80,12 @@ Hex_address  = Hex_address/2;											//Convert address from byte to word valu
 prog_led_control++;
 
 if (Hex_address == HW_address)orphan = 0;								//New record follows on immediately from the old
-else{if (Hex_address == 0);											//Start of hex file: address is zero
+else{if (Hex_address == 0);												//Start of hex file: address is zero
 		else{if ((Hex_address & PAmask) > (page_address + PageSZ))		//Long jump: At least one page is unused
 				{section_break=1;page_break=0;}
 			if((Hex_address & PAmask) == (page_address + PageSZ))		//Page jump: Jump to next page without filling current one
 				{section_break=0;page_break=1; }
-			if ((Hex_address & PAmask) == page_address)				//Short jump: Jump within page
+			if ((Hex_address & PAmask) == page_address)					//Short jump: Jump within page
 				{section_break=0;page_break=0; orphan = 0;}}}
 
 if(prog_led_control & 0b00001000) {LED_2_on;}	
@@ -110,7 +110,7 @@ space_on_page = (PageSZ - page_offset);}								//Initialise "space_on_page"
 void Program_record(void){
 while(Count_down){ 														//Initially contains the number of commands in the line
 Count_down--;															//Decrement "count_down" each time a command is written to the page buffer
-Flash_flag = 1;  														//Indicates that page buffer containes commands that will need burning to flash 
+Flash_flag = 1;  														//Indicates that page buffer contains commands that will need burning to flash 
 copy_cmd_to_page_buffer();  												 
 write_address++;
 HW_address++;
@@ -122,7 +122,7 @@ Flash_flag = 0;															//Buffer now contains no data to burn to flash
 write_address = 0;														//"while loop" continues if there is a line offset
 space_on_page = PageSZ;
 page_offset = line_offset;
-if (line_offset) orphan = 1;}}}										//One or more commands in current record will be on next page
+if (line_offset) orphan = 1;}}}											//One or more commands in current record will be on next page
 
 
 
@@ -131,7 +131,7 @@ if (line_offset) orphan = 1;}}}										//One or more commands in current recor
 /***********************************************************************************************/ 
 void copy_cmd_to_page_buffer(void){
 int ptr_to_cmd;
-ptr_to_cmd = (int)&Hex_cmd;													//results is a warning message (ptr_to_cmd is not defined as a pointer)
+ptr_to_cmd = (int)&Hex_cmd;												//results is a warning message (ptr_to_cmd is not defined as a pointer)
 get_next_hex_cmd();
 
 Prog_mem_address_H = (write_address*2) >> 8;
