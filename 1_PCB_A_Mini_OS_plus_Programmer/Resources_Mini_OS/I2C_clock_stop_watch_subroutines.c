@@ -5,7 +5,7 @@ for (int m = 0; m < 8; m++){									//AT_clock_mode = C receives 8 chars (hours
 clock_buf[7-m] = I2C_data[m];}	
 refresh_clock_display;
 TCCR2B = 2;														//Set clock to 4096Hz and start it
-TIMSK2 |= (1 << TOIE2);										//Enable timer clock interrupt
+TIMSK2 |= (1 << TOIE2);											//Enable timer clock interrupt
 clock_flag=1;
 timer_mode = 1;}
 
@@ -53,13 +53,13 @@ timer_record = 0;
 timer_pointer = 0;
 record_counter = 0;
 
-while(1){//A													//stop watch not aqble to run in background
-while(1){//B													//in loop B update dislays and wait for command
+while(1){//A													//stop watch not able to run in background
+while(1){//B													//in loop B update displays and wait for command
 TWCR = (1 << TWINT) | (1 << TWSTA) | (1 << TWEN);				//send a start condition
-while (!(TWCR & (1 << TWINT)));								//Wait for TWINT flag 
+while (!(TWCR & (1 << TWINT)));									//Wait for TWINT flag 
 TWDR = 0x03;													//Address of slave (master read operation)  SLA + R
 TWCR = (1 << TWINT) | (1 << TWEN);								//Clear TWINT bit to start transmission of address
-while (!(TWCR & (1 << TWINT)));								//Wait for TWINT flag 
+while (!(TWCR & (1 << TWINT)));									//Wait for TWINT flag 
 if (TWSR == 0x40)break;
 
 if (TCNT2 == Ten_mS_tick){//C									//Pole timer T2 for 10mSec interval
