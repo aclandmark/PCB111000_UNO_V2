@@ -41,17 +41,17 @@ void manual_cal_PCB_A_device(void){
 long cal_error;
 char OSCCAL_UV;		
 
-TIMSK0 &= (~(1 << TOIE0));								//display not required
+TIMSK0 &= (~(1 << TOIE0));										//display not required
 EA_buff_ptr = 0;
 cal_mode = 5;		
 Get_ready_to_calibrate;
-OSCCAL -=20;											//Compute cal error for 41 values of OSCCAL
+OSCCAL -=20;													//Compute cal error for 41 values of OSCCAL
 for(int m = 0; m <= 40; m++)
 {cal_error = compute_error(1,cal_mode,1);OSCCAL++;}
 OSCCAL = OSCCAL_WV;
 close_calibration;
 		
-Initialise_I2C_master_write;							//Transmit error values to user
+Initialise_I2C_master_write;									//Transmit error values to user
 I2C_master_transmit(OSCCAL_DV);
 I2C_master_transmit(OSCCAL_WV - 20);						
 for(int m = 0; m <= 40; m++){							
@@ -60,51 +60,51 @@ I2C_master_transmit(buffer[m]);}
 I2C_master_transmit	(OSCCAL_WV);
 TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWSTO);	
 	
-Initialise_I2C_master_read;								//Read OSCCAL_UV (user value)
+Initialise_I2C_master_read;										//Read OSCCAL_UV (user value)
 OSCCAL_UV = I2C_master_receive(0);							
 TWCR = (1 << TWINT ) | (1 << TWEN ) | (1 << TWSTO );
 	
 /*********************************************/
-Get_ready_to_calibrate;									//Test value of OSCCAL entered by user
-if(OSCCAL_UV == 0xFF)OSCCAL = OSCCAL_DV;				//If 0xFF reinstate working value
-else OSCCAL = OSCCAL_UV;								//OSCCAL test value
+Get_ready_to_calibrate;											//Test value of OSCCAL entered by user
+if(OSCCAL_UV == 0xFF)OSCCAL = OSCCAL_DV;						//If 0xFF reinstate working value
+else OSCCAL = OSCCAL_UV;										//OSCCAL test value
 calibrate_without_sign_plus_warm_up_time;								
 close_calibration;
 	
-Initialise_I2C_master_write;							//Report results to user
-if(cal_error > 1750)									//Error resulting from User OSCCAL exceeds 1750
-{I2C_master_transmit('X');								//Reject result
+Initialise_I2C_master_write;									//Report results to user
+if(cal_error > 1750)											//Error resulting from User OSCCAL exceeds 1750
+{I2C_master_transmit('X');										//Reject result
 I2C_master_transmit(cal_error >> 8);						
 I2C_master_transmit(cal_error);
 TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWSTO);
-OSCCAL = OSCCAL_WV;										//Reinstate default value
+OSCCAL = OSCCAL_WV;												//Reinstate default value
 return;}			
 	
 /*************************************************/
-else{I2C_master_transmit('Y');							//Error resulting from User OSCCAL is less than 1750
+else{I2C_master_transmit('Y');									//Error resulting from User OSCCAL is less than 1750
 	
-eeprom_write_byte((uint8_t*)0x3FE, OSCCAL_UV); 		//save user OSCCAL to EEPROM
+eeprom_write_byte((uint8_t*)0x3FE, OSCCAL_UV); 					//save user OSCCAL to EEPROM
 eeprom_write_byte((uint8_t*)0x3FF, OSCCAL_UV); 
-if(OSCCAL_UV == 0xFF) OSCCAL = OSCCAL_DV;				//Reinstate working value
+if(OSCCAL_UV == 0xFF) OSCCAL = OSCCAL_DV;						//Reinstate working value
 else OSCCAL = OSCCAL_UV;
 OSCCAL_WV = OSCCAL;	
 	
-TWDR = eeprom_read_byte((uint8_t*)0x3FE);				//Echo values saved to EEPROM to user
+TWDR = eeprom_read_byte((uint8_t*)0x3FE);						//Echo values saved to EEPROM to user
 TWCR = (1 << TWINT) | (1 << TWEN);
 while (!(TWCR & (1 << TWINT)));
 TWDR = eeprom_read_byte((uint8_t*)0x3FF);
 TWCR = (1 << TWINT) | (1 << TWEN);
 while (!(TWCR & (1 << TWINT)));
 TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWSTO);}
-TIMSK0 |= (1 << TOIE0);								//Restore multplexer interrupt
+TIMSK0 |= (1 << TOIE0);											//Restore multiplexer interrupt
 }
 
 
 /*******************************************************************************************/
-void cal_plot_328(void){								//Called by Proj_9F (mode M)
+void cal_plot_328(void){										//Called by Proj_9F (mode M)
 long cal_error;
 
-TIMSK0 &= (~(1 << TOIE0));								//display not required
+TIMSK0 &= (~(1 << TOIE0));										//display not required
 cal_mode = 2;
 
 for(int m = 0x10; m <= 0xF0; m++){
@@ -118,16 +118,16 @@ Initialise_I2C_master_write;
 I2C_master_transmit(cal_error >> 8);
 I2C_master_transmit(cal_error);
 TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWSTO);}
-TIMSK0 |= (1 << TOIE0);								//Restore multiplexer interrupt
+TIMSK0 |= (1 << TOIE0);											//Restore multiplexer interrupt
 }
 
 
 /************************************************************************************/
 void initialise_timers_for_cal_error(void){
-TCNT1=0;TCCR1B = 0;										//Reset and halt T1
-TCCR2B =  0x0;	while(ASSR & (1 << TCR2BUB));			//Halt T2
-TCCR2A = 0; while(ASSR & (1 << TCR2AUB));				//Reset T2 
-TCNT2=0; while(ASSR & (1 << TCN2UB));	}				//Reset TCNT2
+TCNT1=0;TCCR1B = 0;												//Reset and halt T1
+TCCR2B =  0x0;	while(ASSR & (1 << TCR2BUB));					//Halt T2
+TCCR2A = 0; while(ASSR & (1 << TCR2AUB));						//Reset T2 
+TCNT2=0; while(ASSR & (1 << TCN2UB));	}						//Reset TCNT2
 
 
 
@@ -181,12 +181,12 @@ int limit;
 TIMSK0 &= (!(1 << TOIE0));
 clear_digits;
 clear_display;
-ONE; digit_0;												//Initialise display
+ONE; digit_0;													//Initialise display
 
-Timer_T1_sub(T1_delay_1sec);								//Crystal warm up time
+Timer_T1_sub(T1_delay_1sec);									//Crystal warm up time
 
 cal_mode = 1;
-mode = 'T';													//Required by T0 and T1 ISR	
+mode = 'T';														//Required by T0 and T1 ISR	
 Get_ready_to_calibrate;
 		
 counter_1 = 0xF1;
@@ -225,7 +225,7 @@ TIMSK0 |= (1 << TOIE0);}
 
 
 /*************************************************/	
-void cal_spot_check(void)								//Called by diagnostic mode
+void cal_spot_check(void)										//Called by diagnostic mode
 
 {long cal_error;	
 								
