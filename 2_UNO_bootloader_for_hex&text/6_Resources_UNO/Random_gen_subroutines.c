@@ -24,9 +24,9 @@ char num_bytes=4; char mode=1; char s[4];
 for (int m = 0;  m < 4; m++){
 switch (m){
 case 0: s[m] = s1; break; 											//Send S1 lower byte
-case 1: s[m] = s1 >> 8; break; 									//Send S1 higher byte									
-case 2: s[m] = s2; 	break;											//Send S1 lower byte
-case 3: s[m] = s2 >> 8; break;}}									//Send S1 higher byte
+case 1: s[m] = s1 >> 8; break; 										//Send S1 higher byte									
+case 2: s[m] = s2; 	break;											//Send S2 lower byte
+case 3: s[m] = s2 >> 8; break;}}									//Send S2 higher byte
 I2C_Tx(num_bytes,mode, s);}
 
 
