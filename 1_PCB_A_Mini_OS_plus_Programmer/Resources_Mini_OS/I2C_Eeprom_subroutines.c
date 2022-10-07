@@ -27,11 +27,11 @@ if (!(eeprom_read_byte((uint8_t*)(eeprom_ptr))))				//Count the number of string
 string_counter++;
 eeprom_ptr++;}
 	
-string_no =  (PRN_8bit_GEN()%(string_counter)) + 1;			//Generate random string number (between 1 and String_counter)
+string_no =  (PRN_8bit_GEN()%(string_counter)) + 1;				//Generate random string number (between 1 and String_counter)
 string_counter=1;
 eeprom_ptr = 5;
 
-while(1){if(string_counter==string_no)break;					//Scan text section untill required string is reached
+while(1){if(string_counter==string_no)break;					//Scan text section until required string is reached
 	else if (!(eeprom_read_byte((uint8_t*)(eeprom_ptr))))
 	string_counter++;
 	eeprom_ptr++;}
