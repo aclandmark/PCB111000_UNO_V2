@@ -61,7 +61,7 @@ case 12: if (RHSofBP_LB & (1 << (15-n)))RHSofDP += 2; break;
 case 13: if (RHSofBP_LB & (1 << (15-n)))RHSofDP += 1; break;
 case 14: if (RHSofBP_LB & (1 << (15-n)))RHSofDP += 0; break;
 case 15: if (RHSofBP_LB & (1 << (15-n)))RHSofDP += 0; break;}}
-RHSofDP += 0x00000008; 	RHSofDP = RHSofDP & 0xFFFFFFF0;  											//Round to 8 decimal places	
+RHSofDP += 0x00000008; 	RHSofDP = RHSofDP & 0xFFFFFFF0;  														//Round to 8 decimal places	
 return RHSofDP;}
 
 
@@ -74,11 +74,11 @@ unsigned long  RHSofDP;
 
 Numerator = 	RHSofBP_HB[0]; Numerator = 	 (Numerator << 16) + RHSofBP_LB[0];
 Denominator = 	RHSofBP_HB[1]; Denominator  = (Denominator << 16) + RHSofBP_LB[1];
-if(RHSofBP_HB[1] & (1 << 15)) {Numerator = Numerator >> 1;Denominator = Denominator >> 1;}		// detect overflow of long
+if(RHSofBP_HB[1] & (1 << 15)) {Numerator = Numerator >> 1;Denominator = Denominator >> 1;}					// detect overflow of long
 
 res_LHS_BP = Numerator / Denominator;		//Obtain LHS of product
-Fraction_to_Binary_D(Numerator % Denominator, Denominator, &RHSofBP_LB[2], &RHSofBP_HB[2] );		//Obtain RHS of product
-RHSofDP = Binary_points_to_Decimal_L ( RHSofBP_LB[2], RHSofBP_HB[2]);								//Convert RHS to decimal notation
+Fraction_to_Binary_D(Numerator % Denominator, Denominator, &RHSofBP_LB[2], &RHSofBP_HB[2] );				//Obtain RHS of product
+RHSofDP = Binary_points_to_Decimal_L ( RHSofBP_LB[2], RHSofBP_HB[2]);										//Convert RHS to decimal notation
 
 
 if(res_LHS_BP){RHSofDP = RHSofDP/10;
@@ -129,7 +129,7 @@ Fraction_to_Binary_D(data[1], data[2],  &RHSofBP_LB[0], &RHSofBP_HB[0]);
 
 data[3] = 1; while (data[0] >= data[3]) {data[3] = data[3] * 10; exponent[0]++;} data[3] = data[3]/10; exponent[0]--;	
 
-if(data[0] == data[3]){data[0] = data[0] * 10; exponent[0]--; }						//detect values of 1,10,100,1000 etc for Num_1
+if(data[0] == data[3]){data[0] = data[0] * 10; exponent[0]--; }												//detect values of 1,10,100,1000 etc for Num_1
 
 Fraction_to_Binary_D(data[3], data[0], &RHSofBP_LB[1],  &RHSofBP_HB[1]);
 
@@ -158,10 +158,10 @@ Fraction_to_Binary_D(data[1], data[2],  &RHSofBP_LB[1], &RHSofBP_HB[1]);
 data_store = data[0];		//subroutine must not be allowed to change data[0];
 
 data[3] = 1; while (data[0] >= data[3]) {data[3] = data[3] * 10; exponent[0]++;} data[3] = data[3]/10; exponent[0]--;	
-if(data[0] == data[3]){data[0] = data[0] * 10; exponent[0]--; }					//detect values of 1,10,100,1000 etc for Num_1
+if(data[0] == data[3]){data[0] = data[0] * 10; exponent[0]--; }											//detect values of 1,10,100,1000 etc for Num_1
 Fraction_to_Binary_D(data[3], data[0], &RHSofBP_LB[0],  &RHSofBP_HB[0]);
 
-data[0] = data_store;																//restore value of data[0] which may have been changed
+data[0] = data_store;																					//restore value of data[0] which may have been changed
 
 Denominator = 	RHSofBP_HB[0]; Denominator  = (Denominator << 16) + RHSofBP_LB[0];
 if(RHSofBP_HB[0] & (1 << 15)) {Denominator = Denominator >> 1; Overflow_1 =1;}
@@ -174,10 +174,10 @@ Numerator = 	RHSofBP_HB[1]; Numerator = 	 (Numerator << 16) + RHSofBP_LB[1];
 if ((Overflow_1 ==1) )Numerator = Numerator >> 1;		//&& (p == 0)
 exponent[2] = exponent[1] + exponent[0];
 
-res_LHS_BP = Numerator / Denominator;																//Obtain LHS of product
-Fraction_to_Binary_D(Numerator % Denominator, Denominator, &RHSofBP_LB[2], &RHSofBP_HB[2] );		//Obtain RHS of product
-RHSofDP = Binary_points_to_Decimal_L ( RHSofBP_LB[2], RHSofBP_HB[2]);				//Convert RHS to decimal notation
-if(res_LHS_BP){RHSofDP = RHSofDP/10;												//shift LHS of product to RHS to obtain scientific notation
+res_LHS_BP = Numerator / Denominator;																	//Obtain LHS of product
+Fraction_to_Binary_D(Numerator % Denominator, Denominator, &RHSofBP_LB[2], &RHSofBP_HB[2] );			//Obtain RHS of product
+RHSofDP = Binary_points_to_Decimal_L ( RHSofBP_LB[2], RHSofBP_HB[2]);									//Convert RHS to decimal notation
+if(res_LHS_BP){RHSofDP = RHSofDP/10;																	//shift LHS of product to RHS to obtain scientific notation
 switch (res_LHS_BP){
 case 1:  RHSofDP = RHSofDP + 100000000;break;
 case 2:  RHSofDP = RHSofDP + 200000000;break;
@@ -192,7 +192,7 @@ exponent[2]++; res_LHS_BP = 0;}
 numerator_update = RHSofDP; 
 scale_factor = 1; while (numerator_update >= scale_factor) {scale_factor = scale_factor * 10; } 
 Fraction_to_Binary_D(numerator_update, scale_factor,  &RHSofBP_LB[1], &RHSofBP_HB[1]);
-exponent[1] = exponent[2];}															//Update numerator
+exponent[1] = exponent[2];}																				//Update numerator
 return RHSofDP;}
 
 
@@ -284,7 +284,7 @@ long Binary_points_to_Decimal_Signed (long RHSofBP)
 unsigned int RHSofBP_LB;
 RHSofBP_LB = RHSofBP;
 
-for(int n = 0; n <= 15; n++){switch(n){											//bit zero is sign bit
+for(int n = 0; n <= 15; n++){switch(n){																//bit zero is sign bit
 case 0: if (RHSofBP>>16 & (1 << (15-n)))RHSofDP -= 1000000000; break;
 case 1: if (RHSofBP>>16 & (1 << (15-n)))RHSofDP += 500000000; break;
 case 2: if (RHSofBP>>16 & (1 << (15-n)))RHSofDP += 250000000; break;
