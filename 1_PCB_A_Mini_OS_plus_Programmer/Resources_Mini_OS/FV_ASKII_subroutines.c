@@ -15,7 +15,7 @@ int askiX4_to_hex_V2 (char*);
 
 void sendHex(char radix, unsigned int Hex){ char print_out_string[6];
 my_utoa(radix, Hex, print_out_string, 'Z'); 
-sendString(print_out_string);}										//include leading zeros
+sendString(print_out_string);}															//include leading zeros
 
 
 
@@ -29,7 +29,7 @@ void sendsignedHex (int Hex){
 char print_out_string[6];
 char sign_char = '+';
 if (Hex & 0x8000) {Hex = ~Hex + 1; sign_char = '-';}
-my_utoa(10, Hex, print_out_string, 'N'); 											//Exclude leading zeros
+my_utoa(10, Hex, print_out_string, 'N'); 												//Exclude leading zeros
 if (sign_char == '-')
 {sendChar('-'); sendString(print_out_string);sendString("  ");}
 else {sendChar(' '); sendString(print_out_string);sendString("  ");}}
@@ -37,7 +37,7 @@ else {sendChar(' '); sendString(print_out_string);sendString("  ");}}
 
 
 
-void my_utoa(char radix, unsigned int n, char s[], char mode){						//unsigned to askii
+void my_utoa(char radix, unsigned int n, char s[], char mode){							//unsigned to askii
 unsigned char i,sl,j,c;
 i=0; sl=0;
 do{sl++;
@@ -53,7 +53,7 @@ c=s[i];  s[i] = s[j];  s[j] = c;}}
 
 
 
-void my_chartoa(char radix, unsigned char n, char s[]){							//char to askii
+void my_chartoa(char radix, unsigned char n, char s[]){									//char to askii
 unsigned char i,sl,j,c;
 i=0; sl=0;
 do{sl++;
@@ -69,7 +69,7 @@ c=s[i];  s[i] = s[j];  s[j] = c;}}
 
 
 
-int my_atoi (char s[]){ int i,n;													//askii to integer
+int my_atoi (char s[]){ int i,n;														//askii to integer
 n=0;
 for(i=0; s[i] >= '0' && s[i] <= '9'; ++i)
 n= 10*n + (s[i] - '0');
@@ -78,7 +78,7 @@ return n;}
 
 
 
-int my_atoi_with_sign (char s[]){ int i,n;											//askii to interger with sign
+int my_atoi_with_sign (char s[]){ int i,n;												//askii to integer with sign
 n=0;
 switch (s[0]){
 case '-' : 
@@ -97,7 +97,7 @@ return n;}
 
 
 
-char non_numeric_char (char data){													//test for a numeric chatr
+char non_numeric_char (char data){														//test for a numeric char
 if (((data > '9') && (data < 'A')) || (data < '0') || (data > 'F'))
 return 1;
 else return 0;}
@@ -105,7 +105,7 @@ else return 0;}
 
 
 
-int askiX2_to_hex (char a[]) {														//convert askii binary char
+int askiX2_to_hex (char a[]) {															//convert askii binary char
 int hex;
 hex=0;
 if (non_numeric_char(a[0])) return 0;
@@ -120,7 +120,7 @@ return hex;}
 
 
 
-int askiX4_to_hex_V2 ( char a[])													//convert askii to binary integer																			
+int askiX4_to_hex_V2 ( char a[])														//convert askii to binary integer																			
 {int m, n;  unsigned int hex;
 hex=0;n=3;
 for(m=0; m<=3; m++){ 
