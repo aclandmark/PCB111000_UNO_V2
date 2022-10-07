@@ -112,12 +112,12 @@ if (exponent >= 8)display_mode = 4;
 else{
 
 {i=0; do{
-result[i] = num % 10  +  '0'; i++;}while((num/=10)>0);				//convert number to string
+result[i] = num % 10  +  '0'; i++;}while((num/=10)>0);									//convert number to string
 
 if (i > 8) {for(int m = 0; m <= 7; m++){result[m] = result[m+i-8];}}  
 if (i < 8) exponent++;}				
 
-zero_counter = 0; while (result[zero_counter] == '0')zero_counter++;	// count the number of trailing zeros
+zero_counter = 0; while (result[zero_counter] == '0')zero_counter++;					// count the number of trailing zeros
 digit_counter = 8 - zero_counter;
 
 if (exponent > 0) display_mode = 1;
@@ -127,7 +127,7 @@ if (exponent == 0) display_mode = 3;}
 switch (display_mode){
 case 1:
 if(exponent <= (8 - zero_counter))
-{for(int m = zero_counter; m <=7; m++) display_buf[m-zero_counter] = result[m];	//shift right to remove all zeros
+{for(int m = zero_counter; m <=7; m++) display_buf[m-zero_counter] = result[m];			//shift right to remove all zeros
 display_mask = 0; for(int m = 0; m <= (8 - zero_counter - exponent); m++)display_mask = (display_mask << 1) + 1; 
 display_mask = display_mask >> 1;}
 else{
@@ -145,14 +145,14 @@ display_buf[digit_counter - string_shift + exponent + 1] = '0';
 break;
 case 4:
 {i=0; do{
-result[i] = num % 10  +  '0'; i++;}while((num/=10)>0);}				//convert number to string
+result[i] = num % 10  +  '0'; i++;}while((num/=10)>0);}									//convert number to string
 for (int m = 0; m<= 4; m++){display_buf[7-m] = result[8-m];} display_buf[2] = 'X';  
 display_buf[1] = exponent/10 + '0';
 display_buf[0] = exponent%10 + '0';
 display_mask = 0b11111000;
 break;}
 
-for(int p = 0; p < 8; p++)strobe[p] = 0;}					//synchronise strobe
+for(int p = 0; p < 8; p++)strobe[p] = 0;}												//synchronize strobe
 
 
 
@@ -196,25 +196,25 @@ displayDecimal(10, RHSDP, 5);}
 
 /*********************************************************************/
 void displayLongNum(char radix, long long_num){
-char array[12];							//Long has 10 chars + sign + null terminator	
-SBtoAL(array, long_num, radix);			//calls the Binary to askii subroutine
-displayNumericString(array);}				//Prints characters in reverse order
+char array[12];																			//Long has 10 chars + sign + null terminator	
+SBtoAL(array, long_num, radix);															//calls the Binary to askii subroutine
+displayNumericString(array);}															//Prints characters in reverse order
 
 
 
 /*********************************************************************/
-void SBtoAL(char array[], long num, char radix){					//Signed Binary to Askii
+void SBtoAL(char array[], long num, char radix){										//Signed Binary to Askii
 int m=0;
 long sign;
 
 if (num == 0x80000000){
 switch(radix){
-case 10: array[0] = '8';array[1] = '4'; array[2] = '6';		//0x80000000 * -1 = 0
+case 10: array[0] = '8';array[1] = '4'; array[2] = '6';									//0x80000000 * -1 = 0
 array[3] = '3';array[4] = '8';array[5] = '4'; array[6] = '7';
 array[7] = '4';array[8] = '1';array[9] = '2';
 array[10] = '-'; array[11] = '\0'; break;
 
-case 16: array[0] = '0';array[1] = '0'; array[2] = '0';		//0x80000000 * -1 = 0
+case 16: array[0] = '0';array[1] = '0'; array[2] = '0';									//0x80000000 * -1 = 0
 array[3] = '0';array[4] = '0';array[5] = '0'; array[6] = '0';
 array[7] = '8';array[8] = '\0';array[9] = '\0';
 array[10] = '\0'; array[11] = '\0'; break; } return;}
@@ -232,8 +232,8 @@ if (sign < 0) {array[m] = '-';m++;}}
 /*********************************************************************/
 void displayNumericString(char* s){					
 int n=0;
-while (s[n] != '\0')n++;							//scroll to end of string counting the number of characters
-for(int m = n; m; m--)display_buf[7+m-n] = (*(s + m-1));}		//print last character first
+while (s[n] != '\0')n++;																//scroll to end of string counting the number of characters
+for(int m = n; m; m--)display_buf[7+m-n] = (*(s + m-1));}								//print last character first
 
 
 
@@ -264,11 +264,11 @@ char overflow = 1;
 
 for(int m = 0; m<=15; m++)print_out_string[m] = 0;
 
-RHSDP = Binary_points_to_Decimal_Signed(number);			//to a decimal number
+RHSDP = Binary_points_to_Decimal_Signed(number);										//to a decimal number
 if(number < 0)RHSDP = ~RHSDP;
 
 if (decimalOverflow(10, RHSDP, No_dps))
-{RHSDP += 1000000000;				//define location decimal point
+{RHSDP += 1000000000;																	//define location decimal point
 overflow = 0;
 for(int k = 0; k < (8-No_dps); k++)inc = inc*10;
 inc = inc*5;
@@ -328,7 +328,7 @@ void display_float(char Sc_Num_string[])
 {char display_mode;
 
 Initialise_I2C_master_read;
-TWCR = (1 << TWINT) | (1 << TWEN);				// Acquire single char: display mode
+TWCR = (1 << TWINT) | (1 << TWEN);														// Acquire single char: display mode
 while (!(TWCR & (1 << TWINT)));
 display_mode = TWDR;
 TWCR =  (1 << TWINT) | (1 << TWEN);
@@ -348,9 +348,9 @@ else{display_char_skip_counter = 0;Sc_Num_string_pointer=0; }}
 break;
 case '1': break;
 case '2': mode = 0; 
-timer_2_counter=0;				//Initialsise timer_2_counter to zero
-TCNT2 = 0;						//Reset counter register
-TCCR2B = 0;						//Stop the clock
+timer_2_counter=0;																		//Initialise timer_2_counter to zero
+TCNT2 = 0;																				//Reset counter register
+TCCR2B = 0;																				//Stop the clock
 TIMSK2 &= (~(1 << TOIE2));
 break;}}
 
