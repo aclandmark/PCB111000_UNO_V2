@@ -1,6 +1,6 @@
 
 
-/*Subroutines which interface with the seial programming ports of the target device*/
+/*Subroutines which interface with the serial programming ports of the target device*/
 
 
 
@@ -71,7 +71,7 @@ case 'H': cmd = 0x28; break;		//read flash high byte
 case 'L': cmd = 0x20; break;		//read flash low byte
 case 'W': cmd = 0x4C; break;		//write page to flash  (32 or 64 commands)
 case 'I': cmd = 0xC0; break;      	//EEPROM data in   5mS DELAY will be needed
-case 'O': cmd = 0xA0; break;}      //EEPROM data out
+case 'O': cmd = 0xA0; break;}       //EEPROM data out
 
 for (n=0; n<=7; n++){
 PGC_L;	PGClock_L;				
