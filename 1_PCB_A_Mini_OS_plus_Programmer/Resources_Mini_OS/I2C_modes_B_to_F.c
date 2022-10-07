@@ -7,7 +7,7 @@ char SW3_keypress, sw2_keypress,Return, keypres_counter;
 
 if ((!(I2C_data[1]))&&(!(I2C_data[2]))&&(!(I2C_data[3]))\
 &&(!(I2C_data[4]))&&(!(I2C_data[5]))&&(!(I2C_data[6]))\
-&&(!(I2C_data[7])))												//Test for new sum and initialise variables
+&&(!(I2C_data[7])))													//Test for new sum and initialise variables
 	{if(I2C_data[0]=='A')
 		{exponent[0]=0;exponent[1]=0; display_mask = 0; 
 		RN=0;keypres_counter_old=0; exponent_BKP[0]=0; 
@@ -43,7 +43,7 @@ if((!(Return)) &&(!(overflow))){									//Update display and exponent during en
 for (int m = 0; m < 8; m++){display_buf[m] = I2C_data[m];}
 if(SW3_keypress){if((!(RN)) && exponent[0])
 	{display_mask = (display_mask <<1) + 1; exponent[0]--;
-	for(int p = 0; p < 8; p++)strobe[p] = 0;}						//synchronise strobe
+	for(int p = 0; p < 8; p++)strobe[p] = 0;}						//synchronize strobe
 
 if(RN){
 if(!(exponent[1])){display_mask = (display_mask <<1);
@@ -59,7 +59,7 @@ if(RN){																//Second sw2 keypress
 for(int m = 0; m<=7; m++)
 {I2C_data[m]=display_buf[m];display_buf[m] = 0;}
 TIMSK1 |= (1<<TOIE1);
-timer_T1_sub_with_interrupt(T1_delay_500ms);while(!(T1_ovf_flag)); //Flash display
+timer_T1_sub_with_interrupt(T1_delay_500ms);while(!(T1_ovf_flag));	//Flash display
 T1_ovf_flag=0;	TIMSK1 &= (~(1<<TOIE1));
 for(int m = 0; m<=7; m++)display_buf[m] = I2C_data[m];
 
@@ -71,7 +71,7 @@ if (exponent[1])exponent[1]++;}
 n=0; while(display_buf[n])n++;	q=n;								//determine length of number string
 number[1] = 0;
 while(n){
-number[1] = number[1] * 10 + display_buf[n-1] - '0'; n--;} 		//convert the numerical string to a long number (4 bytes)
+number[1] = number[1] * 10 + display_buf[n-1] - '0'; n--;} 			//convert the numerical string to a long number (4 bytes)
 
 n=q+1;while((display_buf[n]) && (n<=7))n++;
 number[0] = 0;
@@ -87,7 +87,7 @@ return;}
 																	//Enter first number when complete
 if(!(RN)){		//First sw2 keypress
 	display_mask = (display_mask << 2);	
-	for(int p = 0; p < 8; p++)strobe[p] = 0;						//synchronise strobe
+	for(int p = 0; p < 8; p++)strobe[p] = 0;						//synchronize strobe
 	{for (int n = 0; n < 7; n++)
 	{display_buf[7-n] = display_buf[6-n];}} 
 	display_buf[0] = '\0';											//shift display left and blank digit 0
@@ -106,7 +106,7 @@ Op = I2C_data[0];
 exponent[0] = exponent_BKP[0];	exponent[1] = exponent_BKP[1];	
 number[0] = number[4]; number[1] = number[5];						//restore exponents
 	switch(Op){
-	case 'M': RHSofDP = multiply_real(number, exponent); break;	//Multiply
+	case 'M': RHSofDP = multiply_real(number, exponent); break;		//Multiply
 	case 'D': RHSofDP = divide_real (number, exponent); break;		//Divide
 	case 'R':														//Route  
 	mode_C_ptr=0;TIMSK1 |= (1<<TOIE1);
@@ -115,7 +115,7 @@ number[0] = number[4]; number[1] = number[5];						//restore exponents
 	RHSofDP = any_root(number, exponent);
 	TIMSK1 &= (~(1<<TOIE1)); TCCR1B = 0;																															////	
 	for(int m = 0; m<=7; m++)display_buf[m]=0;break;
-	case 'P': exponent[1] = number[1]; 							//Power
+	case 'P': exponent[1] = number[1]; 								//Power
 	RHSofDP = any_power(number,exponent);break;
 	case 'A': for(int m = 0; m<=7; m++)
 	display_buf[m] = display_backup[m]; 
@@ -177,7 +177,7 @@ for(int m = 0; m<=3; m++)display_buf[m]=0;
 {int m=0;do(display_buf[m++] = product%10 + '0'); 
 while ((product/=10) > 0);}
 display_mask = 0b00110000;
-for(int p = 0; p < 8; p++)strobe[p] = 0;}							//synchronise strobe
+for(int p = 0; p < 8; p++)strobe[p] = 0;}							//synchronize strobe
 
 
 
@@ -188,7 +188,7 @@ for(int p = 0; p < 8; p++)strobe[p] = 0;}							//synchronise strobe
 	
 	for (int m = 0; m < 9; m++){									//9 digits to be downloaded
 	if (m == 8)Op = I2C_data[m];
-	else display_buf[m] = I2C_data[m];}							//Store digits for display
+	else display_buf[m] = I2C_data[m];}								//Store digits for display
 	{int m = 0; while((display_buf[m]) && (m < 3))m++; 
 	acc_input = 0;
 	while(m){
