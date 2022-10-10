@@ -44,7 +44,7 @@ int main (void){
 	start_address = 0x5BFF;		//0x5C7F;													//start adddress of text
 	Num_strings = string_counter(start_address);											//Count the number of strings
 
-	if (!(eeprom_read_byte((uint8_t*)0x3F4) & 0x80))										//strings to be printed out:Development mode
+	if (!(eeprom_read_byte((uint8_t*)0x3F6) & 0x80))										//strings to be printed out:Development mode
 	{eeprom_write_byte((uint8_t*)0x3FC,(eeprom_read_byte((uint8_t*)0x3FC) | 0x80));		//informs bootloader that the next WDTout is not due to a user app.
 
 
@@ -53,18 +53,18 @@ int main (void){
 			if(text_num == 1){sendString("\tAK?");}
 			sendString("\r\n"); waitforkeypress();
 		sendString("\r\n");}
-	eeprom_write_byte((uint8_t*)0x3F4,0);}
+	eeprom_write_byte((uint8_t*)0x3F6,0);}
 
 	else																					//String print out: commentary mode
-	{next_string_no = (eeprom_read_byte((uint8_t*)0x3F4) & 0x3F);							//Reset device after printing each string
+	{next_string_no = (eeprom_read_byte((uint8_t*)0x3F6) & 0x3F);							//Reset device after printing each string
 		print_string_num(next_string_no,start_address);
 		next_string_no += 1;
 		if(next_string_no > Num_strings)next_string_no = 1;
-		eeprom_write_byte((uint8_t*)0x3F4,	next_string_no | 0x40);								//Number of next string
+		eeprom_write_byte((uint8_t*)0x3F6,	next_string_no | 0x40);								//Number of next string
 
 
 		for(int m = 0; m < 4; m++)sendString("\r\n");
-		if (waitforkeypress() == 'X'){eeprom_write_byte((uint8_t*)0x3F4,0);					//Last string printed out, print first one next time
+		if (waitforkeypress() == 'X'){eeprom_write_byte((uint8_t*)0x3F6,0);					//Last string printed out, print first one next time
 		eeprom_write_byte((uint8_t*)0x3F7,0);}}												//Close commentary with EXTRF
 
 		wdt_enable(WDTO_15MS);																	//SW_reset after printing each string
