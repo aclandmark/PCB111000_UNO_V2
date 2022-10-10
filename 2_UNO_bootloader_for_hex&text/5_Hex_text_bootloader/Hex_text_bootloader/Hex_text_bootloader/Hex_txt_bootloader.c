@@ -3,32 +3,32 @@
 /*
 This "Hex_text programmer" runs on the UNO 328 device in place of the standard Arduino bootloader
 It is designed to work alongside the pcb-bootloader that runs on pcb_a the plug in version of PCB 111000.
-It programs both hex and text files to flash and has two modes, one simply programs, the other also echos
+It programs both hex and text files to flash and has two modes, one simply programs, the other also echoes
 the files which is particularly useful when developing text files. 
 
 The "Hex_text programmer" is loaded in the bootloader partition at 	0x7000 using the PCB_A bootloader
-It works alongside a default user applications loaded at adddresses	0x5E60 and 0x5C90
+It works alongside a default user applications loaded at addresses	0x5E60 and 0x5C90
 A hex file verification routine loaded at address					0x6200
 A text file verification routine loaded at address					0x6C70
-Control is always passed back to the "Hex_text programmer" using a WDTout and EEP loaction 0x3FC.
-Other WDTouts required to lauch the user app at address 0x0000 can therefore be identified.
+Control is always passed back to the "Hex_text programmer" using a WDTout and EEP location 0x3FC.
+Other WDTouts required to launch the user app at address 0x0000 can therefore be identified.
 
 
-Reset control is managed using two EEPROM locaions, 0x3FC and 0x3F7.
-0x3FC contains the value of MCUSR relevent to the user application
+Reset control is managed using two EEPROM locations, 0x3FC and 0x3F7.
+0x3FC contains the value of MCUSR relevant to the user application
 POR and BOR resets cause an immediate jump to the user application.
 MCUSR is copied directly to 0x3FC
 WDTouts are used by both programmer and user applications.
 They are used to exit the text and hex verification routines.  
 These WDTouts are identified by writing 1 to bit 7 of 0x3FC.
-WDTouts are also used when mode r (run) is selectd at the h/t/r/D user prompt
+WDTouts are also used when mode r (run) is selected at the h/t/r/D user prompt
 or when the PCB_A reset switch is pressed.
 They are identified by setting 0x3F7 to zero as a result of which 0x3FC is set to 1 << EXTRST.
 For user app generated WDTouts MCUSR is copied directly to 0x3FC and program control jumps straight to location zero.
 
 
 
-PCB_A reset signalling line:	The pcb_a reset switch signals lines PD5 or PD6 (for CA/CC displays) 
+PCB_A reset signaling line:	The pcb_a reset switch signals lines PD5 or PD6 (for CA/CC displays) 
 								and also puts the UNO device into reset for several mS.
 
 								Depending on the line state program control either jumps to the user app or 
@@ -36,10 +36,10 @@ PCB_A reset signalling line:	The pcb_a reset switch signals lines PD5 or PD6 (fo
 								(Both lines are connected to simplify pcb development.)
 						
 								A single click of pcb_a reset switch returns control to the user app
-								A double click returns controll to the hex/text programmer and also enables 
+								A double click returns control to the hex/text programmer and also enables 
 								the pcb bootloader to run so that the UNO can be reprogrammed.
 						
-Note: 	Assumes PCB_A is loaded with Common Cathode displays for which the signalling line (PB2) defaults to high.
+Note: 	Assumes PCB_A is loaded with Common Cathode displays for which the signaling line (PB2) defaults to high.
 
 
 This version runs on the UNO device from a 16MHz low power crystal. Config bytes are as follows:
@@ -49,28 +49,34 @@ High		0xD0	This configures the WDT, Boot size and reset pin/vector and ensures t
 Fuse		FF		LP crystal with 65mS SUT as also set by Arduino	
 Lock		EF		Hex_text_programmer cannot program the boot space (i.e. overwrite itself in any way)
 
-Because all programmer algorithms have been developed to run at 8MHz, the system clock prescaler is used to convert the 16MHz crystal
+Because all programmer algorithms have been developed to run at 8MHz, the system clock pre scaler is used to convert the 16MHz crystal
 frequency to an 8MHz clock. 
 
 Compile it using optimisation level s ONLY
 Note the normal warning messages when C and assembly files are combined (i.e.integer from pointer without a cast).
-Rx/Tx work at 57.6k with no handskaking, no parity, 8 data bits and 1 stop bit
+Rx/Tx work at 57.6k with no handshaking, no parity, 8 data bits and 1 stop bit
 
 EEPROM reservations: 
 0x3FF	user cal if set	No longer used
 0x3FE	user cal if set No longer used
 0x3FD	Default cal supplied by Atmel No longer used
 0x3FC	Copy of MCUSR and also indicates WDTout hex/text verification routines 
-0x3FB/A	prog_counter for use by verifiication routines
-0x3F9/8	cmd_counter for use by verifiication routines
+0x3FB/A	prog_counter for use by verification routines
+0x3F9/8	cmd_counter for use by verification routines
 0x3F7	Reset Control (set to zero to indicate that user app is to be launched.)
-0x3F6	Reserved for use by Pseudo Random Noise generator
-0x3F5	Second PRN reservation
-0x3F4	flash text string pointer
-0x3F2	PRN generator random number HB
-0x3F1	PRN generator random number LB
+//0x3F6	Reserved for use by Pseudo Random Noise generator
+//0x3F5	Second PRN reservation
+//0x3F4	flash text string pointer
+//0x3F2	PRN generator random number HB
+//0x3F1	PRN generator random number LB
+0x3F6 flash text string pointer
+0x3F5
+0x3F4
+0x3F3
+0x3F2
+0x3F1
+0x3F0
 */
-
 
 /********************************************************************************
 SW_Version: UNO_bootloader_for_hex&text_V6
@@ -94,7 +100,7 @@ int main (void){ 											//Loaded at address 0x7000, the start of the bootloa
 char MCUSR_copy;
 
 
-CLKPR = (1 << CLKPCE);										//Prescaler control: convert 16MHZ crystal to 8MHz clock
+CLKPR = (1 << CLKPCE);										//Pre scaler control: convert 16MHZ crystal to 8MHz clock
 CLKPR = (1 << CLKPS0);
 
 MCUSR_copy = MCUSR;											//Save MCUSR in MCUSR_copy
@@ -250,7 +256,7 @@ Page_erase ();
 page_write();
 }UCSR0B &= (~(1<<RXCIE0));cli();
 clear_read_block();													//Subroutine provided in assembly file  (Not required for mode 't'??)
-eeprom_write_byte((uint8_t*)0x3F4,0x40);							//Reset string pointer
+eeprom_write_byte((uint8_t*)0x3F6,0x40);							//Reset string pointer
 }
 /*********************************************************************************************************/
 void hex_programmer(void){
@@ -269,7 +275,7 @@ UCSR0B |= (1<<RXCIE0); sei();										//Receive interrupts now active
 
 new_record();  														//Start reading first record which is being downloaded to array "store" 
 start_new_code_block(); 											//Initialise new programming block (usually starts at address zero but not exclusivle so)
-Program_record();													//Coppy commands from array "store" to the page_buffer														
+Program_record();													//Copy commands from array "store" to the page_buffer														
 			
 		
 while(1){		
@@ -345,7 +351,7 @@ store[w_pointer] = Rx_askii_char;
 store[w_pointer] = store[w_pointer] << 8;}							//"w_pointer" gives address in array of the next free location
 else{store[w_pointer] += Rx_askii_char;
 inc_w_pointer;}
-txt_counter = (txt_counter + 1);									//"txt_counter" gives the number of characers downloaded
+txt_counter = (txt_counter + 1);									//"txt_counter" gives the number of characters downloaded
 Rx_askii_char_old = Rx_askii_char;} 
 
 
@@ -371,7 +377,7 @@ case 0x2: 	tempInt1 += Rx_Hex_char;  										//Acquire second digit and combin
 case 0x3: 	tempInt1 = Rx_Hex_char<<4;  break;								//Next 4 digits give the address of the first command in the line
 case 0x4:	tempInt1 += Rx_Hex_char; tempInt1=tempInt1<<8; break;			//Acquire second digit and combine it with first 
 case 0x5:	tempInt1 += Rx_Hex_char<<4;  break;							//Continue for third digit
-case 0x6: 	tempInt1 += Rx_Hex_char; 										//Acquire final digit and caculate address of next command 
+case 0x6: 	tempInt1 += Rx_Hex_char; 										//Acquire final digit and calculate address of next command 
 			local_pointer = w_pointer++; 									//Update pointers to array "store"
 			store[local_pointer] = tempInt1; break;							//Save address of next command to array "store"
 case 0x7: 	break;															//chars 7 and 8 are not used
