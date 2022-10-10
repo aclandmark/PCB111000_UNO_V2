@@ -20,10 +20,10 @@ char PRN_8bit_GEN(void){
 unsigned int bit;
 char lfsr;
 
-lfsr = eeprom_read_byte((uint8_t*)(0x1FB));
+lfsr = eeprom_read_byte((uint8_t*)(0x3F4));
 bit = (( lfsr >> 0) ^ (lfsr >> 2) ^ (lfsr >> 3) ^ (lfsr >> 4)) & 1;
 lfsr = (lfsr >> 1) | (bit << 7);
-eeprom_write_byte((uint8_t*)(0x1FB),lfsr);
+eeprom_write_byte((uint8_t*)(0x3F4),lfsr);
 return lfsr;}
 
 
@@ -32,13 +32,13 @@ return lfsr;}
 unsigned int PRN_16bit_GEN(unsigned int start){
 unsigned int bit, lfsr;
 
-if(!(start)) lfsr = (eeprom_read_byte((uint8_t*)(0x1FB)) << 8) + eeprom_read_byte((uint8_t*)(0x1FA));
+if(!(start)) lfsr = (eeprom_read_byte((uint8_t*)(0x3F5)) << 8) + eeprom_read_byte((uint8_t*)(0x3F4));
 else lfsr = start;
 bit = (( lfsr >> 0) ^ (lfsr >> 2) ^ (lfsr >> 3) ^ (lfsr >> 5)) & 1;
 lfsr = (lfsr >> 1) | (bit << 15);
 if(!(start)){
-eeprom_write_byte((uint8_t*)(0x1FB),(lfsr>>8));
-eeprom_write_byte((uint8_t*)(0x1FA),lfsr);}
+eeprom_write_byte((uint8_t*)(0x3F5),(lfsr>>8));
+eeprom_write_byte((uint8_t*)(0x3F4),lfsr);}
 
 return lfsr;}
 
@@ -61,10 +61,10 @@ unsigned char PRN_8bit_GEN_UNO(void){
 unsigned int bit;
 unsigned char lfsr;
 
-lfsr = eeprom_read_byte((uint8_t*)(0x3F3));
+lfsr = eeprom_read_byte((uint8_t*)(0x3F4));
 bit = (( lfsr >> 0) ^ (lfsr >> 2) ^ (lfsr >> 3) ^ (lfsr >> 4)) & 1;
 lfsr = (lfsr >> 1) | (bit << 7);
-eeprom_write_byte((uint8_t*)(0x3F3),lfsr);
+eeprom_write_byte((uint8_t*)(0x3F4),lfsr);
 return lfsr;}
 
 
@@ -73,13 +73,13 @@ return lfsr;}
 unsigned int PRN_16bit_GEN_UNO(unsigned int start){
 unsigned int bit, lfsr;
 
-if(!(start)) lfsr = (eeprom_read_byte((uint8_t*)(0x3F3)) << 8) + eeprom_read_byte((uint8_t*)(0x3F2));
+if(!(start)) lfsr = (eeprom_read_byte((uint8_t*)(0x3F5)) << 8) + eeprom_read_byte((uint8_t*)(0x3F4));
 else lfsr = start;
 bit = (( lfsr >> 0) ^ (lfsr >> 2) ^ (lfsr >> 3) ^ (lfsr >> 5)) & 1;
 lfsr = (lfsr >> 1) | (bit << 15);
 if(!(start)){
-eeprom_write_byte((uint8_t*)(0x3F3),(lfsr>>8));
-eeprom_write_byte((uint8_t*)(0x3F2),lfsr);}
+eeprom_write_byte((uint8_t*)(0x3F5),(lfsr>>8));
+eeprom_write_byte((uint8_t*)(0x3F4),lfsr);}
 
 return lfsr;}
 
