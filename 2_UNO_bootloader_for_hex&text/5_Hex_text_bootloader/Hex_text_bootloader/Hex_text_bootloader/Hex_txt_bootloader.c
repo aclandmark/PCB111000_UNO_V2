@@ -5,7 +5,7 @@ PCB111000_UNO\2_UNO_bootloader_for_hex&text_V6\5_UNO_bootloader_V6\Hex_txt_bootl
 
 This "Hex_text bootloader" runs on the UNO 328 device in place of the standard Arduino bootloader
 It is designed to work alongside the pcb-programmer that runs on pcb_a the plug in version of PCB 111000.
-It programs both hex and text files to flash. Fot text there atr two modes, one simply programs, the other also echoes
+It programs both hex and text files to flash. Fot text there are two modes, one simply programs, the other also echoes
 the files which is particularly useful when developing text files. 
 
 The "Hex_text bootloader" is loaded in the bootloader partition at 	0x7000 using the PCB_A programmer
@@ -41,7 +41,6 @@ PCB_A reset signaling line:	The pcb_a reset switch signals lines PD5 or PD6 (for
 								A double click returns control to the hex/text bootloader and also enables 
 								the pcb programmer to run so that the UNO can be reprogrammed.
 						
-Note: 	Assumes PCB_A is loaded with Common Cathode displays for which the signaling line (PB2) defaults to high.
 
 
 This version runs on the UNO device from a 16MHz low power crystal. Config bytes are as follows:
