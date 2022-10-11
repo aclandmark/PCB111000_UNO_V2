@@ -1,16 +1,18 @@
 
 
 /*
-This "Hex_text programmer" runs on the UNO 328 device in place of the standard Arduino bootloader
-It is designed to work alongside the pcb-bootloader that runs on pcb_a the plug in version of PCB 111000.
-It programs both hex and text files to flash and has two modes, one simply programs, the other also echoes
+PCB111000_UNO\2_UNO_bootloader_for_hex&text_V6\5_UNO_bootloader_V6\Hex_txt_bootloader
+
+This "Hex_text bootloader" runs on the UNO 328 device in place of the standard Arduino bootloader
+It is designed to work alongside the pcb-programmer that runs on pcb_a the plug in version of PCB 111000.
+It programs both hex and text files to flash. Fot text there atr two modes, one simply programs, the other also echoes
 the files which is particularly useful when developing text files. 
 
-The "Hex_text programmer" is loaded in the bootloader partition at 	0x7000 using the PCB_A bootloader
+The "Hex_text bootloader" is loaded in the bootloader partition at 	0x7000 using the PCB_A programmer
 It works alongside a default user applications loaded at addresses	0x5E60 and 0x5C90
 A hex file verification routine loaded at address					0x6200
 A text file verification routine loaded at address					0x6C70
-Control is always passed back to the "Hex_text programmer" using a WDTout and EEP location 0x3FC.
+Control is always passed back to the "Hex_text bootloader" using a WDTout and EEP location 0x3FC.
 Other WDTouts required to launch the user app at address 0x0000 can therefore be identified.
 
 
@@ -18,7 +20,7 @@ Reset control is managed using two EEPROM locations, 0x3FC and 0x3F7.
 0x3FC contains the value of MCUSR relevant to the user application
 POR and BOR resets cause an immediate jump to the user application.
 MCUSR is copied directly to 0x3FC
-WDTouts are used by both programmer and user applications.
+WDTouts are used by both bootloader and user applications.
 They are used to exit the text and hex verification routines.  
 These WDTouts are identified by writing 1 to bit 7 of 0x3FC.
 WDTouts are also used when mode r (run) is selected at the h/t/r/D user prompt
@@ -36,8 +38,8 @@ PCB_A reset signaling line:	The pcb_a reset switch signals lines PD5 or PD6 (for
 								(Both lines are connected to simplify pcb development.)
 						
 								A single click of pcb_a reset switch returns control to the user app
-								A double click returns control to the hex/text programmer and also enables 
-								the pcb bootloader to run so that the UNO can be reprogrammed.
+								A double click returns control to the hex/text bootloader and also enables 
+								the pcb programmer to run so that the UNO can be reprogrammed.
 						
 Note: 	Assumes PCB_A is loaded with Common Cathode displays for which the signaling line (PB2) defaults to high.
 
@@ -47,13 +49,12 @@ This version runs on the UNO device from a 16MHz low power crystal. Config bytes
 Extended	0x05	2.7V BOD as also set by Arduino
 High		0xD0	This configures the WDT, Boot size and reset pin/vector and ensures that the EEPROM is preserved during chip erase
 Fuse		FF		LP crystal with 65mS SUT as also set by Arduino	
-Lock		EF		Hex_text_programmer cannot program the boot space (i.e. overwrite itself in any way)
+Lock		EF		Hex_text_bootloader cannot program the boot space (i.e. overwrite itself in any way)
 
-Because all programmer algorithms have been developed to run at 8MHz, the system clock pre scaler is used to convert the 16MHz crystal
+Because all bootloader algorithms have been developed to run at 8MHz, the system clock pre scaler is used to convert the 16MHz crystal
 frequency to an 8MHz clock. 
 
 Compile it using optimisation level s ONLY
-Note the normal warning messages when C and assembly files are combined (i.e.integer from pointer without a cast).
 Rx/Tx work at 57.6k with no handshaking, no parity, 8 data bits and 1 stop bit
 
 EEPROM reservations: 
