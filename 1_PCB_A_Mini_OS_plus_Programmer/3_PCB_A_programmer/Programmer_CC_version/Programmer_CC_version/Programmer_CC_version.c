@@ -30,19 +30,8 @@ combined into a single hex file.
 			after pcb_A has been programmed
 
 
-Reset Operation:
-The Project Programmer is loaded onto the UNO device and used to program pcb_A device with PCB_A_programmer and the mini-OS.
-It sets PCB_A device EEPROM locations 0x3F9 and 0x3F4 to zero.
-Following programming pcb_A device jumps to location 0x7000 reads EEPROM 0x3F9 (which is zero) and jumps to location zero (display controller).
-Execution of the mini-OS follows.  This program reads EEprom location 0x3F4.  Because it is zero it resets the UNO device
-forcing it to abandon "Project_programmer" and run the new UNO bootloader.
-
-Note: If "Project_programmer" runs on pcb_A it can only program the UNO EEPROM (text area, locations above 0x3F0 are protected).
-It cannot be used to program the UNO flash and will not write to locations 0x3F9 or 4.
-
 A single click of PCB_A reset switch resets the user app running on the UNO
 A double click forces the Hex/text programmer also running on the UNO device to run.
-
 */
 
 
@@ -52,7 +41,7 @@ A double click forces the Hex/text programmer also running on the UNO device to 
 #include <avr/wdt.h>
 #include <avr/eeprom.h>
 
-#include "../../../Resources_Mini_OS/PCB_A_programmer_header.h"					//Should be referred to as PCB_A programmer header
+#include "../../../Resources_Mini_OS/PCB_A_programmer_header.h"	
 #include "../../../Resources_Mini_OS/PCB_A_programmer_HW_subs.c"
 #include "../../../Resources_Mini_OS/PCB_A_programmer_SW_subs.c"
 
@@ -64,7 +53,7 @@ char keypress;
 int main (void){ 
 char target_detected = 0;
 
-if (MCUSR & (1 << PORF))MCUSR = (1 << PORF);			//EXTRA line:  POR is sometimes accompanied by EXTRF and BOR
+if (MCUSR & (1 << PORF))MCUSR = (1 << PORF);			//POR is sometimes accompanied by EXTRF and BOR
 
 if ((!(MCUSR & (1 << EXTRF)))||\
 (!(eeprom_read_byte((uint8_t*)0x3F9))))					//External programmer sets EEPROM location 0x3F9 to zero 			 
