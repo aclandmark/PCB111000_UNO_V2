@@ -76,7 +76,7 @@ Numerator = 	RHSofBP_HB[0]; Numerator = 	 (Numerator << 16) + RHSofBP_LB[0];
 Denominator = 	RHSofBP_HB[1]; Denominator  = (Denominator << 16) + RHSofBP_LB[1];
 if(RHSofBP_HB[1] & (1 << 15)) {Numerator = Numerator >> 1;Denominator = Denominator >> 1;}					// detect overflow of long
 
-res_LHS_BP = Numerator / Denominator;		//Obtain LHS of product
+res_LHS_BP = Numerator / Denominator;																		//Obtain LHS of product
 Fraction_to_Binary_D(Numerator % Denominator, Denominator, &RHSofBP_LB[2], &RHSofBP_HB[2] );				//Obtain RHS of product
 RHSofDP = Binary_points_to_Decimal_L ( RHSofBP_LB[2], RHSofBP_HB[2]);										//Convert RHS to decimal notation
 
@@ -155,7 +155,7 @@ data[2] = 1; while (data[1] >= data[2]) {data[2] = data[2] * 10; exponent[1]++;}
 Fraction_to_Binary_D(data[1], data[2],  &RHSofBP_LB[1], &RHSofBP_HB[1]);
 
 /**********Convert reciprocal of data[0] to scientific notation**********/
-data_store = data[0];		//subroutine must not be allowed to change data[0];
+data_store = data[0];																					//subroutine must not be allowed to change data[0];
 
 data[3] = 1; while (data[0] >= data[3]) {data[3] = data[3] * 10; exponent[0]++;} data[3] = data[3]/10; exponent[0]--;	
 if(data[0] == data[3]){data[0] = data[0] * 10; exponent[0]--; }											//detect values of 1,10,100,1000 etc for Num_1
@@ -166,7 +166,7 @@ data[0] = data_store;																					//restore value of data[0] which may h
 Denominator = 	RHSofBP_HB[0]; Denominator  = (Denominator << 16) + RHSofBP_LB[0];
 if(RHSofBP_HB[0] & (1 << 15)) {Denominator = Denominator >> 1; Overflow_1 =1;}
 
-for(int p = 0; p <= (power-2); p++){ //setup repeated multiplication
+for(int p = 0; p <= (power-2); p++){																	//setup repeated multiplication
 
 /****************Divide Num_2 by the reciprocal of Num_1 to get power****************/
 
