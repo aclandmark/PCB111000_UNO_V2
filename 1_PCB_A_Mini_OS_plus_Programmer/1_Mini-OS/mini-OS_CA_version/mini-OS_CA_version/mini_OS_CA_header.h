@@ -7,7 +7,7 @@
 #include <avr/eeprom.h>
 
 
-void start_T2_for_ATMEGA_168_cal(char);							//Originally written for Atmega328  (probably obsolete) 
+/*void start_T2_for_ATMEGA_168_cal(char);							//Originally written for Atmega328  (probably obsolete) 
 
 void I2C_master_transmit(char);
 char I2C_master_receive(char);
@@ -20,7 +20,7 @@ void I2C_Tx_accumulator_2(void);
 void Message_from_the_OS(void);
 void basic_clock (void);
 void multi_mode_clock(void);
-void stop_watch(void);
+void stop_watch(void);*/
 
 
 volatile char payload_size;							
