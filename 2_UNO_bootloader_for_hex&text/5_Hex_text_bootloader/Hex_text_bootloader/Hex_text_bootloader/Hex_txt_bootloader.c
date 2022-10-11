@@ -5,7 +5,7 @@ PCB111000_UNO\2_UNO_bootloader_for_hex&text_V6\5_UNO_bootloader_V6\Hex_txt_bootl
 
 This "Hex_text bootloader" runs on the UNO 328 device in place of the standard Arduino bootloader
 It is designed to work alongside the pcb-programmer that runs on pcb_a the plug in version of PCB 111000.
-It programs both hex and text files to flash. Fot text there are two modes, one simply programs, the other also echoes
+It programs both hex and text files to flash. For text there are two modes, one simply programs, the other also echoes
 the files which is particularly useful when developing text files. 
 
 The "Hex_text bootloader" is loaded in the bootloader partition at 	0x7000 using the PCB_A programmer
@@ -64,28 +64,16 @@ EEPROM reservations:
 0x3FB/A	prog_counter for use by verification routines
 0x3F9/8	cmd_counter for use by verification routines
 0x3F7	Reset Control (set to zero to indicate that user app is to be launched.)
-//0x3F6	Reserved for use by Pseudo Random Noise generator
-//0x3F5	Second PRN reservation
-//0x3F4	flash text string pointer
-//0x3F2	PRN generator random number HB
-//0x3F1	PRN generator random number LB
 0x3F6 flash text string pointer
-0x3F5
-0x3F4
-0x3F3
-0x3F2
-0x3F1
-0x3F0
-*/
 
-/********************************************************************************
-SW_Version: UNO_bootloader_for_hex&text_V6
-SW information:
-  Compatible with 
-	AVR and UNO user projects,
-	PCB_A Mini-OS: I2C_V18_CC & CA
-  Programmed using PCB_A_Bootloader V5_CC of CA or USBasp programmer
-********************************************************************************/
+0x3F5 PRN generator random number HB
+0x3F4 PRN generator random number LB
+0x3F3 PRN generator random number HB
+0x3F2 PRN generator random number LB
+0x3F1 PRN generator random number HB
+0x3F0 PRN generator random number LB
+0x3EF PRN EEPROM location offset 0, 1 or 2
+*/
 
 
 
