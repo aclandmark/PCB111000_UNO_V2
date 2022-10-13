@@ -29,7 +29,7 @@ return lfsr;}
 
 /*****************************************************************/
 
-unsigned int PRN_16bit_GEN(unsigned int start){
+/*unsigned int PRN_16bit_GEN(unsigned int start){
 unsigned int bit, lfsr;
 
 if(!(start)) lfsr = (eeprom_read_byte((uint8_t*)(0x3F5)) << 8) + eeprom_read_byte((uint8_t*)(0x3F4));
@@ -40,8 +40,31 @@ if(!(start)){
 eeprom_write_byte((uint8_t*)(0x3F5),(lfsr>>8));
 eeprom_write_byte((uint8_t*)(0x3F4),lfsr);}
 
-return lfsr;}
+return lfsr;}*/
 
+unsigned int PRN_16bit_GEN(unsigned int start, unsigned char *PRN_counter){				//Pseudo random number generation 
+unsigned int bit, lfsr, eep_address;													//The calling routine provides memory space for PRN_counter
+unsigned char eep_offset;																//The subroutine provides it for every thing else
+
+eep_offset = eeprom_read_byte((uint8_t*)(0x3ED));										//Three pairs of eeprom registers are reserved to backup PRN numbers
+
+if((!(*PRN_counter)) && (!(start)))														//Only read the EEPROM the first time a program calls this subroutine
+{lfsr = (eeprom_read_byte((uint8_t*)(0x3F2 - eep_offset)) << 8) + 
+eeprom_read_byte((uint8_t*)(0x3F3 - eep_offset));}										//Data saved to EEPROM survives resets including POR (power on reset)
+
+else lfsr = start;																		//Use previous PRN value to generate the next one
+bit = (( lfsr >> 0) ^ (lfsr >> 2) ^ (lfsr >> 3) ^ (lfsr >> 5)) & 1;
+lfsr = (lfsr >> 1) | (bit << 15);
+
+*PRN_counter += 1;	 
+if(*PRN_counter == 16)
+
+{eeprom_write_byte((uint8_t*)(0x3F2 - eep_offset),(lfsr>>8));							//Save every 16th PRN number to EEPROM
+eeprom_write_byte((uint8_t*)(0x3F3 - eep_offset),lfsr);									//This prevents the display from endlessly repeating
+Toggle_LED_1;																			//Note: Saving every one burns out the EEPROM location too quickly
+*PRN_counter = 0;}
+
+return lfsr;}
 
 
 /************************************************************************/
