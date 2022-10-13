@@ -10,19 +10,23 @@ char display_bkp[7];                                                            
 
 int main (void){
 char segment=0, digit_num=0, seg_counter = 0,direction = 0; 
-unsigned char PRN_counter;
+unsigned char PRN_counter = 0;
+unsigned int PRN;
+
 setup_UNO_extra;
 wdt_enable(WDTO_2S);                                                           //WDT prevents display from being completed in either direction
 
 I2C_Tx_any_segment_clear_all();                                                //Initialise display
-
+PRN = PRN_16bit_GEN (0,  &PRN_counter);
 UCSR0B |= (1 << RXCIE0);                                                      //Set Interrupt on key press (for test purposes only)
 sei();                                                                        //Global enable interrupt
 
 while(1){                                                                     //Generate pattern
 while(seg_counter < 56){                                                      //There are 56 segments in total  
-segment = (PRN_16bit_GEN (0)%7) + 'a';
-digit_num = (PRN_16bit_GEN (0, &PRN_counter)%8);
+PRN = PRN_16bit_GEN (PRN,  &PRN_counter); 
+segment = (PRN%7) + 'a';
+PRN = PRN_16bit_GEN (PRN,  &PRN_counter);
+digit_num = PRN%8;
                                                                               //Continue statements skip back to the top of the while-loop
                                                                               //This is to ensure segments are not turned-off before 
                                                                               //all have been turned on.
