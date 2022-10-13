@@ -58,13 +58,13 @@ bit = (( lfsr >> 0) ^ (lfsr >> 2) ^ (lfsr >> 3) ^ (lfsr >> 5)) & 1;
 lfsr = (lfsr >> 1) | (bit << 15);
 
 *PRN_counter += 1;	 
-if(*PRN_counter == 16)
+if(*PRN_counter == 124)
 
-{eeprom_write_byte((uint8_t*)(0x3F5 - eep_offset),(lfsr>>8));							//Save every 16th PRN number to EEPROM
-eeprom_write_byte((uint8_t*)(0x3F4 - eep_offset),lfsr);									//This prevents the display from endlessly repeating
+{//eeprom_write_byte((uint8_t*)(0x3F5 - eep_offset),(lfsr>>8));							//Save every 16th PRN number to EEPROM
+//eeprom_write_byte((uint8_t*)(0x3F4 - eep_offset),lfsr);									//This prevents the display from endlessly repeating
 Toggle_LED_1;																			//Note: Saving every one burns out the EEPROM location too quickly
 *PRN_counter = 0;
-sendChar(eep_offset + '0');}
+Char_to_PC(eep_offset + '0');}
 
 return lfsr;}
 
