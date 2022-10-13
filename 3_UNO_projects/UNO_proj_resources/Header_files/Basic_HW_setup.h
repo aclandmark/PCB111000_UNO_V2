@@ -324,4 +324,18 @@ TWDR;
 #define clear_I2C_interrupt \
 TWCR = (1 << TWINT);
 
+/*********************************************************************************/
+#define  set_up_activity_leds \
+DDRB |= (1 << DDB0) | (1 << DDB1);\
+LED_1_off;\
+LED_2_off;
 
+#define LED_1_off	 	PORTB &= (~(1 << PB1));
+#define LED_1_on	 	PORTB |= (1 << PB1);
+
+#define LED_2_off	 	PORTB &= (~(1 << PB0));
+#define LED_2_on	 	PORTB |= (1 << PB0);
+
+#define Toggle_LED_1 \
+if (PORTB & (1 << PB1)){LED_1_off;}\
+else {PORTB |= (1 << PB1);}
