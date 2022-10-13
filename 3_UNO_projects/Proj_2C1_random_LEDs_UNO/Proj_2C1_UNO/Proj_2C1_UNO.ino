@@ -10,7 +10,7 @@ char display_bkp[7];                                                            
 
 int main (void){
 char segment=0, digit_num=0, seg_counter = 0,direction = 0; 
-
+unsigned char PRN_counter;
 setup_UNO_extra;
 wdt_enable(WDTO_2S);                                                           //WDT prevents display from being completed in either direction
 
@@ -22,7 +22,7 @@ sei();                                                                        //
 while(1){                                                                     //Generate pattern
 while(seg_counter < 56){                                                      //There are 56 segments in total  
 segment = (PRN_16bit_GEN (0)%7) + 'a';
-digit_num = (PRN_16bit_GEN (0)%8);
+digit_num = (PRN_16bit_GEN (0, &PRN_counter)%8);
                                                                               //Continue statements skip back to the top of the while-loop
                                                                               //This is to ensure segments are not turned-off before 
                                                                               //all have been turned on.
