@@ -1,4 +1,6 @@
 
+
+
 /**************Proj_2C1_random_LED kaleidoscope***************************/
 
 
@@ -31,8 +33,8 @@ digit_num = PRN%8;
                                                                               //This is to ensure segments are not turned-off before 
                                                                               //all have been turned on.
                             
-if ((!(direction)) && (display_bkp[segment - 'a'] & (1 << digit_num))) continue;
-if ((direction) && (!(display_bkp[segment - 'a'] & (1 << digit_num)))) continue;
+if ((!(direction)) && (display_bkp[segment - 'a'] & (1 << digit_num))) {PRN_counter -= 1; continue;}
+if ((direction) && (!(display_bkp[segment - 'a'] & (1 << digit_num)))) {PRN_counter -= 1; continue;}
 
 I2C_Tx_any_segment(segment, digit_num);                                      //Update display
 backup_the_display(segment, digit_num);                                     //keep backup up to date
