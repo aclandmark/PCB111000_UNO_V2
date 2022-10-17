@@ -155,6 +155,8 @@ set_up_I2C;\
 ADMUX |= (1 << REFS0);\
 set_up_switched_inputs;\
 Unused_I_O;\
+set_up_activity_leds;\
+\
 Timer_T0_10mS_delay_x_m(5);\
 USART_init(0,16);\
 \
@@ -273,20 +275,40 @@ TWAR = 0x02;
 MCUCR &= (~(1 << PUD));\
 DDRD &= (~((1 << PD2)|(1 << PD7)));\
 PORTD |= ((1 << PD2) | (1 << PD7));\
-DDRB &= (~(1 << PB6));\
-PORTB |= (1 << PB6);
+DDRB &= (~(1 << PB2));\
+PORTB |= (1 << PB2);
+
+
+/*****************************************************************************/
+#define  set_up_activity_leds \
+DDRB |= (1 << DDB0) | (1 << DDB1);\
+LED_1_off;\
+LED_2_off;
+
+#define LED_1_off	 	PORTB &= (~(1 << PB1));
+#define LED_1_on	 	PORTB |= (1 << PB1);
+
+#define LED_2_off	 	PORTB &= (~(1 << PB0));
+#define LED_2_on	 	PORTB |= (1 << PB0);
+
+#define Toggle_LED_1 \
+if (PORTB & (1 << PB1)){LED_1_off;}\
+else {PORTB |= (1 << PB1);}
+
 
 
 /*****************************************************************************/
 #define Unused_I_O \
 MCUCR &= (~(1 << PUD));\
-DDRB &= (~((1 << PB2)|(1 << PB7)));\
 DDRC &= (~((1 << PC0)|(1 << PC1)|(1 << PC2)));\
-DDRD &= (~((1 << PD3)|(1 << PD4)|(1 << PD5)|(1 << PD6)));\
-PORTB |= ((1 << PB2)|(1 << PB7));\
+DDRD &= (~((1 << PD3)|(1 << PD4)|(1 << PD5)));\
 PORTC |= ((1 << PC0)|(1 << PC1)|(1 << PC2));\
-PORTD |= ((1 << PD3)|(1 << PD4)|(1 << PD5)|(1 << PD6));
+PORTD |= ((1 << PD3)|(1 << PD4)|(1 << PD5));
 
+#define CC_CA_display_detector \
+MCUCR &= (~(1 << PUD));\
+DDRD &= (~(1 << PD6));\
+PORTD |= (1 << PD6);
 
 /*****************************************************************************/
 #define OSC_CAL_168 \
@@ -325,17 +347,4 @@ TWDR;
 TWCR = (1 << TWINT);
 
 /*********************************************************************************/
-#define  set_up_activity_leds \
-DDRB |= (1 << DDB0) | (1 << DDB1);\
-LED_1_off;\
-LED_2_off;
 
-#define LED_1_off	 	PORTB &= (~(1 << PB1));
-#define LED_1_on	 	PORTB |= (1 << PB1);
-
-#define LED_2_off	 	PORTB &= (~(1 << PB0));
-#define LED_2_on	 	PORTB |= (1 << PB0);
-
-#define Toggle_LED_1 \
-if (PORTB & (1 << PB1)){LED_1_off;}\
-else {PORTB |= (1 << PB1);}
