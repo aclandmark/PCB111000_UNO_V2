@@ -148,7 +148,7 @@ CLKPR = (1 << CLKPS0);\
 \
 MCUSR_copy = eeprom_read_byte((uint8_t*)0x3FC);\
 if (MCUSR_copy & (1 << PORF)){MCUSR_copy = (1 << PORF);\
-eeprom_write_byte((uint8_t*)0x3F6,0);}\
+eeprom_write_byte((uint8_t*)0x3F5,0);}\
 setup_watchdog_UNO_extra;\
 \
 set_up_I2C;\
