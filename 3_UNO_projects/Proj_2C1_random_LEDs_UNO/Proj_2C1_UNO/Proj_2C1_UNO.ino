@@ -16,6 +16,7 @@ unsigned char PRN_counter = 0;
 unsigned int PRN;
 
 setup_UNO_extra;
+//setup_UNO_extra;
 wdt_enable(WDTO_2S);                                                           //WDT prevents display from being completed in either direction
 
 I2C_Tx_any_segment_clear_all();                                                //Initialise display
