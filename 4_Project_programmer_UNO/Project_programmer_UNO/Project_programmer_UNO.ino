@@ -85,7 +85,10 @@ case 3282: sendString ("328P");break;
 default: wdt_enable(WDTO_1S); while(1);break;}
 
 PageSZ = 0x40; PAmask = 0x3FC0; FlashSZ=0x4000;                 //flash page size, gives address on page, flash size words
-EE_top = 0x400-0x10;                                            //Last 16 bytes reseerved for system use
+//EE_top = 0x400-0x10;                                            //Last 16 bytes reseerved for system use
+EE_top = 0x400;                                                   //Clear the entire EEPROM (because eeprom allocation changed)
+
+
 text_start = 0x5;                                               //First 5 bytes reserved for programmmer use
 
 sendString(" detected\r\nPress -p- or -e- to program flash \
@@ -104,8 +107,17 @@ if(waitforkeypress() == 'D'){
 sendString("10 sec wait");
 
 for (int m = 0; m < EE_top; m++)  
-{Read_write_mem('I', m, 0xFF);}
-sendString(" Done\r\n");}
+
+{Read_write_mem('I', m, 0xFF);
+eeprom_write_byte((uint8_t*)m , 0xFF);}
+
+for (int m = 0; m < EE_top; m++){sendChar (eeprom_read_byte((uint8_t*)m));}
+
+sendString(" Done\r\n");
+
+
+
+}
 Exit_Programmer;break;
 
 case 'p': 
