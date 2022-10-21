@@ -4,27 +4,32 @@ Loaded with Hex_txt_programmer but requires PCB_A_Mini_OS_I2C_V16_1_CC to functi
 
 Random display based on Pseudo Random Number PRN generator.
 Default user project loaded onto UNO to ensure that there is always something to run.
-To rienstate the default project press D at the h/r/t prompt.
+To reinstate the default project press D at the h/r/t prompt.
 
 Note: The PRN generator uses locations 0x3F5 and 0x3F6 to store the next number
 */
 
 #include "Random_gen_header_file.h"
 #include "../../../6_Resources_UNO/Random_gen_subroutines.c"
-
-
+void sendChar(char);
 
 int main (void){
 	unsigned int PRN;
+	char PRN_counter;
 
+	PRN_counter = 0;
 	CLKPR = (1 << CLKPCE);
 	CLKPR = (1 << CLKPS0);
 
 	setup_HW;
 
+	PRN = PRN_16bit_GEN (0, PRN_counter);									//Generate a new PRN (0) tells subroutine to use the EEPROM
+
 	while(1){
-		PRN = PRN_16bit_GEN (0);									//Generate a new PRN (0) tells subroutine to use the EEPROM
-		I2C_Tx_2_integers(PRN, (PRN<<1));							//Display two "pseudo random numbers"
+		PRN_counter += 1;
+		PRN_counter = PRN_counter%56;
+		PRN = PRN_16bit_GEN (PRN, PRN_counter);					//Generate next PRN in sequence
+		I2C_Tx_2_integers(PRN, (PRN<<1));						//Display two "pseudo random numbers"
 		Timer_T1_sub(T1_delay_100ms);
 		I2C_Tx_LED_dimmer();
 	if((switch_1_down) && (switch_2_down))asm("jmp 0x5C10");}}
@@ -43,7 +48,7 @@ int main (void){
 
 
 	/************************************************************************************/
-	unsigned int PRN_16bit_GEN(unsigned int start){
+	/*unsigned int PRN_16bit_GEN(unsigned int start){
 		unsigned int bit, lfsr;
 
 		if(!(start)) lfsr = (eeprom_read_byte((uint8_t*)(0x3F5)) << 8) + eeprom_read_byte((uint8_t*)(0x3F4));
@@ -53,6 +58,29 @@ int main (void){
 		if(!(start)){
 			eeprom_write_byte((uint8_t*)(0x3F5),(lfsr>>8));
 		eeprom_write_byte((uint8_t*)(0x3F4),lfsr);}
+
+	return lfsr;}*/
+	
+	unsigned int PRN_16bit_GEN(unsigned int start, char counter){
+		unsigned int bit, lfsr;
+		char EEP_offset;
+
+		EEP_offset = eeprom_read_byte((uint8_t*)(0x3EF));
+		if(EEP_offset > 4)EEP_offset = 0;
+
+		if(!(start)) 
+		{//EEP_offset = eeprom_read_byte((uint8_t*)(0x3EF));
+			
+		lfsr = (eeprom_read_byte((uint8_t*)(0x3F5 - EEP_offset)) << 8) + eeprom_read_byte((uint8_t*)(0x3F4 - EEP_offset));}
+		
+		
+		
+		else lfsr = start;
+		bit = (( lfsr >> 0) ^ (lfsr >> 2) ^ (lfsr >> 3) ^ (lfsr >> 5)) & 1;
+		lfsr = (lfsr >> 1) | (bit << 15);
+		if(!(counter)){sendChar(EEP_offset + '0');Toggle_LED_1;
+		eeprom_write_byte((uint8_t*)(0x3F5 - EEP_offset),(lfsr>>8));
+		eeprom_write_byte((uint8_t*)(0x3F4 - EEP_offset),lfsr);}
 
 	return lfsr;}
 
@@ -88,7 +116,9 @@ int main (void){
 		Timer_T1_sub(T1_delay_500ms);}}
 
 
-
+void sendChar(char data){
+	while (!(UCSR0A & (1 << UDRE0)));
+UDR0 = data;}
 
 
 		/*
