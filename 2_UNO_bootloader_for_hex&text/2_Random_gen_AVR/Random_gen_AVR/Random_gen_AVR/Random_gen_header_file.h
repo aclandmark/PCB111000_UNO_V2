@@ -12,7 +12,7 @@
 
 void I2C_Tx_2_integers(unsigned int, unsigned int);
 void Timer_T1_sub(char, unsigned int);
-unsigned int PRN_16bit_GEN(unsigned int );
+unsigned int PRN_16bit_GEN(unsigned int, char );
 void USART_init (unsigned char, unsigned char);
 void I2C_Tx_LED_dimmer(void);
 
@@ -35,7 +35,8 @@ void I2C_Tx_LED_dimmer(void);
 #define setup_HW \
 setup_watchdog;\
 Unused_I_O;\
-set_up_switched_inputs;\
+\
+set_up_activity_leds;\
 set_up_I2C;\
 ADMUX |= (1 << REFS0);\
 USART_init(0,16);
@@ -80,3 +81,22 @@ PORTB |= (1 << PB2);
 #define switch_1_up		(PIND & 0x04)
 #define switch_2_down	((PIND & 0x80)^0x80)
 #define switch_2_up		(PIND & 0x80)
+
+
+/*****************************************************************************/
+#define  set_up_activity_leds \
+DDRB |= (1 << DDB0) | (1 << DDB1);\
+LED_1_off;\
+LED_2_off;
+
+#define LED_1_off	 	PORTB &= (~(1 << PB1));
+#define LED_1_on	 	PORTB |= (1 << PB1);
+
+#define LED_2_off	 	PORTB &= (~(1 << PB0));
+#define LED_2_on	 	PORTB |= (1 << PB0);
+
+#define Toggle_LED_1 \
+if (PORTB & (1 << PB1)){LED_1_off;}\
+else {PORTB |= (1 << PB1);}
+	
+	
