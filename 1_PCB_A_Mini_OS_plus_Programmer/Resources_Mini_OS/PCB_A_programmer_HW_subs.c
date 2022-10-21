@@ -30,6 +30,9 @@ switch (Operation){
 case 'H': cmd = 0x28; break;			//read flash high byte
 case 'L': cmd = 0x20; break;			//read flash low byte
 case 'W': cmd = 0x4C; break;			//write page to flash 
+case 'I': cmd = 0xC0; break;      		//EEPROM data in   5mS DELAY will be needed////////////////////////////
+case 'O': cmd = 0xA0; break;		     //EEPROM data out/////////////////////////////////////////////////
+
 }
 
 for (n=0; n<=7; n++){PGC_L;	PGClock_L;				
@@ -46,6 +49,7 @@ PGC_H; PGClock_H;
 if (PGD_resp_H) (Echo = (Echo | (1<< (7-n))));		
 }PGC_L;	PGClock_L;
 if(Operation == 'W'){five_msec_delay;}	
+if(Operation == 'I'){five_msec_delay;}/////////////////////////////////////////////////////////////
 return Echo;}
 
 
