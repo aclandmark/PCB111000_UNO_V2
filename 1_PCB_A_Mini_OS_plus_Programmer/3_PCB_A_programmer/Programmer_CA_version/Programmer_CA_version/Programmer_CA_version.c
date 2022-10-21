@@ -135,6 +135,8 @@ UCSR0B |= (1<<RXCIE0); sei();							//Set UART Rx interrupt
 led_on;
 Program_Flash();
 
+Read_write_mem('I', 0x3EF, 0);						//Write UNO EEPROM 0x3EF to zero: Offset for PRN EEPROM registers//////////
+
 led_off;
 
 eeprom_write_byte((uint8_t*)0x3F8, prog_counter >> 8);	
