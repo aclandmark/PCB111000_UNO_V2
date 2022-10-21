@@ -86,7 +86,7 @@ char mode;													//'h' for hex file, 't' for text file
 
 int main (void){ 											//Loaded at address 0x7000, the start of the bootloader section
 char MCUSR_copy;
-
+char eep_offset;
 
 CLKPR = (1 << CLKPCE);										//Pre scaler control: convert 16MHZ crystal to 8MHz clock
 CLKPR = (1 << CLKPS0);
@@ -135,12 +135,13 @@ while(1){													//Returns here following programming with/without verifica
 do{sendString("h/t/r/D      ");}								//double click of PCB_A reset switch
 while((isCharavailable(255) == 0));                        //User prompt
 
+
 switch (receiveChar()){ 
 	
 case 'r':	Prog_mem_address_H = 0;
 			Prog_mem_address_L = 0;
 			read_flash ();
-			if (Flash_readout == 0xFF)asm("jmp 0x5DE0");	//Detect the absense of an User App and run default app.
+			if (Flash_readout == 0xFF)asm("jmp 0x5DE0");	//Detect the absence of an User App and run default app.
 			eeprom_write_byte((uint8_t*)0x3F7,0);			//Indicates user program is being launched using a WDTout
 			wdt_enable(WDTO_15MS); 							//Run the user application (WDTout triggers jump to 0x0000)
 			while(1); 
@@ -151,6 +152,12 @@ case 'h':	mode = 'h';hex_programmer();					//Hex file download with optional ver
 
 case 'T': 	mode = 't'; text_programmer(); 					//Text file download with verification
 			asm("jmp 0x6C00");								
+
+case 'E':	eep_offset = eeprom_read_byte((uint8_t*)0x3EF);				//Required because EEP location fails after 100,000 writes
+			eep_offset += 2;
+			eep_offset = eep_offset%6;
+			eeprom_write_byte((uint8_t*)0x3EF, eep_offset);
+			_delay_ms(10);
 
 case 'D':	Prog_mem_address_H = 0;							//Erase start of user app and trigger default app.
 			Prog_mem_address_L = 0;
