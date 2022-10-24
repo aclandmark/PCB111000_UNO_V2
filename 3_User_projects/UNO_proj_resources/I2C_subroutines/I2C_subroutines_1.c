@@ -29,6 +29,8 @@ void send_byte_with_Nack(char);
 unsigned char receive_byte_with_Ack(void);
 unsigned char receive_byte_with_Nack(void);
 
+void Timer_T0_10mS_delay_x_m(int);
+
 /************************************************************************/
 void I2C_Tx_2_integers(unsigned int s1, unsigned int s2){			
 char num_bytes=4; char mode = 1; char s[4];
