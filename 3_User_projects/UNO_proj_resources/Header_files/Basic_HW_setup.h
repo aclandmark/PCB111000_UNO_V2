@@ -332,7 +332,7 @@ if ((eeprom_read_byte((uint8_t*)0x3FE) > 0x0F)\
 #define User_prompt \
 while(1){\
 do{String_to_PC("R?    ");}	 while((isCharavailable(250) == 0));\
-User_response = receiveChar();\
+User_response = Char_from_PC();\
 if((User_response == 'R') || (User_response == 'r'))break;} String_to_PC("\r\n");
 
 
