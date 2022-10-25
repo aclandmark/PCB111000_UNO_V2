@@ -83,12 +83,12 @@ int main (void)                          //Example 3
 int main (void)                          //Example 3
   { setup_UNO_extra;
   while (!(isCharavailable(65)))
-    Char_to_PC_Basic('?');
+    Char_to_PC('?');
   newline;
-  Char_to_PC_Basic(Char_from_PC());
+  Char_to_PC(Char_from_PC());
   while (1)
   { if (isCharavailable(10))
-      Char_to_PC_Basic(Char_from_PC());
+      Char_to_PC(Char_from_PC());
     else break;
   }
   String_to_PC("Done\r\n");
