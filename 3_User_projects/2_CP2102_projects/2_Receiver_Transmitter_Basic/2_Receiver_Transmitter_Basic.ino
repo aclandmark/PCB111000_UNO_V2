@@ -19,14 +19,19 @@ digits 1, 2 and 5 can therfore by extracted by subtracting 48 from 49, 50 and 53
 
 #include "Receiver_Transmitter_header.h"
  
-int main (void)                          //Example 1
-  { setup_328_HW_Basic_IO;
-  Char_to_PC_Basic('?');
+int main (void)                          //Example 3
+  { setup_UNO_extra;
+  while (!(isCharavailable(65)))
+    Char_to_PC('?');
   newline;
+  Char_to_PC(Char_from_PC());
   while (1)
-  { Char_to_PC_Local
-    (waitforkeypress_Basic());
+  { if (isCharavailable(10))
+      Char_to_PC(Char_from_PC());
+    else break;
   }
+  String_to_PC("Done\r\n");
+  SW_reset;
   return 1;
   }
 
@@ -40,12 +45,13 @@ int main (void)                          //Example 1
 
 ********Example 1: Echoes keypresses*************************************************************************
   int main (void)                          //Example 1
-  { setup_328_HW_Basic_IO;
-  Char_to_PC_Basic('?');
+  { setup_UNO_extra;
+  Char_to_PC('?');
   newline;
   while (1)
   { Char_to_PC_Local
-    (waitforkeypress_Basic());
+    (//waitforkeypress_Basic());
+        waitforkeypress());
   }
   return 1;
   }
@@ -56,7 +62,7 @@ int main (void)                          //Example 1
 **********Example 2: Prints out ASKII characters**************************************************************
   int main (void)                          //Example 2
   { char symbol;
-  setup_328_HW_Basic_IO;
+  setup_UNO_extra;
   newline;
   symbol = '!';
   while (symbol <= '~')
@@ -65,7 +71,7 @@ int main (void)                          //Example 1
     symbol++;
     wdr();
   }
-  waitforkeypress_Basic();
+  waitforkeypress();
   SW_reset;
   return 1;
   }
@@ -75,17 +81,17 @@ int main (void)                          //Example 1
 
 ********Example 3: Echo character string or prints file*******************************************************
 int main (void)                          //Example 3
-  { setup_328_HW_Basic_IO;
-  while (!(isCharavailable_Basic(65)))
+  { setup_UNO_extra;
+  while (!(isCharavailable(65)))
     Char_to_PC_Basic('?');
   newline;
-  Char_to_PC_Basic(Char_from_PC_Basic());
+  Char_to_PC_Basic(Char_from_PC());
   while (1)
-  { if (isCharavailable_Basic(10))
-      Char_to_PC_Basic(Char_from_PC_Basic());
+  { if (isCharavailable(10))
+      Char_to_PC_Basic(Char_from_PC());
     else break;
   }
-  String_to_PC_Basic("Done\r\n");
+  String_to_PC("Done\r\n");
   SW_reset;
   return 1;
   }
@@ -240,7 +246,7 @@ int main (void)                          //Example 9
 ************This area is for project subroutines*************************************************************/
 void Num_string_from_KBD_Basic(char * array_ptr)
 { char keypress;
-  while ((keypress = waitforkeypress_Basic()) != '\r')
+  while ((keypress = waitforkeypress()) != '\r')
   { *array_ptr = keypress;
     array_ptr += 1;
   }
@@ -292,23 +298,10 @@ void Num_to_PC_Basic (long number)
   }
   while ((number = number / 10) > 0);
   s[i] = '\0';
-  for (int m = i; m > 0; m--)Char_to_PC_Basic(s[m - 1]);
-  Char_to_PC_Basic(' ');
+  for (int m = i; m > 0; m--)Char_to_PC(s[m - 1]);
+  Char_to_PC(' ');
 }
 
 
 
 /********************************************************************************************************/
-/*unsigned int PRN_16bit_GEN(unsigned int start){              //Pseuo random numbrer generation: Google  LFSR for details
-unsigned int bit, lfsr;
-
-if(!(start)) lfsr = (eeprom_read_byte((uint8_t*)(0x3F3)) << 8) 
-+ eeprom_read_byte((uint8_t*)(0x3F2));
-else lfsr = start;
-bit = (( lfsr >> 0) ^ (lfsr >> 2) ^ (lfsr >> 3) ^ (lfsr >> 5)) & 1;
-lfsr = (lfsr >> 1) | (bit << 15);
-if(!(start)){
-eeprom_write_byte((uint8_t*)(0x3F3),(lfsr>>8));
-eeprom_write_byte((uint8_t*)(0x3F2),lfsr);}
-
-return lfsr;}*/
