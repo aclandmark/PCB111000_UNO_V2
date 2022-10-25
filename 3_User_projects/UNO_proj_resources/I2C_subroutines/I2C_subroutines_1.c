@@ -15,7 +15,7 @@ void I2C_Tx_LED_dimmer(void);
 void I2C_Tx_LED_dimmer_UNO(void);
 void Cal_UNO_pcb_A(void);
 
-char receiveChar(void);
+char Char_from_PC(void);
 char isCharavailable(char);
 char waitforkeypress(void);
 void String_to_PC(const char*);
