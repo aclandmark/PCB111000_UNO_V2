@@ -1,7 +1,7 @@
 
 void waitforchar(void);
 char waitforkeypress(void);
-char receiveChar(void);
+char Char_from_PC(void);
 char isCharavailable(char);
 char wait_for_return_key(void);
 void binUnwantedChars_dot (void);
@@ -35,7 +35,7 @@ return UDR0;}
 
 
 /*********************************************************************/
-char receiveChar(void)
+char Char_from_PC(void)
 {return UDR0;}
 
 
@@ -59,19 +59,19 @@ char wait_for_return_key(void){
 char keypress;
 keypress = waitforkeypress();
 if((keypress == '\r') || (keypress == '\n')){
-if (isCharavailable(1)){receiveChar();}keypress = '\r';}
+if (isCharavailable(1)){Char_from_PC();}keypress = '\r';}
 return keypress;}
 
 
 
 /*********************************************************************/
 void binUnwantedChars_dot (void){
-while(1){if (isCharavailable(5)==1){receiveChar();Char_to_PC('.');}else break;}newline();}
+while(1){if (isCharavailable(5)==1){Char_from_PC();Char_to_PC('.');}else break;}newline();}
 
 
 /*********************************************************************/
 void binUnwantedChars (void){
-while(1){if (isCharavailable(5)==1)receiveChar();else break;}}
+while(1){if (isCharavailable(5)==1)Char_from_PC();else break;}}
 
 
 /*********************************************************************/
