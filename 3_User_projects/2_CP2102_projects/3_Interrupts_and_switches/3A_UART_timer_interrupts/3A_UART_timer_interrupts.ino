@@ -29,18 +29,20 @@ int main (void)
 { unsigned long counter;
   
   setup_UNO_extra;
+  _delay_ms(10);
+  sei();
   reset_display;
   
   UCSR0B |= (1 << RXCIE0);
   T1_100ms_clock_tick();
   counter = 1;
-  newline;
+  newline();
   while(switch_2_up)wdr();
   while (1)
   { 
     if((!(counter%33)) && (switch_2_down)){
 Num_to_PC_Basic(counter); Char_to_PC('\t');
-Num_to_PC_Basic((counter * counter)); newline;
+Num_to_PC_Basic((counter * counter)); newline();
  }
  counter = (counter + 1)%(unsigned long)0x8000;
     _delay_us(50);
