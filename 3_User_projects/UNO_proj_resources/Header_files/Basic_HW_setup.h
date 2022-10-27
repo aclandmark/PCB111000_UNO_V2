@@ -170,7 +170,7 @@ if(((PIND & 0x04)^0x04) && \
 ((PIND & 0x80)^0x80))\
 Cal_UNO_pcb_A();
 
-
+//setup_watchdog_UNO_extra;
 
 /************************************/
 //Test programmmer writes 0x40 to 0x3F6 before quitting 
