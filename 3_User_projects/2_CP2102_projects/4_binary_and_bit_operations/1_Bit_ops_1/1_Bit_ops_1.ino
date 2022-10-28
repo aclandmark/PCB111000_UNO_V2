@@ -37,7 +37,7 @@ digits[2] =  Op(digits[0] , digits[1], comp, BWop);                         //Pr
 for(int m = 3; m <= 7; m++)digits[m] = 0;
 
 lfsr = digits[1];
-//One_wire_comms_3_bytes(digits);
+
 I2C_Tx_BWops(digits);}
 while (waitforkeypress() !='x');                                      //Press 'x' to escape               
 SW_reset;}
