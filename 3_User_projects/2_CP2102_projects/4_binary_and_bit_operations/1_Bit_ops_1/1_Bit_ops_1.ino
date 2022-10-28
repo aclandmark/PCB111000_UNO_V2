@@ -11,7 +11,7 @@
 int main (void){
 
 char comp;
-char digits[3];
+char digits[8];
 unsigned char lfsr;
 char BWop;                                                                   //bit wise operation and complement (i.e. swap ones and zeros)
 
@@ -19,13 +19,13 @@ setup_UNO_extra;
  _delay_ms(10);
  sei();
 
-String_to_PC_Basic("\r\nSelect OP:  |   ^   &   ~|  ~^  or  ~&");
-BWop = waitforkeypress_Basic(); 
+String_to_PC("\r\nSelect OP:  |   ^   &   ~|  ~^  or  ~&");
+BWop = waitforkeypress(); 
 if (BWop == '~') 
-{comp = 1; BWop = waitforkeypress_Basic();}else comp = 0;                    //detect complement operator
+{comp = 1; BWop = waitforkeypress();}else comp = 0;                    //detect complement operator
 if ((BWop != '|') && (BWop != '^') && (BWop != '&'))
 SW_reset;                                                                    //reset if duff char was sent 
-Reset_ATtiny1606;
+//Reset_ATtiny1606;
 _delay_ms(25);                                                               //Mini-OS needs pause following reset
 lfsr = PRN_8bit_GEN(0xF);                                                   //8 bit random number
 
@@ -34,9 +34,12 @@ digits[0] = PRN_8bit_GEN(lfsr);
 digits[1] = PRN_8bit_GEN(digits[0]);                                        //Second random number
 digits[2] =  Op(digits[0] , digits[1], comp, BWop);                         //Process the numbers
 
+for(int m = 3; m <= 7; m++)digits[m] = 0;
+
 lfsr = digits[1];
-One_wire_comms_3_bytes(digits);}
-while (waitforkeypress_Basic() !='x');                                      //Press 'x' to escape               
+//One_wire_comms_3_bytes(digits);
+I2C_Tx_BWops(digits);}
+while (waitforkeypress() !='x');                                      //Press 'x' to escape               
 SW_reset;}
 
 
