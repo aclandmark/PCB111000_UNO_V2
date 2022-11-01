@@ -26,7 +26,7 @@ A PRN generator that produces pseudo random numbers.
 int main (void)                          //Example 1
   { unsigned int PORT_1;
 
-  setup_HW_for_UNO;
+  setup_HW_basic;
   PORT_1 = 1;
   for (int m = 0; m <= 15; m++)
   {  I2C_Tx_2_integers(PORT_1, PORT_1);
@@ -36,6 +36,7 @@ int main (void)                          //Example 1
   SW_reset;
   return 1;
   }
+
 
 
 
@@ -50,7 +51,7 @@ int main (void)                          //Example 1
 int main (void)                          //Example 1
   { unsigned int PORT_1;
 
-  setup_UNO_extra;
+  setup_HW_basic;
   PORT_1 = 1;
   for (int m = 0; m <= 15; m++)
   {  I2C_Tx_2_integers(PORT_1, PORT_1);
@@ -67,7 +68,7 @@ int main (void)                          //Example 1
 int main (void)                          //Example 2
   { unsigned int PORT_1, m = 0, n = 0;
 
-  setup_UNO_extra;
+  setup_HW_basic;
   PORT_1 = 1;
   while (1)
   { I2C_Tx_2_integers(PORT_1 << m, PORT_1 << m);
@@ -87,7 +88,7 @@ int main (void)                          //Example 2
  int main (void)                          //Example 3
   { unsigned int PORT_1, PORT_2;
 
-  setup_UNO_extra;
+  setup_HW_basic;
   while (1)
   { PORT_1 = 0b0000000000000001;      //1
     PORT_2 = 0b1000000000000000;     //0x8000;
@@ -107,7 +108,7 @@ int main (void)                          //Example 2
   int main (void)                          //Example 4
   { unsigned long PORT_1, PORT_2;
 
-  setup_UNO_extra;
+  setup_HW_basic;
   while (1)
   { PORT_1 = 1;
     PORT_2 = 0x80000000;
@@ -126,7 +127,7 @@ int main (void)                          //Example 2
  int main (void)                          //Example 5
   { unsigned int PORT_1, PORT_2;
 
- setup_UNO_extra;
+ setup_HW_basic;
   while (1)
   { PORT_1 = 1;
     PORT_2 = 0x8000;
@@ -150,7 +151,7 @@ int main (void)                          //Example 2
  int main (void)                          //Example 6
   { unsigned int PORT_1, PORT_2, m = 0, n = 0;
 
-  setup_UNO_extra;
+  setup_HW_basic;
   PORT_1 = 1;
   PORT_2 = 0x8000;
   while (1)
@@ -173,7 +174,7 @@ int main (void)                          //Example 7
   char m = 1;
   char overflow = 0;
 
-  setup_UNO_extra;
+  setup_HW_basic;
   while (1)
   { I2C_Tx_2_integers(PORT_1, ~PORT_1);
     
@@ -199,7 +200,7 @@ int main (void)                          //Example 8
   unsigned char PRN_counter;
   long PORT_1 = 1, PORT_2 = 1;
 
-  setup_UNO_extra;
+  setup_HW_basic;
   PRN_counter = 0;
   random_num = PRN_16bit_GEN (0, &PRN_counter);
   while (1)
@@ -228,7 +229,7 @@ int main (void)                          //Example 8
   unsigned int PRN;
   unsigned char PRN_counter;
 
-  setup_UNO_extra;
+  setup_HW_basic;
   I2C_Tx_any_segment_clear_all();
 
   PRN_counter = 0;
@@ -273,7 +274,7 @@ int main (void)                          //Example 10
 { unsigned int PRN;
   unsigned char PRN_counter;
 
-  setup_UNO_extra;
+  setup_HW_basic;
   PRN_counter = 0;
   PRN = PRN_16bit_GEN (0, &PRN_counter);
   while (1)
