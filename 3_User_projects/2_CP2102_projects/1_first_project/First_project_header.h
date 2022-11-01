@@ -82,7 +82,7 @@ eeprom_write_byte((uint8_t*)0x3F6,\
 \
 for(int m = 0; m < 4; m++)String_to_PC("\r\n");\
 \
-asm("jmp 0x6C00");}                                     /*Go to Text_Verification.c to print the next string*/ 
+asm("jmp 0x6C00");}                                     /*Go to Text_Verification.hex to print the next string*/ 
 
 
 
@@ -113,8 +113,8 @@ WDTCSR = 0x00;
 TWAR = 0x02;                                     /*Address of slave I2C*/
 
 
-/*****************************************************************************/
 
+/*****************************************************************************/
 #define set_up_switched_inputs                  /*Set pins to weak pull up  */\
 MCUCR &= (~(1 << PUD));                         /*Clear pull-up dissable */\
 DDRD &= (~((1 << PD2)|(1 << PD7)));             /*Ports D2 and D7 configured for input*/\
@@ -138,7 +138,7 @@ LED_2_off;
 #define LED_2_on    PORTB |= (1 << PB0);
 
 #define Toggle_LED_1 \
-if (PORTB & (1 << PB1)){LED_1_off;}                 /*If output hig set low*/\
+if (PORTB & (1 << PB1)){LED_1_off;}                 /*If output high set low*/\
 else {PORTB |= (1 << PB1);}
 
 
