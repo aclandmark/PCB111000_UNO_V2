@@ -19,8 +19,8 @@ char User_response;
 
 
 /*****************************************************************************/
-#define setup_UNO_extra \
-CLKPR = (1 << CLKPCE);\
+#define setup_HW_for_UNO \
+CLKPR = (1 << CLKPCE);            /*Reduce 16MHz crystal clock to 8MHz*/\
 CLKPR = (1 << CLKPS0);\
 \
 MCUSR_copy = eeprom_read_byte((uint8_t*)0x3FC);\
@@ -28,8 +28,8 @@ if (MCUSR_copy & (1 << PORF)){MCUSR_copy = (1 << PORF);\
 eeprom_write_byte((uint8_t*)0x3F5,0);}\
 setup_watchdog_for_UNO;\
 \
-set_up_I2C;\
-ADMUX |= (1 << REFS0);\
+set_up_I2C;                       /*UNO hosts the slave I2C*/\
+ADMUX |= (1 << REFS0);            /*Set analogue reference to +5V*/\
 set_up_switched_inputs;\
 Unused_I_O;\
 set_up_activity_leds;\
