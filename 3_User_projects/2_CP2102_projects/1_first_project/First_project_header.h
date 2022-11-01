@@ -79,19 +79,20 @@ asm("jmp 0x6C00");}
 
 
 /*****************************************************************************/
-#define setup_watchdog \
+/*#define setup_watchdog \
 if (MCUSR & (1 << WDRF))watch_dog_reset = 1;\
 wdr();\
 MCUSR &= ~(1<<WDRF);\
 WDTCSR |= (1 <<WDCE) | (1<< WDE);\
 WDTCSR = 0;
-
+*/
 
 
 
 #define setup_watchdog_UNO_extra \
 if (MCUSR_copy & (1 << WDRF))watch_dog_reset = 1;\
 wdr();\
+/*MCUSR &= ~(1<<WDRF);    //WD flag not reset here */\
 WDTCSR |= (1 <<WDCE) | (1<< WDE);\
 WDTCSR = 0;
 
