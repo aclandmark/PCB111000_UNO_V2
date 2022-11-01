@@ -31,6 +31,13 @@ unsigned char receive_byte_with_Nack(void);
 
 void Timer_T0_10mS_delay_x_m(int);
 
+
+
+void Num_to_PC(char, long);					//was sendLongNum()
+void SBtoAL(char*, long, char);	
+void NumericString_to_PC(char*);			//was sendNumericString
+
+
 /************************************************************************/
 void I2C_Tx_2_integers(unsigned int s1, unsigned int s2){			
 char num_bytes=4; char mode = 1; char s[4];
@@ -165,13 +172,13 @@ OSCCAL_mini_OS = receive_byte_with_Ack();
 error_mag = receive_byte_with_Ack() << 8;
 error_mag += receive_byte_with_Nack();
 clear_I2C_interrupt;
-String_to_PC_Basic("\r\nOSCCAL user value   "); //Num_to_PC_Basic(10,OSCCAL_mini_OS);
-itoa(OSCCAL_mini_OS, num_as_string, 10);Serial.print(num_as_string);
+String_to_PC_Basic("\r\nOSCCAL user value   "); 
+itoa(OSCCAL_mini_OS, num_as_string, 10);String_to_PC_Basic(num_as_string);
 
-String_to_PC_Basic("\r\ncalibration error  "); //Num_to_PC_Basic(10,error_mag);
-itoa(error_mag, num_as_string, 10);Serial.print(num_as_string);
-if (error_mag < 750) String_to_PC_Basic("  OK\r\n");
-}
+String_to_PC_Basic("\r\ncalibration error  "); 
+itoa(error_mag, num_as_string, 10);String_to_PC_Basic(num_as_string);
+if (error_mag < 750) String_to_PC_Basic("  OK\r\n");}
+
 
 
 
