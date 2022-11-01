@@ -15,11 +15,11 @@ void I2C_Tx_LED_dimmer(void);
 void I2C_Tx_LED_dimmer_UNO(void);
 void Cal_UNO_pcb_A(void);
 
-char Char_from_PC(void);
-char isCharavailable(char);
-char waitforkeypress(void);
-void String_to_PC(const char*);
-void Num_to_PC(char, long);
+char Char_from_PC_Basic(void);
+char isCharavailable_Basic(char);
+char waitforkeypress_Basic(void);
+void String_to_PC_Basic(const char*);
+void Num_to_PC_Basic(char, long);
 void newline(void);
 
 void I2C_Tx_initiate_mode(char);
@@ -159,15 +159,18 @@ int error_mag;
 
 User_prompt;
 I2C_Tx_initiate_mode('R');
-String_to_PC("\r\nPCB_A (mini_OS) device calibrating");
+String_to_PC_Basic("\r\nPCB_A (mini_OS) device calibrating");
 waiting_for_I2C_master;  
 OSCCAL_mini_OS = receive_byte_with_Ack();
 error_mag = receive_byte_with_Ack() << 8;
 error_mag += receive_byte_with_Nack();
 clear_I2C_interrupt;
-String_to_PC("\r\nOSCCAL user value   "); Num_to_PC(10,OSCCAL_mini_OS);
-String_to_PC("\r\ncalibration error  "); Num_to_PC(10,error_mag);
-if (error_mag < 750) String_to_PC("  OK\r\n");
+String_to_PC_Basic("\r\nOSCCAL user value   "); //Num_to_PC_Basic(10,OSCCAL_mini_OS);
+itoa(OSCCAL_mini_OS, num_as_string, 10);Serial.print(num_as_string);
+
+String_to_PC_Basic("\r\ncalibration error  "); //Num_to_PC_Basic(10,error_mag);
+itoa(error_mag, num_as_string, 10);Serial.print(num_as_string);
+if (error_mag < 750) String_to_PC_Basic("  OK\r\n");
 }
 
 
