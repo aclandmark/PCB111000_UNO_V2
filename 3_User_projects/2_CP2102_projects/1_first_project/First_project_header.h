@@ -20,16 +20,18 @@ char User_response;
 
 /*****************************************************************************/
 #define setup_HW_for_UNO \
-CLKPR = (1 << CLKPCE);            /*Reduce 16MHz crystal clock to 8MHz*/\
+CLKPR = (1 << CLKPCE);                /*Reduce 16MHz crystal clock to 8MHz*/\
 CLKPR = (1 << CLKPS0);\
 \
-MCUSR_copy = eeprom_read_byte((uint8_t*)0x3FC);\
-if (MCUSR_copy & (1 << PORF)){MCUSR_copy = (1 << PORF);\
+MCUSR_copy = \
+eeprom_read_byte((uint8_t*)0x3FC);\
+if (MCUSR_copy & (1 << PORF))\
+{MCUSR_copy = (1 << PORF);\
 eeprom_write_byte((uint8_t*)0x3F5,0);}\
 setup_watchdog_for_UNO;\
 \
-set_up_I2C;                       /*UNO hosts the slave I2C*/\
-ADMUX |= (1 << REFS0);            /*Set analogue reference to +5V*/\
+set_up_I2C;                             /*UNO hosts the slave I2C*/\
+ADMUX |= (1 << REFS0);                  /*Set analogue reference to +5V*/\
 set_up_switched_inputs;\
 Unused_I_O;\
 set_up_activity_leds;\
@@ -40,11 +42,11 @@ USART_init(0,16);\
 User_app_commentary_mode;\
 \
 if (((PINB & 0x04)^0x04) && \
-((PIND & 0x04)^0x04))\
+((PIND & 0x04)^0x04))                   /*Press SW1 and SW3 to adjust intensity*/\
 I2C_Tx_LED_dimmer_UNO();\
 \
 if(((PIND & 0x04)^0x04) && \
-((PIND & 0x80)^0x80))\
+((PIND & 0x80)^0x80))                   /*Press SW1 and SW2 to trigger recalibration*/\
 Cal_UNO_pcb_A();
 
 
