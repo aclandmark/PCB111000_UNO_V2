@@ -26,7 +26,7 @@ CLKPR = (1 << CLKPS0);\
 MCUSR_copy = eeprom_read_byte((uint8_t*)0x3FC);\
 if (MCUSR_copy & (1 << PORF)){MCUSR_copy = (1 << PORF);\
 eeprom_write_byte((uint8_t*)0x3F5,0);}\
-setup_watchdog_UNO_extra;\
+setup_watchdog_for_UNO;\
 \
 set_up_I2C;\
 ADMUX |= (1 << REFS0);\
@@ -79,17 +79,8 @@ asm("jmp 0x6C00");}
 
 
 /*****************************************************************************/
-/*#define setup_watchdog \
-if (MCUSR & (1 << WDRF))watch_dog_reset = 1;\
-wdr();\
-MCUSR &= ~(1<<WDRF);\
-WDTCSR |= (1 <<WDCE) | (1<< WDE);\
-WDTCSR = 0;
-*/
 
-
-
-#define setup_watchdog_UNO_extra \
+#define setup_watchdog_for_UNO \
 if (MCUSR_copy & (1 << WDRF))watch_dog_reset = 1;\
 wdr();\
 /*MCUSR &= ~(1<<WDRF);    //WD flag not reset here */\
