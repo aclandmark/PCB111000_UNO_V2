@@ -25,9 +25,9 @@ CLKPR = (1 << CLKPS0);\
 \
 MCUSR_copy = \
 eeprom_read_byte((uint8_t*)0x3FC);            /*Saved to EEPROM by the bootloader*/\
-if (MCUSR_copy & (1 << PORF))\
+if (MCUSR_copy & (1 << PORF))                 /*Power on reset flag set*/\
 {MCUSR_copy = (1 << PORF);\
-eeprom_write_byte((uint8_t*)0x3F5,0);}\
+eeprom_write_byte((uint8_t*)0x3F5,0);}        /*Initialise random generator memory */\
 setup_watchdog_for_UNO;\
 \
 set_up_I2C;                                   /*UNO hosts the slave I2C*/\
