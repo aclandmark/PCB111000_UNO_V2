@@ -12,7 +12,7 @@ void prime_no_generator_plus(int,int,  int*);
 int Product_search (int);
 int Prime_search (int, int);
 
-
+void I2C_Tx_2_integers(unsigned int, unsigned int);
 
 
 /*****************************************************************/
@@ -65,7 +65,7 @@ if(*PRN_counter == 255)
 eeprom_write_byte((uint8_t*)(0x3F4 - eep_offset),lfsr);									//This prevents the display from endlessly repeating
 Toggle_LED_1;																			//Note: Saving every one burns out the EEPROM location too quickly
 *PRN_counter = 0;
-Char_to_PC(eep_offset + '0');}
+Char_to_PC_Basic(eep_offset + '0');}
 
 return lfsr;}
 
