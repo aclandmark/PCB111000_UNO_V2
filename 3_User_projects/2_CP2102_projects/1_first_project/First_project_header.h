@@ -6,10 +6,7 @@ char watch_dog_reset = 0;
 char MCUSR_copy;
 char User_response;
 char num_as_string[12];
-//#define T0_delay_10ms 5,178
-//#define T1_delay_100ms 3, 0x9E62
 
-//void String_to_PC_Basic(const char*);
 
 /*****************************************************************************/
 #include <avr/wdt.h>
@@ -22,7 +19,7 @@ char num_as_string[12];
 
 
 /*****************************************************************************/
-#define setup_HW_for_UNO \
+#define setup_HW_basic \
 CLKPR = (1 << CLKPCE);                        /*Reduce 16MHz crystal clock to 8MHz*/\
 CLKPR = (1 << CLKPS0);\
 \
