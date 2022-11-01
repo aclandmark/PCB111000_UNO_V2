@@ -5,11 +5,11 @@
 char watch_dog_reset = 0;
 char MCUSR_copy;
 char User_response;
+char num_as_string[12];
+//#define T0_delay_10ms 5,178
+//#define T1_delay_100ms 3, 0x9E62
 
-#define T0_delay_10ms 5,178
-#define T1_delay_100ms 3, 0x9E62
-
-
+//void String_to_PC_Basic(const char*);
 
 /*****************************************************************************/
 #include <avr/wdt.h>
@@ -39,7 +39,7 @@ set_up_switched_inputs;\
 Unused_I_O;\
 set_up_activity_leds;\
 \
-USART_init(0,16);\
+setup_PC_comms_Basic(0,16);\
 _delay_ms(10);\
 User_app_commentary_mode;\
 \
@@ -70,8 +70,8 @@ if(eeprom_read_byte((uint8_t*)0x3F6) == 0xFF)\
 eeprom_write_byte((uint8_t*)0x3F6,0);\
 \
 if(eeprom_read_byte((uint8_t*)0x3F6) == 0x40){\
-for(int m = 0; m < 10; m++)String_to_PC("\r\n");\
-String_to_PC\
+for(int m = 0; m < 10; m++)String_to_PC_Basic("\r\n");\
+String_to_PC_Basic\
 ("Project commentary: Press 'X' to escape or AOK\r\n");\
 \
 eeprom_write_byte((uint8_t*)0x3F6,0x41);}\
@@ -80,7 +80,7 @@ if ((eeprom_read_byte((uint8_t*)0x3F6) & 0x40)){\
 eeprom_write_byte((uint8_t*)0x3F6,\
 (eeprom_read_byte((uint8_t*)0x3F6) | 0x80));\
 \
-for(int m = 0; m < 4; m++)String_to_PC("\r\n");\
+for(int m = 0; m < 4; m++)String_to_PC_Basic("\r\n");\
 \
 asm("jmp 0x6C00");}                                     /*Go to Text_Verification.hex to print the next string*/ 
 
@@ -175,9 +175,9 @@ if ((eeprom_read_byte((uint8_t*)0x3FE) > 0x0F)\
 /*****************************************************************************/
 #define User_prompt \
 while(1){\
-do{String_to_PC("R?    ");}  while((isCharavailable(250) == 0));\
-User_response = Char_from_PC();\
-if((User_response == 'R') || (User_response == 'r'))break;} String_to_PC("\r\n");
+do{String_to_PC_Basic("R?    ");}  while((isCharavailable_Basic(250) == 0));\
+User_response = Char_from_PC_Basic();\
+if((User_response == 'R') || (User_response == 'r'))break;} String_to_PC_Basic("\r\n");
 
 
 
@@ -193,12 +193,12 @@ TWCR = (1 << TWINT);
 
 
 /*********************************************************************************/
+#include "UNO_proj_resources/PC_comms/Basic_Rx_Tx_and_Timer.c"
+//#include "UNO_proj_resources/PC_comms/Basic_PC_comms.c"
+#include "UNO_proj_resources/Subroutines/Random_and_prime_nos.c"
+
 #include "UNO_proj_resources/Chip2chip_comms/I2C_subroutines_1.c"
 #include "UNO_proj_resources/Chip2chip_comms/I2C_slave_Rx_Tx.c"
-
-#include "UNO_proj_resources/PC_comms/Basic_HW_plus_Timer.c"
-#include "UNO_proj_resources/PC_comms/Basic_PC_comms.c"
-#include "UNO_proj_resources/Subroutines/Random_and_prime_nos.c"
 
 
 
