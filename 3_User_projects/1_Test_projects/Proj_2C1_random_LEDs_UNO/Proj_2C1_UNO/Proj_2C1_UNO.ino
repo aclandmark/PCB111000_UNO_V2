@@ -15,8 +15,8 @@ char segment=0, digit_num=0, seg_counter = 0,direction = 0;
 unsigned char PRN_counter = 0;
 unsigned int PRN;
 
-setup_UNO_extra;
-//setup_UNO_extra;
+setup_HW_basic;
+
 wdt_enable(WDTO_2S);                                                           //WDT prevents display from being completed in either direction
 
 I2C_Tx_any_segment_clear_all();                                                //Initialise display
@@ -52,6 +52,7 @@ display_bkp[segment - 'a'] = display_bkp[segment - 'a'] ^ (1 << digit_num);}
 
 
 /*****************************************************************/
-ISR(USART_RX_vect){Char_from_PC();
+ISR(USART_RX_vect){
+  Char_from_PC_Basic();
 I2C_Tx_any_segment_clear_all();
 sei();while(1);}
