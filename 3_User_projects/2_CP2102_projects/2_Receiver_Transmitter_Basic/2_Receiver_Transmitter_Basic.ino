@@ -99,19 +99,19 @@ int main (void)                          //Example 9
 ********Example 3: Echo character string or prints file*******************************************************
 int main (void)                          //Example 3
   { setup_HW_basic;
-  while (!(isCharavailable(65)))
+  while (!(isCharavailable_Basic(65)))
     Char_to_PC_Basic('?');
   newline;
   Char_to_PC_Basic(Char_from_PC_Basic());
   while (1)
-  { if (isCharavailable(10))
+  { if (isCharavailable_Basic(10))
       Char_to_PC_Basic(Char_from_PC_Basic());
     else break;
   }
   String_to_PC_Basic("Done\r\n");
   SW_reset;
   return 1;
-  }
+ 
 
 
 
