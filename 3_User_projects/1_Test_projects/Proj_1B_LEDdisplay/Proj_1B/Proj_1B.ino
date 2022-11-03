@@ -79,7 +79,7 @@ unsigned int PORT_1=1;            //PORT_1 defines the display and initialises i
 char m=1;                         //m  is only active for the first 5 cycles of the "while-loop"
 char overflow=0;                  //overflow is set to 1 when the most left hand leds are illuminated
                 
-setup_UNO_extra;
+setup_HW_basic;
 while(1){ 
     
     
