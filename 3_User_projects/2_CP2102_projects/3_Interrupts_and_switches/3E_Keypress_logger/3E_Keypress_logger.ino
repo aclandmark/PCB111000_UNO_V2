@@ -15,7 +15,7 @@ int main (void)
   int EEP_address = 0x3E8;
   unsigned long PORT_1, PORT_2;
 
-  setup_UNO_extra;
+  setup_HW_basic;
  _delay_ms(10);
  sei();
  
@@ -24,11 +24,11 @@ int main (void)
   if (User_response == 'r')
   { UCSR0B |= (1 << RXCIE0);
   Initialise_display;
-    String_to_PC("Send string and terminate it in a -cr- ?\r\n");
+    String_to_PC_Basic("Send string and terminate it in a -cr- ?\r\n");
     while (1)
     { if (!(wait_for_interrupt(500, &keypress, &PORT_1, &PORT_2 )))
       {
-        Char_to_PC('?');
+        Char_to_PC_Basic('?');
       }
       else
       { interrupt_detected = 0;
@@ -41,12 +41,12 @@ int main (void)
   if (User_response == 'R')
   { while (EEP_address > address_of_last_string) {
       while (eeprom_read_byte((uint8_t*)(EEP_address)))
-        Char_to_PC(eeprom_read_byte((uint8_t*)(EEP_address--)));
+        Char_to_PC_Basic(eeprom_read_byte((uint8_t*)(EEP_address--)));
       EEP_address -= 1;
-      waitforkeypress();
-      String_to_PC("\r\n");
+      waitforkeypress_Basic();
+      String_to_PC_Basic("\r\n");
     }
-    String_to_PC("No more strings\r\n");
+    String_to_PC_Basic("No more strings\r\n");
   }
 
   SW_reset;
@@ -65,7 +65,7 @@ char wait_for_interrupt (int m , char *keypress, unsigned long *PORT_1, unsigned
 { int n = 0;
   while (1)
   { if (interrupt_detected == 1)
-    { *keypress = Char_from_PC();
+    { *keypress = Char_from_PC_Basic();
       UCSR0B |= (1 << RXCIE0);
       return 1;
     }
@@ -86,13 +86,13 @@ int Keypress_to_EEPROM(char keypress, int eep_address)
 { if ((keypress == '\r') || (keypress == '\n'))
   { keypress = '\0';
     save_string_address;
-    Char_to_PC('?');
+    Char_to_PC_Basic('?');
   }
 
   eeprom_write_byte((uint8_t*)(eep_address), keypress);
   if (eeprom_read_byte((uint8_t*)(eep_address)))
-    Char_to_PC(eeprom_read_byte((uint8_t*)(eep_address)));
-  else String_to_PC("\r\n");
+    Char_to_PC_Basic(eeprom_read_byte((uint8_t*)(eep_address)));
+  else String_to_PC_Basic("\r\n");
   return --eep_address;
 }
 
