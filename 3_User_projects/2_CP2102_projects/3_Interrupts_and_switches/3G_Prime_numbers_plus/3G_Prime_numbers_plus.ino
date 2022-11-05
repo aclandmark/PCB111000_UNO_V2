@@ -114,16 +114,8 @@ newline_Basic();
 return;}
 
 
+
 /*******************************************************************************/
-/*int Int_from_PC_Basic(char*);
-void Int_to_PC_Basic (int);
-
-char decimal_digit (char);
-long I2C_displayToNum(void);  
-void I2C_Tx_8_byte_array(char*);*/
-
-
-
 int Int_from_PC_Basic(char digits[]){
 char keypress;
 for(int n = 0; n<=7; n++) digits[n] = 0; 
