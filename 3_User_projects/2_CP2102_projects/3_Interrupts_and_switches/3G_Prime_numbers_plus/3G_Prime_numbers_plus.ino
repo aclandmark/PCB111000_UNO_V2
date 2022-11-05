@@ -135,6 +135,8 @@ I2C_Tx_8_byte_array(digits);}}
 return I2C_displayToNum();}
 
 
+
+/*******************************************************************************/
 void Num_to_PC_Basic (long number)
 { int i = 0;
   char s[12];
