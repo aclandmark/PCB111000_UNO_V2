@@ -21,7 +21,7 @@ volatile unsigned int mask;                             //Records which leds hav
 
 
 int main (void)
-{ setup_UNO_extra;
+{ setup_HW_basic;
   _delay_ms(10);
   sei();
   set_up_PCI_on_sw2;
