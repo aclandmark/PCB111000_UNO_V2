@@ -28,7 +28,7 @@ unsigned int PORT_1, PORT_2;
 int main (void)
 { unsigned long counter;
   
-  setup_UNO_extra;
+  setup_HW_basic;
   _delay_ms(10);
   sei();
   reset_display;
@@ -36,13 +36,13 @@ int main (void)
   UCSR0B |= (1 << RXCIE0);
   T1_100ms_clock_tick();
   counter = 1;
-  newline();
+  newline_Basic();
   while(switch_2_up)wdr();
   while (1)
   { 
     if((!(counter%33)) && (switch_2_down)){
-Num_to_PC_Basic(counter); Char_to_PC('\t');
-Num_to_PC_Basic((counter * counter)); newline();
+Num_to_PC_Basic(counter); Char_to_PC_Basic('\t');
+Num_to_PC_Basic((counter * counter)); newline_Basic();
  }
  counter = (counter + 1)%(unsigned long)0x8000;
     _delay_us(50);
@@ -82,7 +82,7 @@ OCR1A = 12500;
 
 
 ISR(USART_RX_vect)
-{ switch (Char_from_PC())
+{ switch (Char_from_PC_Basic())
   { case '2':   num_leds = 2; break;
     case '4':   num_leds = 4; break;
     case '6':   num_leds = 6; break;
@@ -108,8 +108,8 @@ void Num_to_PC_Basic (unsigned long number)
   }
   while ((number = number / 10) > 0);
   s[i] = '\0';
-  for (int m = i; m > 0; m--)Char_to_PC(s[m - 1]);
-  Char_to_PC(' ');
+  for (int m = i; m > 0; m--)Char_to_PC_Basic(s[m - 1]);
+  Char_to_PC_Basic(' ');
 }
 
 
