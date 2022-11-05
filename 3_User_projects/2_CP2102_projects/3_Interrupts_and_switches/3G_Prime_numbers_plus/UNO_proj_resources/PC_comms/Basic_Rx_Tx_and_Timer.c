@@ -46,6 +46,7 @@ void Char_to_PC_Basic(char);
 void newline_Basic(void);
 
 char decimal_digit (char);
+void Int_to_PC_Basic (int);
 char wait_for_return_key_A(void);
 void Check_num_for_to_big_or_small(float);
 
@@ -149,6 +150,21 @@ if((keypress == '\r') || (keypress == '\n')){							//Detect \r\n, \r or \n and 
 if (isCharavailable_Basic(1)){temp = Char_from_PC_Basic();}
 keypress = '\r';}
 return keypress;}
+
+
+
+void Int_to_PC_Basic (int number)
+{ int i = 0;
+  char s[12];
+   do
+  { s[i++] = number % 10 + '0';
+  }
+  while ((number = number / 10) > 0);
+  s[i] = '\0';
+  for (int m = i; m > 0; m--)Char_to_PC_Basic(s[m - 1]);
+  Char_to_PC_Basic(' ');
+}
+
 
 
 
