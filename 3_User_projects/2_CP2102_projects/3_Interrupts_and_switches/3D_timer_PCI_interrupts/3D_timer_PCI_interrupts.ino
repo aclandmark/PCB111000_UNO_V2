@@ -23,7 +23,7 @@ char mode = 1;
 
 /************************************************************************/
 int main (void)
-{ setup_UNO_extra;
+{ setup_HW_basic;
  _delay_ms(10);
  sei();
  
