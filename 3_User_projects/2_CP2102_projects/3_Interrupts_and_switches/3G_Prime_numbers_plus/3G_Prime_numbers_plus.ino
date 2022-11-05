@@ -36,6 +36,7 @@ int factor[10], number;
 char digit_array[8], line_counter=0;
 
 
+
 setup_HW_basic;
 User_prompt;
 //setup_and_enable_PCI;
@@ -57,7 +58,7 @@ for(int k =0; k < array_size; k++)
 prime_no_generator_plus(l,array_size,array);                    //sets non primes_plus to zero
 {int j=0; 
 while(j<array_size){if (array[j] != 0)
-{Num_to_PC_Basic(array[j]);I2C_Tx_long(array[j]);                  //Display non primes_plus
+{Int_to_PC_Basic(array[j]);I2C_Tx_long(array[j]);                  //Display non primes_plus
 counter_1++; counter_2++; Char_to_PC_Basic(' ');                      //Count the numbers
 Timer_T1_sub(T1_delay_100ms);}  
 j++;}}
@@ -72,8 +73,8 @@ prime_no_generator(l,array_size,array);
 {if (array[j] != 0)counter_1--;                                 //Adjust counter_1 for number of non_prime numbers
 j++;}}l++;}
 
-Num_to_PC_Basic(counter_2);String_to_PC_Basic (" numbers including ");
-Num_to_PC_Basic(counter_1); String_to_PC_Basic (" non prime numbers\r\n");
+Int_to_PC_Basic(counter_2);String_to_PC_Basic (" numbers including ");
+Int_to_PC_Basic(counter_1); String_to_PC_Basic (" non prime numbers\r\n");
 String_to_PC_Basic("Enter number (prime or non-prime?) or 0 to exit\r\n");
 
 line_counter=0;
@@ -81,16 +82,16 @@ line_counter=0;
 while(1){
 
   
-number = Num_from_KBD_Local(digit_array);                             //Enter trial number at the keyboard
+number = Int_from_PC_Basic(digit_array);                             //Enter trial number at the keyboard
 
 if(!(number)) {String_to_PC_Basic("Sw3 to continue.\r\n");break;}
-Num_to_PC_Basic(number);String_to_PC_Basic("  ");                       //Echo the number
+Int_to_PC_Basic(number);String_to_PC_Basic("  ");                       //Echo the number
 {int  n = 0; int m=0;
 do{
 factor[n] = Product_search(number);                             //Search for factors
 number = number/factor[n];n++;} while (number != 1);  
 if (n==1) {String_to_PC_Basic("Prime"); line_control;}               //Only one factor: Print Prime
-else {m=n; for(n=0; n<m; n++){Num_to_PC_Basic(factor[n]);
+else {m=n; for(n=0; n<m; n++){Int_to_PC_Basic(factor[n]);
 Char_to_PC_Basic(' ');}line_control;}}}                              //Several factors: print them out
 while(start == start_1);                                      //wait for sw3 keypress
 start = start_1;}}
@@ -107,14 +108,14 @@ if(switch_1_up)return; while(switch_1_down);return;}            //Press sw_1 to 
 /*************************************************************************************/
 ISR (PCINT0_vect){
 if(switch_3_up) return;
-while (switch_3_down){start_1+=5; Num_to_PC_Basic(start_1);        //Hold sw_3 down to increment start point
+while (switch_3_down){start_1+=5; Int_to_PC_Basic(start_1);        //Hold sw_3 down to increment start point
 Char_to_PC_Basic(' ');Timer_T1_sub(T1_delay_1sec);}                   //for random number generator
 newline_Basic(); 
 return;}
 
 
 /*******************************************************************************/
-long Num_from_KBD_Local(char digits[]){
+/*long Num_from_KBD_Local(char digits[]){
 char keypress;
 for(int n = 0; n<=7; n++) digits[n] = 0; 
 
@@ -133,11 +134,11 @@ digits[0] = keypress;
 I2C_Tx_8_byte_array(digits);}}
             
 return I2C_displayToNum();}
-
+*/
 
 
 /*******************************************************************************/
-void Num_to_PC_Basic (long number)
+/*void Num_to_PC_Basic (long number)
 { int i = 0;
   char s[12];
    do
@@ -148,4 +149,4 @@ void Num_to_PC_Basic (long number)
   for (int m = i; m > 0; m--)Char_to_PC_Basic(s[m - 1]);
   Char_to_PC_Basic(' ');
 }
- 
+ */
