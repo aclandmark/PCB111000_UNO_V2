@@ -30,8 +30,9 @@ return I2C_displayToNum();}
 
 
 
+
 /*******************************************************************************/
-void Int_to_PC_Basic (int number)
+/*void Int_to_PC_Basic (int number)
 { int i = 0;
   char s[12];
    do
@@ -42,8 +43,7 @@ void Int_to_PC_Basic (int number)
   for (int m = i; m > 0; m--)Char_to_PC_Basic(s[m - 1]);
   Char_to_PC_Basic(' ');
 }
-
+*/
 
 /*******************************************************************************/
-
 
