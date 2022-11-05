@@ -10,7 +10,7 @@ int main (void)
 { unsigned int Random_num;
   unsigned int PORT_1, PORT_2;
 unsigned char PRN_counter, shift_display;
- setup_UNO_extra;
+setup_HW_basic;
  _delay_ms(10);
  PRN_counter = 0;
  Random_num = PRN_16bit_GEN (0, &PRN_counter);
