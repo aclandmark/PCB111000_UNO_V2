@@ -204,6 +204,7 @@ TWCR = (1 << TWINT);
 
 /*********************************************************************************/
 #include "UNO_proj_resources/PC_comms/Basic_Rx_Tx_and_Timer.c"
+#include "UNO_proj_resources/PC_comms/Integers_to_from_PC_Basic.c"
 //#include "UNO_proj_resources/PC_comms/Basic_PC_comms.c"
 #include "UNO_proj_resources/Subroutines/Random_and_prime_nos.c"
 
