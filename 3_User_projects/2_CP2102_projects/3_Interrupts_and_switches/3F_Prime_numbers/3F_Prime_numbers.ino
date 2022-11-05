@@ -29,7 +29,7 @@ int j = 0;
 int array_size = 200;
 unsigned int array[200], mask;  
                                                                                                                                     
- setup_UNO_extra;
+ setup_HW_basic;
  _delay_ms(10);
  sei();
  
@@ -49,9 +49,9 @@ while(j<array_size){if (array[j] != 0)         //Scan the array for prime number
 {
 if (counter)                                   //Print them out 10 at a time
 {if (counter == 10)
-String_to_PC("\r\n");
+String_to_PC_Basic("\r\n");
 Num_to_PC_Basic(array[j]); 
-Char_to_PC(' ');
+Char_to_PC_Basic(' ');
 counter -= 1;}                                 //When end of array reached process the next one
 
 
@@ -103,8 +103,8 @@ void Num_to_PC_Basic (long number)
   }
   while ((number = number / 10) > 0);
   s[i] = '\0';
-  for (int m = i; m > 0; m--)Char_to_PC(s[m - 1]);
-  Char_to_PC(' ');
+  for (int m = i; m > 0; m--)Char_to_PC_Basic(s[m - 1]);
+  Char_to_PC_Basic(' ');
 }
 
 
