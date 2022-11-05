@@ -45,7 +45,7 @@ Num_to_PC_Basic(counter); Char_to_PC_Basic('\t');
 Num_to_PC_Basic((counter * counter)); newline_Basic();
  }
  counter = (counter + 1)%(unsigned long)0x8000;
-    _delay_us(50);
+    _delay_us(150);
      wdr();
   }
 }
