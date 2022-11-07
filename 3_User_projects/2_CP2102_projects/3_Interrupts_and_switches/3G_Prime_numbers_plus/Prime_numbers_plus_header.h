@@ -16,7 +16,8 @@ char num_as_string[12];
 
 
 void I2C_Tx_long(long );
-
+int Int_from_PC_Basic(char *);
+void factors_to_display(int *, int);
 /*****************************************************************************/
 #include <avr/wdt.h>
 
@@ -218,12 +219,12 @@ TWCR = (1 << TWINT);
 
 /*********************************************************************************/
 #include "UNO_proj_resources/PC_comms/Basic_Rx_Tx_and_Timer.c"
-//#include "UNO_proj_resources/PC_comms/Integers_to_from_PC_Basic.c"
-//#include "UNO_proj_resources/PC_comms/Basic_PC_comms.c"
-#include "UNO_proj_resources/Subroutines/Random_and_prime_nos.c"
 
 #include "UNO_proj_resources/Chip2chip_comms/I2C_subroutines_1.c"
 #include "UNO_proj_resources/Chip2chip_comms/I2C_slave_Rx_Tx.c"
+
+#include "UNO_proj_resources/Subroutines/Random_and_prime_nos.c"
+#include "UNO_proj_resources/Subroutines/Project_subroutines.c"
 
 
 
@@ -241,4 +242,5 @@ String_to_PC_Basic(message_2);
 Review the numbers and try to guess the non-prime ones\r\n"
 #define message_2 \
 "Type them in terminating each with a -return- keypress\r\n\
+Do not try 1\r\n\
 Enter zero to exit and press sw3 when requested\r\n"
