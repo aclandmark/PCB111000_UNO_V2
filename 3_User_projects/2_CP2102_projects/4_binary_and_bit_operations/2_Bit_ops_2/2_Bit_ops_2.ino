@@ -19,7 +19,7 @@ int main (void) {
   unsigned char lfsr;
 
 
- setup_UNO_extra;
+ setup_HW_basic;
  _delay_ms(10);
  sei();
 
@@ -27,22 +27,22 @@ int main (void) {
   //Reset_ATtiny1606;
   lfsr = PRN_8bit_GEN(0xF);
 
-  String_to_PC
+  String_to_PC_Basic
   ("\r\n\r\nSelect mode 1 to 6? Then AK to continue or x to exit (when allowed)\r\n");
 
   while (1)
-  { String_to_PC("Mode?\t");
+  { String_to_PC_Basic("Mode?\t");
 
-    op_code = waitforkeypress();
+    op_code = waitforkeypress_Basic();
 
     switch (op_code)
-    { case '1':   String_to_PC("shift number left\r\n"); break;
-      case '2':   String_to_PC("shift number right\r\n"); break;
+    { case '1':   String_to_PC_Basic("shift number left\r\n"); break;
+      case '2':   String_to_PC_Basic("shift number right\r\n"); break;
 
-      case '3':   String_to_PC("set a bit\r\n"); break;
-      case '4':   String_to_PC("clear a bit\r\n"); break;
-      case '5':   String_to_PC("toggle a bit\r\n"); break;
-      case '6':   String_to_PC("test a bit\r\n"); break;
+      case '3':   String_to_PC_Basic("set a bit\r\n"); break;
+      case '4':   String_to_PC_Basic("clear a bit\r\n"); break;
+      case '5':   String_to_PC_Basic("toggle a bit\r\n"); break;
+      case '6':   String_to_PC_Basic("test a bit\r\n"); break;
       default:    newline; continue;
     }
 
@@ -56,7 +56,7 @@ int main (void) {
         digits[2] = digits[0];
         //One_wire_comms_3_bytes(digits);
         I2C_Tx_BWops(digits);
-        while(1){if (waitforkeypress() == 'x')String_to_PC("AOK then x\r\n"); else break;}
+        while(1){if (waitforkeypress_Basic() == 'x')String_to_PC_Basic("AOK then x\r\n"); else break;}
         
       }
 
@@ -67,7 +67,7 @@ int main (void) {
 
       //One_wire_comms_3_bytes(digits);
       I2C_Tx_BWops(digits);
-      keypress = waitforkeypress();
+      keypress = waitforkeypress_Basic();
 
       if (op_code < '3')
       { if (++digits[1] == 8)digits[1] = 1;
