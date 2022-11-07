@@ -1,5 +1,12 @@
+/*
+
+sw1 is PIND2  The left hand switch
+sw2 is PIND7  The middle switch
+sw3 is PINB2  The right hand switch
 
 
+Switches sw1 and sw2 generate a call to ISR(PCINT2_vect) 
+Switch sw3 generates a call to ISR(PCINT0_vect)*/
 
 
 char watch_dog_reset = 0;
@@ -7,6 +14,8 @@ char MCUSR_copy;
 char User_response;
 char num_as_string[12];
 
+
+void I2C_Tx_long(long );
 
 /*****************************************************************************/
 #include <avr/wdt.h>
@@ -26,9 +35,14 @@ char num_as_string[12];
 #define switch_3_down ((PINB & 0x04)^0x04)
 #define switch_3_up   (PINB & 0x04)
 
-
+#define enable_pci_on_sw1         PCMSK2 |= (1 << PCINT18);
 #define enable_pci_on_sw3         PCMSK0 |= (1 << PCINT2);
-#define set_up_PCI_on_sw3         PCICR |= (1 << PCIE0);
+#define disable_pci_on_sw1        PCMSK2 &= (~(1 << PCINT18));
+#define disable_pci_on_sw3        PCMSK0 &= (~(1 << PCINT2));
+
+
+#define set_up_PCI \
+PCICR |= ((1 << PCIE0) | (1 << PCIE2));
 
 
 /*****************************************************************************/
