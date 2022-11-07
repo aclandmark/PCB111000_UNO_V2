@@ -15,14 +15,14 @@ char digits[8];
 unsigned char lfsr;
 char BWop;                                                                   //bit wise operation and complement (i.e. swap ones and zeros)
 
-setup_UNO_extra;
+setup_HW_basic;
  _delay_ms(10);
  sei();
 
-String_to_PC("\r\nSelect OP:  |   ^   &   ~|  ~^  or  ~&");
-BWop = waitforkeypress(); 
+String_to_PC_Basic("\r\nSelect OP:  |   ^   &   ~|  ~^  or  ~&");
+BWop = waitforkeypress_Basic(); 
 if (BWop == '~') 
-{comp = 1; BWop = waitforkeypress();}else comp = 0;                    //detect complement operator
+{comp = 1; BWop = waitforkeypress_Basic();}else comp = 0;                    //detect complement operator
 if ((BWop != '|') && (BWop != '^') && (BWop != '&'))
 SW_reset;                                                                    //reset if duff char was sent 
 //Reset_ATtiny1606;
@@ -39,7 +39,7 @@ for(int m = 3; m <= 7; m++)digits[m] = 0;
 lfsr = digits[1];
 
 I2C_Tx_BWops(digits);}
-while (waitforkeypress() !='x');                                      //Press 'x' to escape               
+while (waitforkeypress_Basic() !='x');                                      //Press 'x' to escape               
 SW_reset;}
 
 
