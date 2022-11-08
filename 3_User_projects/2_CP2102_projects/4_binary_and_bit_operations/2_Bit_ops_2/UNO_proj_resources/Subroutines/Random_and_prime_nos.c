@@ -1,46 +1,29 @@
 
-char PRN_8bit_GEN(void);
-unsigned int PRN_16bit_GEN(unsigned int);
-void I2C_Tx_snowstorm_display(void);
 
-unsigned char PRN_8bit_GEN_UNO(void);
-unsigned int PRN_16bit_GEN_UNO(unsigned int);
-void I2C_Tx_snowstorm_display_UNO(void);
+unsigned char PRN_8bit_GEN(unsigned char start, char * counter){
+    unsigned char bit, lfsr;
+    char EEP_offset;
 
-void prime_no_generator(int,int, int*);
-void prime_no_generator_plus(int,int,  int*);
-int Product_search (int);
-int Prime_search (int, int);
+     EEP_offset = eeprom_read_byte((uint8_t*)(0x3EF));
+    if(EEP_offset > 4)EEP_offset = 0;
 
-void I2C_Tx_2_integers(unsigned int, unsigned int);
+    if((!(*counter)) && (!(start)))   
+    {lfsr = eeprom_read_byte((uint8_t*)(0x3F4 - EEP_offset));}
+        
+    else lfsr = start;
+    
+    bit = (( lfsr >> 0) ^ (lfsr >> 2) ^ (lfsr >> 3) ^ (lfsr >> 4)) & 1;
+    lfsr = (lfsr >> 1) | (bit << 7);
+        
+    if(!(*counter)){Char_to_PC_Basic(EEP_offset + '0');Toggle_LED_1;
+    eeprom_write_byte((uint8_t*)(0x3F4 - EEP_offset),lfsr);}
+
+  return lfsr;}
 
 
-/*****************************************************************/
-/*char PRN_8bit_GEN(void){
-unsigned int bit;
-char lfsr;
-
-lfsr = eeprom_read_byte((uint8_t*)(0x3F4));
-bit = (( lfsr >> 0) ^ (lfsr >> 2) ^ (lfsr >> 3) ^ (lfsr >> 4)) & 1;
-lfsr = (lfsr >> 1) | (bit << 7);
-eeprom_write_byte((uint8_t*)(0x3F4),lfsr);
-return lfsr;}*/
 
 
 /*****************************************************************/
-
-/*unsigned int PRN_16bit_GEN(unsigned int start){
-unsigned int bit, lfsr;
-
-if(!(start)) lfsr = (eeprom_read_byte((uint8_t*)(0x3F5)) << 8) + eeprom_read_byte((uint8_t*)(0x3F4));
-else lfsr = start;
-bit = (( lfsr >> 0) ^ (lfsr >> 2) ^ (lfsr >> 3) ^ (lfsr >> 5)) & 1;
-lfsr = (lfsr >> 1) | (bit << 15);
-if(!(start)){
-eeprom_write_byte((uint8_t*)(0x3F5),(lfsr>>8));
-eeprom_write_byte((uint8_t*)(0x3F4),lfsr);}
-
-return lfsr;}*/
 
 unsigned int PRN_16bit_GEN(unsigned int start, unsigned char *PRN_counter){				//Pseudo random number generation 
 unsigned int bit, lfsr, eep_address;													//The calling routine provides memory space for PRN_counter
@@ -71,7 +54,7 @@ return lfsr;}
 
 
 /************************************************************************/
-void I2C_Tx_snowstorm_display(void){
+/*void I2C_Tx_snowstorm_display(void){
 
 int PRN;
 
@@ -80,35 +63,10 @@ PRN = PRN_16bit_GEN (0);									//Generate a new PRN (0) tells subroutine to us
 I2C_Tx_2_integers(PRN, (PRN<<1));							//Display two "pseudo random numbers"
 Timer_T1_sub(T1_delay_100ms);}}
 
+*/
 
 
 /*****************************************************************/
-/*unsigned char PRN_8bit_GEN_UNO(void){
-unsigned int bit;
-unsigned char lfsr;
-
-lfsr = eeprom_read_byte((uint8_t*)(0x3F4));
-bit = (( lfsr >> 0) ^ (lfsr >> 2) ^ (lfsr >> 3) ^ (lfsr >> 4)) & 1;
-lfsr = (lfsr >> 1) | (bit << 7);
-eeprom_write_byte((uint8_t*)(0x3F4),lfsr);
-return lfsr;}*/
-
-
-/*****************************************************************/
-
-/*unsigned int PRN_16bit_GEN_UNO(unsigned int start){
-unsigned int bit, lfsr;
-
-if(!(start)) lfsr = (eeprom_read_byte((uint8_t*)(0x3F5)) << 8) + eeprom_read_byte((uint8_t*)(0x3F4));
-else lfsr = start;
-bit = (( lfsr >> 0) ^ (lfsr >> 2) ^ (lfsr >> 3) ^ (lfsr >> 5)) & 1;
-lfsr = (lfsr >> 1) | (bit << 15);
-if(!(start)){
-eeprom_write_byte((uint8_t*)(0x3F5),(lfsr>>8));
-eeprom_write_byte((uint8_t*)(0x3F4),lfsr);}
-
-return lfsr;}*/
-
 
 
 /************************************************************************/
