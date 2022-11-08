@@ -12,6 +12,8 @@ char num_as_string[12];
 #include <avr/wdt.h>
 
 
+unsigned char PRN_8bit_GEN(unsigned char, char *);
+
 
 /*****************************************************************************/
 #define SW_reset {wdt_enable(WDTO_30MS);while(1);}
