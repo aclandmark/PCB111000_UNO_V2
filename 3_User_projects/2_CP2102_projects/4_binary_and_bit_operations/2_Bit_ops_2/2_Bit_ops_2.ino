@@ -18,17 +18,21 @@ int main (void) {
   char keypress;
   unsigned char lfsr;
 
+  char PRN_counter = 0;
+
 
  setup_HW_basic;
- _delay_ms(10);
+for(int m = 0; m <=7; m++)digits[m] = 0;
+ 
+ 
  sei();
 
-  I2C_Tx_any_segment_clear_all();
-  //Reset_ATtiny1606;
-  lfsr = PRN_8bit_GEN(0xF);
+  
+lfsr = (PRN_8bit_GEN (0, &PRN_counter));                  //Generate a new PRN (0) tells subroutine to use the EEPROM
+
 
   String_to_PC_Basic
-  ("\r\n\r\nSelect mode 1 to 6? Then AK to continue or x to exit (when allowed)\r\n");
+  ("\r\n\r\nSelect mode 1 to 6? Then AK to continue or xx to exit (when allowed)\r\n");
 
   while (1)
   { String_to_PC_Basic("Mode?\t");
@@ -46,37 +50,39 @@ int main (void) {
       default:    newline; continue;
     }
 
-    digits[1] = 1;
+    digits[1] = 0;
     digits[2] = 0;
     X = 0;
     do
-    { if (digits[1] == 1)
-      { digits[0] = PRN_8bit_GEN(lfsr); lfsr = PRN_8bit_GEN(digits[0]);
-
+    { if (digits[1] == 0)
+      {  digits[0] = lfsr;
         digits[2] = digits[0];
-        //One_wire_comms_3_bytes(digits);
+       
         I2C_Tx_BWops(digits);
-        while(1){if (waitforkeypress_Basic() == 'x')String_to_PC_Basic("AOK then x\r\n"); else break;}
+       
+    PRN_counter += 1;
+    PRN_counter = PRN_counter%5;
+    lfsr = PRN_8bit_GEN (lfsr, &PRN_counter);
         
       }
 
       digits[2] = logical_op(digits[1], digits[0], op_code);
 
-
-      for(int m = 3; m <= 7; m++)digits[m] = 0;
-
-      //One_wire_comms_3_bytes(digits);
       I2C_Tx_BWops(digits);
       keypress = waitforkeypress_Basic();
 
+      
+      
       if (op_code < '3')
-      { if (++digits[1] == 8)digits[1] = 1;
+      { if (++digits[1] == 9)digits[1] = 0;   //if (++digits[1] == 8)digits[1] = 1;
       }
       else
-      { digits[1] = (((byte)digits[1] << 1) % 255);
+      { if (!(digits[1]))digits[1] = 1; 
+      else digits[1] = (((byte)digits[1] << 1) % 256);
       }
 
-
+    
+    
     } while (keypress != 'x');
 
   }
@@ -98,19 +104,6 @@ char logical_op(char X, char Y, char op_code) {
   }
   return result;
 }
-
-
-
-
-/*****************************************************************/
-unsigned char PRN_8bit_GEN(unsigned char lfsr){
-unsigned int bit;
-
-bit = (( lfsr >> 0) ^ (lfsr >> 2) ^ (lfsr >> 3) ^ (lfsr >> 4)) & 1;
-lfsr = (lfsr >> 1) | (bit << 7);
-return lfsr;}
-
-
 
 
 
