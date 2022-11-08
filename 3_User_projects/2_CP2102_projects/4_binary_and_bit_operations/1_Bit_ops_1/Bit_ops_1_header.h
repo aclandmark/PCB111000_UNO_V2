@@ -17,6 +17,8 @@ char num_as_string[12];
 #define SW_reset {wdt_enable(WDTO_30MS);while(1);}
 
 
+unsigned char PRN_8bit_GEN(unsigned char, char *);
+
 
 /*****************************************************************************/
 #define setup_HW_basic \
