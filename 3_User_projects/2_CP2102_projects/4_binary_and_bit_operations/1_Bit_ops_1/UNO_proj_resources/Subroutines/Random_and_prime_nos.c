@@ -17,7 +17,10 @@ unsigned char PRN_8bit_GEN(unsigned char start, char * counter){
         
     if(!(*counter)){Char_to_PC_Basic(EEP_offset + '0');Toggle_LED_1;
     eeprom_write_byte((uint8_t*)(0x3F4 - EEP_offset),lfsr);}
-
+	
+	*counter = *counter + 1;
+	*counter = *counter%56;
+	
   return lfsr;}
 
 
