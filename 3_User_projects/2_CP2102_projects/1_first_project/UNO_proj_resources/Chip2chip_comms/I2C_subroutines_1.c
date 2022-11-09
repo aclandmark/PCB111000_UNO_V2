@@ -14,6 +14,7 @@ void I2C_Tx_display(void);
 void I2C_Tx_LED_dimmer(void);
 void I2C_Tx_LED_dimmer_UNO(void);
 void Cal_UNO_pcb_A(void);
+void I2C_Tx_long(long );
 
 char Char_from_PC_Basic(void);
 char isCharavailable_Basic(char);
@@ -181,6 +182,12 @@ if (error_mag < 750) String_to_PC_Basic("  OK\r\n");}
 
 
 
+/************************************************************************/
+void I2C_Tx_long(long L_number){
+char s[4];
+char num_bytes=4; char mode=6;
+for(int m=0; m<=3; m++){s[m] = (L_number >> (8*(3-m)));}
+I2C_Tx(num_bytes,mode, s);}
 
 
 
