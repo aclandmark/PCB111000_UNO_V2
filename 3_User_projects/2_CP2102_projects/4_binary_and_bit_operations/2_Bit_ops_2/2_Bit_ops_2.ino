@@ -18,6 +18,7 @@ int main (void) {
   char keypress;
   unsigned char lfsr;
 
+int test = 0;
   char PRN_counter = 0;
 
 
@@ -59,29 +60,24 @@ lfsr = (PRN_8bit_GEN (0, &PRN_counter));                  //Generate a new PRN (
         digits[2] = digits[0];
        
         I2C_Tx_BWops(digits);
-       
-    PRN_counter += 1;
-    PRN_counter = PRN_counter%5;
-    lfsr = PRN_8bit_GEN (lfsr, &PRN_counter);
-        
+        lfsr = PRN_8bit_GEN (lfsr, &PRN_counter);      Char_to_PC_Basic('\t');Int_to_PC_Basic(lfsr); 
+        Char_to_PC_Basic('\t'); Int_to_PC_Basic(test++); String_to_PC_Basic("\r\n");
       }
 
       digits[2] = logical_op(digits[1], digits[0], op_code);
 
       I2C_Tx_BWops(digits);
       keypress = waitforkeypress_Basic();
-
-      
       
       if (op_code < '3')
-      { if (++digits[1] == 9)digits[1] = 0;   //if (++digits[1] == 8)digits[1] = 1;
+      { if (++digits[1] == 9)digits[1] = 0;
       }
       else
       { if (!(digits[1]))digits[1] = 1; 
       else digits[1] = (((byte)digits[1] << 1) % 256);
       }
 
-    
+    PRN_8bit_GEN (lfsr, &PRN_counter);                          //Increment PRN_counter
     
     } while (keypress != 'x');
 
