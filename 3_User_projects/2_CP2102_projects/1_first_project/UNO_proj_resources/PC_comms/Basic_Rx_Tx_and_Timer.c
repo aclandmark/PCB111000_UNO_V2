@@ -140,6 +140,18 @@ if (((data > '9') || (data < '0')) )return 0;							//Otherwise return zero
 else return 1;}
 
 
+char wait_for_return_key_Basic(void){                  						//Returns key presses one at a time
+char keypress,temp;
+while(1){																//Remain in while loop until a character is received
+if (isCharavailable_Basic(8)){												//Pauses but returns 1 immediately that a character is received
+keypress = Char_from_PC_Basic();												//Skip if no character has been received 
+break;}}																//Exit while loop when character has been read
+if((keypress == '\r') || (keypress == '\n')){							//Detect \r\n, \r or \n and converts to \r
+if (isCharavailable_Basic(1)){temp = Char_from_PC_Basic();}
+keypress = '\r';}
+return keypress;}
+
+
 
 void Int_to_PC_Basic (int number)
 { int i = 0;
@@ -152,9 +164,6 @@ void Int_to_PC_Basic (int number)
   for (int m = i; m > 0; m--)Char_to_PC_Basic(s[m - 1]);
   Char_to_PC_Basic(' ');
 }
-
-
-
 
 
 
