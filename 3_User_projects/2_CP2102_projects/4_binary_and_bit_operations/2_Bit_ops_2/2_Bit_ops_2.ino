@@ -60,8 +60,7 @@ lfsr = (PRN_8bit_GEN (0, &PRN_counter));                  //Generate a new PRN (
         digits[2] = digits[0];
        
         I2C_Tx_BWops(digits);
-        lfsr = PRN_8bit_GEN (lfsr, &PRN_counter);      Char_to_PC_Basic('\t');Int_to_PC_Basic(lfsr); 
-        Char_to_PC_Basic('\t'); Int_to_PC_Basic(test++); String_to_PC_Basic("\r\n");
+        lfsr = PRN_8bit_GEN (lfsr, &PRN_counter);      
       }
 
       digits[2] = logical_op(digits[1], digits[0], op_code);
