@@ -43,8 +43,10 @@ char waitforkeypress_A(void);
 char Char_from_PC_Basic(void);
 void String_to_PC_Basic(const char*);
 void Char_to_PC_Basic(char);
+void newline_Basic(void);
 
 char decimal_digit (char);
+void Int_to_PC_Basic (int);
 char wait_for_return_key_A(void);
 void Check_num_for_to_big_or_small(float);
 
@@ -119,12 +121,16 @@ UDR0 = data;}															//Load data register with "data" and it will immedia
 
 
 /**********************************************************************************************************************************************************************************/
+void newline_Basic(void){String_to_PC_Basic ("\r\n");}
+
+
+
+/**********************************************************************************************************************************************************************************/
 void String_to_PC_Basic(const char s[]){								//Transmits a sequence (string) of characters and requires the address in program memory of the first one
 int i = 0;																//"i" gives the relative address of the next character to be transmitted
 while(i < 200){															//Transmits up to 200 characters using "Char_to_PC()" or untill the null (\0) character is detected
 if(s[i] == '\0') break;
 Char_to_PC_Basic(s[i++]);}}												//Transmit character and increment "i" so that it addresses (points to) the next one.
-
 
 
 
@@ -135,23 +141,41 @@ else return 1;}
 
 
 
+void Int_to_PC_Basic (int number)
+{ int i = 0;
+  char s[12];
+   do
+  { s[i++] = number % 10 + '0';
+  }
+  while ((number = number / 10) > 0);
+  s[i] = '\0';
+  for (int m = i; m > 0; m--)Char_to_PC_Basic(s[m - 1]);
+  Char_to_PC_Basic(' ');
+}
+
+
+
+
+
+
+
 /**********************************************************************************************************************************************************************************/
-char isCharavailable_A (int m){int n = 0;								//Version of isCharavailable_Basic() that uses the Arduino library
+/*char isCharavailable_A (int m){int n = 0;								//Version of isCharavailable_Basic() that uses the Arduino library
 while (!(Serial.available())){n++;	wdr();			
 if (n>8000) {m--;n = 0;}if (m == 0)return 0;}	
-return 1;}	
+return 1;}*/	
 
 
 
 /**********************************************************************************************************************************************************************************/
-char waitforkeypress_A (void){											//Version of waitforkeypress_Basic() that uses the Arduino library
+/*char waitforkeypress_A (void){											//Version of waitforkeypress_Basic() that uses the Arduino library
 while (!(Serial.available()))wdr();	
-return Serial.read(); }
+return Serial.read(); }*/
 
 
 
 /**********************************************************************************************************************************************************************************/
-char wait_for_return_key_A(void){                  						//Returns key presses one at a time
+/*char wait_for_return_key_A(void){                  						//Returns key presses one at a time
 char keypress,temp;
 while(1){																//Remain in while loop until a character is received
 if (isCharavailable_A(8)){												//Pauses but returns 1 immediately that a character is received
@@ -161,17 +185,17 @@ if((keypress == '\r') || (keypress == '\n')){							//Detect \r\n, \r or \n and 
 if (isCharavailable_A(1)){temp = Serial.read();}
 keypress = '\r';}
 return keypress;}
-
+*/
 
 
 /**********************************************************************************************************************************************************************************/
-void Check_num_for_to_big_or_small(float num)											//Exits if the result of floating point arithmetic exceeds permitted limits 
+/*void Check_num_for_to_big_or_small(float num)											//Exits if the result of floating point arithmetic exceeds permitted limits 
 {unsigned long * long_ptr;
 long_ptr = (unsigned long *)&num;														//Enables floating point number to be read as a 32 bit integer 
 if (*long_ptr == 0x7F800000){Serial.write("+ve Num too large\r\n");SW_reset;}
 if (*long_ptr == 0xFF800000){Serial.write("-ve Num too large\r\n");SW_reset;}
 if (*long_ptr == 0X0){Serial.write("+ve Num too small\r\n");SW_reset;}
-if (*long_ptr == 0X80000000){Serial.write("-ve Num too small\r\n");SW_reset;}}
+if (*long_ptr == 0X80000000){Serial.write("-ve Num too small\r\n");SW_reset;}}*/
 
 
 
