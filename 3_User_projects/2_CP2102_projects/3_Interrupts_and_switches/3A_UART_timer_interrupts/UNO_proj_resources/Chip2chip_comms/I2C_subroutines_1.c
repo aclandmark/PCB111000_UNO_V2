@@ -15,6 +15,7 @@ void I2C_Tx_LED_dimmer(void);
 void I2C_Tx_LED_dimmer_UNO(void);
 void Cal_UNO_pcb_A(void);
 void I2C_Tx_long(long );
+long I2C_displayToNum(void);
 
 char Char_from_PC_Basic(void);
 char isCharavailable_Basic(char);
@@ -190,4 +191,24 @@ for(int m=0; m<=3; m++){s[m] = (L_number >> (8*(3-m)));}
 I2C_Tx(num_bytes,mode, s);}
 
 
+long I2C_displayToNum(void){		
+long L_number = 0;
+unsigned char receive_byte;
+char num_bytes=0;
+char mode = 'I';
 
+waiting_for_I2C_master;		
+send_byte_with_Ack(num_bytes);
+send_byte_with_Nack(mode);
+TWCR = (1 << TWINT) | (1 << TWEN);			//clear interrupt and leave I2C active
+waiting_for_I2C_master;
+
+for (int m = 0; m<=3; m++){				//Receive 4 chars and assemble into unsigned long result
+if (m ==3){receive_byte = receive_byte_with_Nack();}
+else {receive_byte = receive_byte_with_Ack();}
+switch(m){
+case 0: case 1: case 2:L_number =  L_number + receive_byte; 
+L_number = L_number << 8; break;
+case 3: L_number =  L_number + receive_byte; break;}}
+clear_I2C_interrupt;
+return L_number;}
