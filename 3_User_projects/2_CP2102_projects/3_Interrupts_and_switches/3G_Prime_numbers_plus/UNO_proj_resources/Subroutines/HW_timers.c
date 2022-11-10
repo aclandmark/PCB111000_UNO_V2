@@ -1,4 +1,16 @@
 
+#define T0_delay_10ms 	7,178
+
+#define T1_delay_10ms	2,0xD8EF
+#define T1_delay_50ms 5,0xFE78
+#define T1_delay_100ms 5,0xFCF2
+#define T1_delay_250ms 5,0xF85F
+#define T1_delay_500ms 5,0xF0BE
+
+#define T1_delay_1sec 5,0xE17D
+#define T1_delay_2sec 5,0xC2FB
+#define T1_delay_4sec 5,0x85F7
+
 
 
 
