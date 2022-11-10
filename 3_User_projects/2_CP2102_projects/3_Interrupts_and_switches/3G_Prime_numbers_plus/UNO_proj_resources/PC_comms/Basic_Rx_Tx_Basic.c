@@ -18,37 +18,9 @@ Note T0 is used exclusively for one wire comms with the display driver/mini-OS d
 
 
 
-#define T0_delay_10ms 	7,178
 
-#define T1_delay_10ms	2,0xD8EF
-#define T1_delay_50ms 5,0xFE78
-#define T1_delay_100ms 5,0xFCF2
-#define T1_delay_250ms 5,0xF85F
-#define T1_delay_500ms 5,0xF0BE
-
-#define T1_delay_1sec 5,0xE17D
-#define T1_delay_2sec 5,0xC2FB
-#define T1_delay_4sec 5,0x85F7
-
-
-void setup_PC_comms_Basic (unsigned char, unsigned char);
-void Timer_T0_10mS_delay_x_m(int);
 void Timer_T0_sub(char, unsigned char);
-
-char isCharavailable_Basic (int);
-char isCharavailable_A (int);
-char waitforkeypress_Basic(void);
-char waitforkeypress_A(void);
-
-char Char_from_PC_Basic(void);
 void String_to_PC_Basic(const char*);
-void Char_to_PC_Basic(char);
-void newline_Basic(void);
-
-char decimal_digit (char);
-void Int_to_PC_Basic (int);
-char wait_for_return_key_A(void);
-void Check_num_for_to_big_or_small(float);
 
 void I2C_Tx_8_byte_array(char *);
 char wait_for_return_key_Basic(void);
