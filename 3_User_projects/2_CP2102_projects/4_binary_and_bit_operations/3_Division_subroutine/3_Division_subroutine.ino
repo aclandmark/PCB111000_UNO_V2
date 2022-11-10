@@ -12,17 +12,17 @@ int main (void){
 long Num_1, Num_2;
 char digits[8];
 
- setup_UNO_extra;
+ setup_HW_basic;
  _delay_ms(10);
  sei();
    
 while(1){
-String_to_PC("\r\nNum_1? (>0)\t");
+String_to_PC_Basic("\r\nNum_1? (>0)\t");
 
 Num_string_from_KBD_Basic_with_Echo(digits);
 Num_1 = Askii_to_binary(digits);
 
-String_to_PC("\r\nNum_2? (>Num_1)\t");
+String_to_PC_Basic("\r\nNum_2? (>Num_1)\t");
  Num_string_from_KBD_Basic_with_Echo(digits);
 Num_2 = Askii_to_binary(digits);
 
@@ -31,11 +31,11 @@ I2C_Tx_any_segment_clear_all();
 _delay_ms(100);
 for(int m = 0; m <= 7; m++)digits[m] = 0;
 
-String_to_PC("\r\nAnswer =   ");
+String_to_PC_Basic("\r\nAnswer =   ");
 
 if (Num_1 > Num_2)fraction_to_decimal_string_Local(Num_2, Num_1, digits); 
 else fraction_to_decimal_string_Local(Num_1, Num_2, digits); 
-String_to_PC("\r\n");}SW_reset;}
+String_to_PC_Basic("\r\n");}SW_reset;}
 
 
 
@@ -50,12 +50,12 @@ _delay_ms(100);
 digits[7]= '0';
 digits[6]= '.';
 
-String_to_PC("0.");
+String_to_PC_Basic("0.");
 
 while(switch_2_up){
 digit = divide_A_by_B(product_AB(remainder,10),denominator);    //uses local function for divide function
 remainder = A_modulo_B(product_AB(remainder,10),denominator);   //uses local function to provide the remainder
-Char_to_PC(digit+'0');
+Char_to_PC_Basic(digit+'0');
 if(m){digits[m-1] = (digit+'0');m--;
 //Int_num_string_to_display;
 I2C_Tx_8_byte_array(digits);
@@ -92,10 +92,10 @@ return (A - product_AB(divide_A_by_B(A,B),B));}
 /*******************************************************************************************************/
 void Num_string_from_KBD_Basic_with_Echo(char * array_ptr)
 { char keypress;
-  while ((keypress = waitforkeypress()) != '\r')
+  while ((keypress = waitforkeypress_Basic()) != '\r')
   { *array_ptr = keypress;
     array_ptr += 1;
-    Char_to_PC(keypress);
+    Char_to_PC_Basic(keypress);
   }
   *array_ptr = '\0';
 }
