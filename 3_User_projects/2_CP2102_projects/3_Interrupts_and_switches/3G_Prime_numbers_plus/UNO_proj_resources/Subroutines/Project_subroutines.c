@@ -19,9 +19,3 @@ I2C_Tx_8_byte_array(digits);}}
             
 return I2C_displayToNum();}
 
-
-
-void factors_to_display(int * factor, int m){
-  
-  for(int n=0; n<m; n++){I2C_Tx_any_segment_clear_all();_delay_ms(100);
-  I2C_Tx_long(factor [n]);while (switch_2_up);while (switch_2_down);}}
