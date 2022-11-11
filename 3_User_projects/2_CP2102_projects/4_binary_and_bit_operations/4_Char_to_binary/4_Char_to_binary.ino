@@ -14,9 +14,13 @@ int main (void){
 
 op=0;
 mode = 'u';                                               //mode: signed or unsigned
-setup_UNO;
+setup_HW_basic;
 I2C_Tx_display_char(digit,mode);
-setup_and_enable_PCI;
+//setup_and_enable_PCI;
+
+set_up_PCI;
+enable_pci;
+
 sei();
 
 while(1){
