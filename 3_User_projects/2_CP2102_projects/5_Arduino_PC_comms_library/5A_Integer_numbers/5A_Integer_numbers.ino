@@ -30,16 +30,16 @@
 
 
 
-
 int main (void)  
   { 
     char num_string[12];
     long  num;
     int m = 1;
  
- setup_328_HW_Arduino_IO;
-    
-   if (reset_status == 1) User_prompt;
+ setup_HW_Arduino_IO;
+    //sei();
+  // if (reset_status == 1) 
+  User_prompt;
  
    Serial.write("\r\nInteger number\t");
 num = Int_Num_from_PC_local(num_string, '\r');
@@ -60,10 +60,10 @@ return 1;
 long Int_Num_from_PC_local(char * num_as_string,char next_char)
 {char strln;
 
-pause_WDT;
+//pause_WDT;
 Serial.flush();   
 strln = Serial.readBytesUntil('\r',num_as_string, 20);
-resume_WDT;
+//resume_WDT;
 num_as_string[strln] = 0;
 Serial.write(num_as_string);
 Serial.write(next_char);
@@ -81,7 +81,6 @@ ltoa(Int_num, num_as_string, 10);
 Serial.print(num_as_string);
 Serial.print(next_char);
 }
-
 
 
 
