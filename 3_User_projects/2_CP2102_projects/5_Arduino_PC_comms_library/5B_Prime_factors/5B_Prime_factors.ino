@@ -23,9 +23,10 @@ int main (void)
     long factor;
     char factor_counter;
  
- setup_328_HW_Arduino_IO;
-    
-   if (reset_status == 1) User_prompt;                            //Only required for a POR
+ setup_HW_Arduino_IO;
+    //sei();
+   //if (reset_status == 1) 
+   //User_prompt;                            //Only required for a POR
  
    Serial.write("\r\nInteger number\t");
    number = Int_Num_from_PC(num_string, '\r');
