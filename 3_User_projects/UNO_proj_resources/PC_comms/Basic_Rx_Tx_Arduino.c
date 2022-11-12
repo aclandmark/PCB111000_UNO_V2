@@ -49,7 +49,7 @@ if (*long_ptr == 0X80000000){Serial.write("-ve Num too small\r\n");SW_reset;}}
 
 
 /**********************************************************************************************************************************************************************************/
-void Cal_UNO_pcb_A(void)
+void Cal_UNO_pcb_A_Arduino(void)
 {unsigned char OSCCAL_mini_OS;
 int error_mag;
 
