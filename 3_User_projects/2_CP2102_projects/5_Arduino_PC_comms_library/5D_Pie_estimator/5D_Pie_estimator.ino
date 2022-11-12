@@ -24,13 +24,14 @@ char numLength;
 float pie;
 unsigned long r_mem;
 
-setup_328_HW_Arduino_IO;
+setup_HW_Arduino_IO;
 //Reset_ATtiny1606;
 
 
-if (reset_status == 3) {Reset_ATtiny1606;
+//if (reset_status == 3) 
+{//Reset_ATtiny1606;
 Serial.write("\r\nEstimate value for PIE. Enter radius (50000 max)\r\n?\t");}
-else Serial.write("?\t");
+//else Serial.write("?\t");
 
 
 R = Unsigned_Int_from_PC(Num_string, 0);                              //DIY subroutine uses Arduino functions
@@ -63,7 +64,7 @@ return 1; }
 void display_float_num_local(float FP_num){
 char * Char_ptr;
 
-pause_pin_change_interrupt_on_PC5;
+//pause_pin_change_interrupt_on_PC5;
 Char_ptr = (char*)&FP_num;                             //address of FP_num in character format
 One_wire_Tx_char = 'D';                               //Command 'D' indicates that a floating point number will be sent
 UART_Tx_1_wire();
@@ -71,7 +72,8 @@ for(int m = 0; m <= 3; m++){                          //Split the number into 4 
 One_wire_Tx_char = *Char_ptr;                         //and send them individually
 UART_Tx_1_wire(); 
 Char_ptr += 1;}
-reinstate_pin_change_interrupt_on_PC5;}
+//reinstate_pin_change_interrupt_on_PC5;
+}
 
 
 
