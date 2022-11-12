@@ -138,3 +138,29 @@ if (isCharavailable_Basic(1)){temp = Char_from_PC_Basic();}
 keypress = '\r';}
 return keypress;}
 
+
+
+/**********************************************************************************************************************************************************************************/
+void Cal_UNO_pcb_A_Basic(void)
+{unsigned char OSCCAL_mini_OS;
+int error_mag;
+
+User_prompt;
+I2C_Tx_initiate_mode('R');
+String_to_PC_Basic("\r\nPCB_A (mini_OS) device calibrating");
+waiting_for_I2C_master;  
+OSCCAL_mini_OS = receive_byte_with_Ack();
+error_mag = receive_byte_with_Ack() << 8;
+error_mag += receive_byte_with_Nack();
+clear_I2C_interrupt;
+String_to_PC_Basic("\r\nOSCCAL user value   "); 
+itoa(OSCCAL_mini_OS, num_as_string, 10);String_to_PC_Basic(num_as_string);
+
+String_to_PC_Basic("\r\ncalibration error  "); 
+itoa(error_mag, num_as_string, 10);String_to_PC_Basic(num_as_string);
+if (error_mag < 750) String_to_PC_Basic("  OK\r\n");}
+
+
+
+/**********************************************************************************************************************************************************************************/
+
