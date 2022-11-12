@@ -29,9 +29,9 @@ int main (void)
     float  num;
     float index;
  
- setup_328_HW_Arduino_IO;
+ setup_HW_Arduino_IO;
     
-   if (reset_status == 1) User_prompt;
+   //if (reset_status == 1) User_prompt;
  
    Serial.write("\r\nScientific number\r\n");
    
@@ -87,10 +87,10 @@ Serial.write(next_char);}
 float Sc_Num_from_PC_local(char * num_as_string,char next_char)
 {char strln;                                                          //Length of a string of characters
 
-pause_WDT;                                                            //Allow time for number to be entered at the keyboard
+//pause_WDT;                                                            //Allow time for number to be entered at the keyboard
 Serial.flush();                                                       //Clear the Arduino serial buffer   
 strln = Serial.readBytesUntil('\r',num_as_string, 20);                //Read upto 20 characters or until a -cr- is received 
-resume_WDT;
+//resume_WDT;
 num_as_string[strln] = 0;                                             //Terminate the string with the null character
 Serial.write(num_as_string);                                          //Print out the numerical string
 Serial.write(next_char);                                              //new-line, space, \t or other specified character
