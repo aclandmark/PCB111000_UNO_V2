@@ -162,7 +162,7 @@ Timer_T0_10mS_delay_x_m(50);}}
 
 
 /************************************************************************/
-void Cal_UNO_pcb_A(void)
+/*void Cal_UNO_pcb_A(void)
 {unsigned char OSCCAL_mini_OS;
 int error_mag;
 
@@ -179,7 +179,7 @@ itoa(OSCCAL_mini_OS, num_as_string, 10);String_to_PC_Basic(num_as_string);
 
 String_to_PC_Basic("\r\ncalibration error  "); 
 itoa(error_mag, num_as_string, 10);String_to_PC_Basic(num_as_string);
-if (error_mag < 750) String_to_PC_Basic("  OK\r\n");}
+if (error_mag < 750) String_to_PC_Basic("  OK\r\n");}*/
 
 
 
