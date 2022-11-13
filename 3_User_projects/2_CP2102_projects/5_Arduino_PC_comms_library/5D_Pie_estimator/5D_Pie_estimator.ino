@@ -34,7 +34,7 @@ sei();
 
 
 waitforkeypress_A();
-L_number = 45;
+L_number = 45000000;
 expnt = 3;
 I2C_Tx_float_num(L_number, expnt);
 waitforkeypress_A();
