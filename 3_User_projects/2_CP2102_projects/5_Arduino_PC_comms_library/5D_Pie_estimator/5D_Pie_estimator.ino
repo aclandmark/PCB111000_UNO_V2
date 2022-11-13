@@ -24,9 +24,20 @@ char numLength;
 float pie;
 unsigned long r_mem;
 
+char expnt;
+long L_number;
+
 setup_HW_Arduino_IO;
 //Reset_ATtiny1606;
+sei();
 
+
+
+waitforkeypress_A();
+L_number = 45;
+expnt = 3;
+I2C_Tx_float_num(L_number, expnt);
+waitforkeypress_A();
 
 //if (reset_status == 3) 
 {//Reset_ATtiny1606;
@@ -49,7 +60,8 @@ Area += Y;}
 if ((pie = (float)Area / (float)R / (float)R * 4) < 0.0)              //Convert integer numbers to FPN and calculate pie
 Serial.write ("Overflows\r\n");
 else {Serial.print (pie,6);                                           //Arduino converts FPN to string and sends this to the PC
-display_float_num_local(pie);                                         //Project subroutine
+//display_float_num_local(pie); 
+I2C_Tx_float_num(pie,0);
 Serial.write("\r\n");}
 
 SW_reset;
@@ -61,7 +73,7 @@ return 1; }
 
 
 /**************************************************************************************************************************/
-void display_float_num_local(float FP_num){
+/*void display_float_num_local(float FP_num){
 char * Char_ptr;
 
 //pause_pin_change_interrupt_on_PC5;
@@ -74,9 +86,48 @@ UART_Tx_1_wire();
 Char_ptr += 1;}
 //reinstate_pin_change_interrupt_on_PC5;
 }
+*/
 
 
-
+void I2C_Tx_float_num(long L_number, char expnt){
+char s[5];
+char num_bytes=5; char mode='K';
+for(int m=0; m<=3; m++){s[m] = (L_number >> (8*(3-m)));}
+s[4] = expnt;
+I2C_Tx(num_bytes,mode, s);}
 
 
 /***************************************************************************************************************************/
+/*
+long fpn_from_KBD_local(char * digits, signed char *expnt){
+long num_1=0,Denominator=1;
+long RHS_of_BP;
+
+char sign = '+';
+*expnt = 0;
+Real_num_string_from_KBD(digits); if(!(digits[0])){return 0;}                     //Ilegal character?
+                                                                                  //Scan the display from the LHS
+{int m=8; while(!(digits[m-1]))m--;                                               //Stop at the first character
+if (digits[m-1] == '-')sign = '-';                                                //If it is '-' a negative number 
+else {num_1 = digits[m-1] - '0';                                                  //is to be entered
+if(num_1){Denominator *=10;(*expnt)++;}}m--;  
+while (m && (digits[m-1] != '.'))                                                 //Continue scanning until a '.' is detected 
+{num_1 =                                                                          //or the end of the display is reached
+(10*num_1) + digits[m-1] - '0'; 
+Denominator *=10;(*expnt)++; m--;}                                                //Continue converting digits and
+                                                                                  //building up the LHS of number
+if(m)m--; 
+while (m){num_1 =                                                                 //Repeat for the RHS of the number
+(10*num_1) + digits[m-1] - '0'; m--; 
+if(num_1)Denominator *=10; if(!(num_1))(*expnt)--;  }                             //Calculate denominator used to convert RHS to decimal
+    
+while(Denominator/num_1 > 10)
+{Denominator /= 10; (*expnt)--;}}                                                 //Ensures -0.05 ends up as -0.5E-1 and not -0.05E0
+
+
+if(sign == '-') num_1 = -num_1;                                                   //Standard negation: complement and add 1
+RHS_of_BP = Fraction_to_Binary_Signed(num_1, Denominator);                        //Obtain the decimal part of the number     
+return RHS_of_BP;}
+
+
+*/
