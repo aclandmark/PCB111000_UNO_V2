@@ -33,10 +33,8 @@ setup_HW_Arduino_IO;
 
 sei();
 
-
 if (watch_dog_reset == 1) 
-{//Reset_ATtiny1606;
-  watch_dog_reset = 0;Serial.write("?\t");}
+{watch_dog_reset = 0;Serial.write("?\t");}
 else Serial.write("\r\nEstimate value for PIE. Enter radius (50000 max)?\r\n\
 Push and hold SW1 to repeat.\t");
 
