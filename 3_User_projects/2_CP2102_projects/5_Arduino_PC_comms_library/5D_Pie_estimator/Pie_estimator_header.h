@@ -215,7 +215,7 @@ TWCR = (1 << TWINT);
 #include "UNO_proj_resources\Chip2chip_comms\I2C_slave_Rx_Tx.c"
 #include "UNO_proj_resources\Chip2chip_comms\I2C_subroutines_1.c"
 #include "UNO_proj_resources\PC_comms\Basic_Rx_Tx_Arduino.c"
-#include "UNO_proj_resources\PC_comms\Arduino_Rx_Tx.c"
+#include "UNO_proj_resources\PC_comms\Arduino_Rx_Tx_UNO_pcb.c"
 #include "UNO_proj_resources\Subroutines\HW_timers.c"
 
 
