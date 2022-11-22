@@ -1,5 +1,8 @@
 
 /*
+ * 
+ * EEPROM location ox3ED reserved for WDT reset source
+ * 
  Raises number Num to a power Pow
  Num must be reduced to the form 1.A * 2^B 
  where 1.A is between 1 and 2 and 1.A * 2^B = Num
@@ -101,7 +104,7 @@ float ans, ans_old;
 long term_counter;
 char sign = 0;
 
-//One_Sec_WDT_with_interrupt;
+One_Sec_WDT_with_interrupt;
 
 if (Num < 0){sign = 1; Num = Num * (-1);}
 
@@ -117,6 +120,9 @@ difference = ans - ans_old;
 if ((difference/ans > -0.0000001) && (difference/ans < 0.0000001))break;
 ans_old = ans;}
 
+setup_watchdog_for_UNO;
+
+
 if(!(sign))return ans;
 else return 1.0/ans;
 }
@@ -127,9 +133,10 @@ else return 1.0/ans;
 
 
 /**************************************************************************************************************************/
-/*ISR (WDT_vect)
-{Signal_WDTout_with_interrupt; 
-wdt_enable(WDTO_30MS);while(1);}*/
+ISR (WDT_vect)
+{
+//Signal_WDTout_with_interrupt;    //write to eeprom location 0x3ED
+wdt_enable(WDTO_30MS);while(1);}
 
 
 
