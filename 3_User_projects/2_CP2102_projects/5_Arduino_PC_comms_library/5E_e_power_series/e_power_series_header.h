@@ -127,6 +127,10 @@ WDTCSR |= (1<<WDCE) | (1<<WDE);\
 WDTCSR = 0x00;
 
 
+#define One_Sec_WDT_with_interrupt \
+wdr();\
+WDTCSR |= (1 <<WDCE) | (1<< WDE);\
+WDTCSR = (1<< WDE) | (1 << WDIE) |  (1 << WDP2)  |  (1 << WDP1);
 
 /*****************************************************************************/
 #define set_up_I2C \
