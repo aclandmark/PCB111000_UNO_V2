@@ -35,13 +35,16 @@ int twos_exp;                                     //Power to which 2 is raised
 float logN;                                       //The log of Num
 float Log_result;                                 
 float Result;
+char expnt;
+long  Denominator;
+long FPN_digits;
 
-setup_328_HW_Arduino_IO;
+setup_HW_Arduino_IO;
 
-if(reset_status == 2)Serial.write("?\r\n");
-if(reset_status == 3)Serial.write(message_1);
-if(reset_status == 5)Serial.write(message_2);
-
+//if(reset_status == 2)Serial.write("?\r\n");
+//if(reset_status == 3)Serial.write(message_1);
+//if(reset_status == 5)Serial.write(message_2);
+Serial.write(message_1);
 Num = Sc_Num_from_PC(Num_string, '\t');           //User enters the scientific number
 
 Num_bkp = Num;
@@ -59,7 +62,7 @@ Int_Num_to_PC(twos_exp, Num_string, '\r');
 
 
 
-Reset_ATtiny1606;
+//Reset_ATtiny1606;
 logN = logE_power_series(Num) + 
 ((float)twos_exp * 0.693147);                     //Log to base e of the scientific number
 
@@ -73,11 +76,15 @@ Pow = Sc_Num_from_PC(Num_string, '\t');           //User enters the power.
 Log_result = logN * Pow;                          //The Log of the result
 
 Result = expE_power_series(Log_result);           //Returns the antilog
-
-display_float_num_local(Result);
 Sc_Num_to_PC(Result,1,5,'\r');
 Serial.write("Library result\t");                   //remove to save overwriting commentary
 Sc_Num_to_PC((pow(Num_bkp,Pow)),1,5,'\r');          //remove to save overwriting commentary
+
+FPN_digits = FPN_to_FPN_digits(Result, &Denominator, &expnt);
+FPN_digits = Fraction_to_Binary_Signed(FPN_digits, Denominator);
+I2C_Tx_float_num(FPN_digits, expnt);
+I2C_Tx_float_display_control;
+
 
 SW_reset;
 return 1; 
@@ -94,7 +101,7 @@ float ans, ans_old;
 long term_counter;
 char sign = 0;
 
-One_Sec_WDT_with_interrupt;
+//One_Sec_WDT_with_interrupt;
 
 if (Num < 0){sign = 1; Num = Num * (-1);}
 
@@ -120,9 +127,9 @@ else return 1.0/ans;
 
 
 /**************************************************************************************************************************/
-ISR (WDT_vect)
+/*ISR (WDT_vect)
 {Signal_WDTout_with_interrupt; 
-wdt_enable(WDTO_30MS);while(1);}
+wdt_enable(WDTO_30MS);while(1);}*/
 
 
 
@@ -162,7 +169,7 @@ return logE;}
 
 
 /**************************************************************************************************************************/
-void display_float_num_local(float FP_num){
+/*void display_float_num_local(float FP_num){
 char * Char_ptr;
 
 pause_pin_change_interrupt_on_PC5;
@@ -173,7 +180,7 @@ for(int m = 0; m <= 3; m++){                          //Split the number into 4 
 One_wire_Tx_char = *Char_ptr;                         //and send them individually
 UART_Tx_1_wire(); 
 Char_ptr += 1;}
-reinstate_pin_change_interrupt_on_PC5;}
+reinstate_pin_change_interrupt_on_PC5;}*/
 
 
 
