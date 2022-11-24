@@ -134,13 +134,12 @@ display_buffer[n] = display_buffer[n-1];
 display_buffer[0] = keypress;}                                                      //Add new keypress           
 I2C_Tx_8_byte_array(display_buffer);}}                                                        //Update display includes "cr_keypress"                                                 
 
+if((decimal_place_counter) && (!(keypress_E))) decimal_place_counter += 1;}
 
 I2C_Tx_any_segment_clear_all();
 _delay_ms(100);
 I2C_Tx_8_byte_array(display_buffer);
 
-
-if((decimal_place_counter) && (!(keypress_E))) decimal_place_counter += 1;}
 expt = -(decimal_place_counter);
 if(expt) (expt) += 1;
 
@@ -159,9 +158,7 @@ expt += atoi(exp_string);
 for (m = 0; m <=14; m++)if(display_buffer[m] == '.')break;
 if(display_buffer[m] == '.'){for (int p = m; p <= 14; p++)display_buffer[p] = display_buffer[p+1];}}
 
-
-return expt;
-}
+return expt;}
 
 
 
