@@ -19,7 +19,7 @@ char decimalOverflow(char, unsigned long, int);  */
 int main (void){
 
  
-long FPN_digits;
+long Significand;
 long  Denominator;
 char  expnt;
 char digits[15];
@@ -35,20 +35,20 @@ Serial.write("Number?  Then press and hold SW1 to repeat.\r\n");
 while(1){
 if(switch_1_down)Serial.write("Next Number?\r\n");
 
-FPN_digits = fpn_from_KBD_local(digits, &expnt, &Denominator);
-FPN_1 = FPN_digits_to_FPN((float)FPN_digits, Denominator, expnt);
+Significand = fpn_from_KBD_local(digits, &expnt, &Denominator);
+FPN_1 = Significand_to_FPN((float)Significand, Denominator, expnt);
 Sc_Num_to_PC(FPN_1, 1, 6, '\r');
-FPN_digits = Fraction_to_Binary_Signed(FPN_digits, Denominator);
+Significand = Fraction_to_Binary_Signed(Significand, Denominator);
 
-I2C_Tx_float_num(FPN_digits, expnt);
+I2C_Tx_float_num(Significand, expnt);
 I2C_Tx_float_display_control;
 
 while(switch_1_down);
 
 FPN_2 = FPN_1 * 2.5; Sc_Num_to_PC(FPN_2, 1, 6, '\r');
-FPN_digits = FPN_to_FPN_digits(FPN_2, &Denominator, &expnt);
-FPN_digits = Fraction_to_Binary_Signed(FPN_digits, Denominator);
-I2C_Tx_float_num(FPN_digits, expnt);
+Significand = FPN_to_Significand(FPN_2, &Denominator, &expnt);
+Significand = Fraction_to_Binary_Signed(Significand, Denominator);
+I2C_Tx_float_num(Significand, expnt);
 I2C_Tx_float_display_control;
 
 }
