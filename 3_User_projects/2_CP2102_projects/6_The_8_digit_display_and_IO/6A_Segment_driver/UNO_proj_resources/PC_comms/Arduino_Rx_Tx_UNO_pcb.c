@@ -82,7 +82,7 @@ Serial.print(num_as_string);Serial.print(next_char);
 
 
 /*****************************************************************************************/
-float FPN_digits_to_FPN(float num, long denom, char expt){
+float Significand_to_FPN(float num, long denom, char expt){
 
 char exp_bkp;
 
@@ -98,7 +98,7 @@ return num;}
 
 
 /*****************************************************************************************/
-long FPN_to_FPN_digits(float FPN, long * Denom, char * expnt){
+long FPN_to_Significand(float FPN, long * Denom, char * expnt){
 float FPN_bkp;
 char sign;
 
