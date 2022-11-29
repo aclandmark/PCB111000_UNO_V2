@@ -1,4 +1,4 @@
-
+/*NO LONGER WORKS PROPERLY: Check PRN generators*/
 
 
 /**************Proj_2C1_random_LED kaleidoscope***************************/
