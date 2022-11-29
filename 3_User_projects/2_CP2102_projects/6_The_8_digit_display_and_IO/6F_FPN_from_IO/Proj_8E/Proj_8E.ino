@@ -33,30 +33,52 @@ volatile char Data_Entry_complete, digit_entry;
 volatile char scroll_control;
 char digits[8];
 
+//long fpn_from_IO(char *, long *);
+
 
 int main (void){
-  long x1;
+  float x1;
+  float power;
   char expnt;
   long Denominator;
+  long Significand;
 
   setup_HW_Arduino_IO;
 
 //if((!watch_dog_reset))
-{
-Serial.write("Press: sw_1 to populate digit_0, sw2 to shift the display left\r\n\
+{Serial.write("Press: sw_1 to populate digit_0, sw2 to shift the display left\r\n\
 sw_3 to enter the number and sw1 to clear the display.\r\n\
-Note: display flashes to indicate number has been entered.\r\n");}
+Note: display flashes to indicate number has been entered.\r\n");
+}
 
-  watch_dog_reset = 0;
-
+  //watch_dog_reset = 0;
  
-  x1 = fpn_from_IO(&expnt, &Denominator);
-  Serial.write("\r\n");
- Serial.print(x1); 
- Serial.write("\r\n");
- Serial.print(Denominator); 
+ Significand = fpn_from_IO(&expnt, &Denominator);
+ x1 = Significand_to_FPN((float)Significand, Denominator, expnt);
+ Sc_Num_to_PC(x1, 1, 6, '\r');
+ if(x1 > 0.0)power = 1.2; else power = 3.0;
+ 
+while(1){
+Sc_Num_to_PC(x1,1,5 ,'\r');
+Significand = FPN_to_Significand(x1, &Denominator, &expnt);
+Significand = Fraction_to_Binary_Signed(Significand, Denominator);
+I2C_Tx_float_num(Significand, expnt);
+I2C_Tx_float_display_control;
+
+
+while(switch_1_down);
+
+x1 = pow(x1, power);                                  //Do some arithmetic
+}       
+
+
+
   while(switch_1_up);
-SW_reset;}
+
+
+  
+SW_reset;
+}
 
 
 
@@ -66,10 +88,8 @@ long fpn_from_IO(char *expnt, long *Denominator)
   char FPN_string[15];
   long num_1=0, num_2 = 0;
   char sign = '+';
-
   
   *Denominator = 1;
-  
   for(int m = 0; m <= 14; m++)FPN_string[m] = 0;
   
   set_up_pci;
@@ -88,12 +108,6 @@ long fpn_from_IO(char *expnt, long *Denominator)
   sei();
 *expnt = FPN_as_string(FPN_string);
 
-
-Serial.write("\r\n");
-Serial.print((int)*expnt);
-Serial.write("\r\n");
-for(int m = 0; m <= 14; m++)if(FPN_string[m]) Serial.write(FPN_string[m]);//
-
 if (FPN_string[0]== '-'){for (int m = 0; m <= 13; m++)FPN_string[m] =  FPN_string[m + 1];
 sign = '-';}
 num_1 = atol(FPN_string);
@@ -111,6 +125,11 @@ int FPN_as_string(char * FPN_string){
   char keypress = 0;
   int dig_counter = 1;
   char expnt, test;
+
+char decimal_place = 0;
+char decimal_place_counter = 0;
+char keypress_E = 0;
+
     
     char * string_add;
     string_add = FPN_string;
@@ -124,29 +143,32 @@ dig_counter += 1;
 digit_entry = 0;
 if (Data_Entry_complete)break;
 *(FPN_string++) = digits[1]; _delay_us(1);  
+
+
+if (digits[1] == '.'){decimal_place = 1;continue;}
+if (digits[1] == 'e'){keypress_E = 1; continue;}
+if((decimal_place) && (!(keypress_E)))decimal_place_counter += 1;
 }
 *(FPN_string++) = digits[0]; 
 *FPN_string = '\r';
 
+if((decimal_place_counter)&& (!keypress_E))decimal_place_counter += 1;
+
 while(dig_counter){if (*(--FPN_string) != 'e')dig_counter -= 1; else break;} 
-//if (*(FPN_string+1) == 'e')(*(FPN_string+1) == 0);
+if (*(FPN_string) == 'e')(*(FPN_string) = 0);
 if(!(dig_counter))expnt = 0;
-else
-{expnt = atoi ((++FPN_string));
+else expnt = atoi ((++FPN_string));
 
-Serial.write("\r\n");
-test = *string_add;
-Serial.write(test);
-
-
-/*{int m,p;
+{int m,p;
 for (m = 0; m <=14; m++)if(*(string_add + m) == '.')break;
-if(*(string_add + m) == '.'){for (int p = m; p <= 14; p++)(*(string_add + p)) = (*(string_add + p + 1));}}*/
+if(*(string_add + m) == '.'){for (int p = m; p <= 14; p++)(*(string_add + p)) = (*(string_add + p + 1));}}
 
+expnt -= decimal_place_counter;
 
-return expnt;}
-
+return expnt;
 }
+
+
 
 
 
@@ -223,3 +245,53 @@ void scroll_display_zero(void){                     //display scrolls 0 to 9 the
   default: digits[0] += 1; break;}
 
 I2C_Tx_8_byte_array(digits);}
+
+
+
+
+/*int FPN_as_string(char * FPN_string){
+  char keypress = 0;
+  int dig_counter = 1;
+  char expnt, test;
+    
+    char * string_add;
+    string_add = FPN_string;
+    
+  Data_Entry_complete = 0;
+  digit_entry = 0;
+  
+ while(1){
+while (!(digit_entry));
+dig_counter += 1;
+digit_entry = 0;
+if (Data_Entry_complete)break;
+*(FPN_string++) = digits[1]; _delay_us(1);  
+}
+*(FPN_string++) = digits[0]; 
+*FPN_string = '\r';
+
+while(dig_counter){if (*(--FPN_string) != 'e')dig_counter -= 1; else break;} 
+if (*(FPN_string) == 'e')(*(FPN_string) = 0);
+if(!(dig_counter))expnt = 0;
+else
+expnt = atoi ((++FPN_string));
+
+
+Serial.write("\r\ntest\t");Serial.write(string_add);Serial.write("\r\n");
+for(int m = 0; m <= 14; m++)Serial.write(*(string_add + m));Serial.write("\r\n");
+
+
+
+{int m,p;
+for (m = 0; m <=14; m++)if(*(string_add + m) == '.')break;
+if(*(string_add + m) == '.'){for (int p = m; p <= 14; p++)(*(string_add + p)) = (*(string_add + p + 1));}
+
+
+Serial.write("\r\ntest\t");for(int m = 0; m <= 14; m++)Serial.write(*(string_add + m));Serial.write("\r\n");}
+
+return expnt;}*/
+
+
+
+
+/*******************************************************************************/
