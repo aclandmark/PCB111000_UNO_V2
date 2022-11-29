@@ -74,7 +74,13 @@ EEPROM reservations:
 0x3F0 PRN generator random number LB
 0x3EF PRN EEPROM location offset 0, 1 or 2
 0x3ED Used by use projects to control WDT reset source
+
+
+0x3EB	Last EEPROM location required by Hello World file
+
 */
+
+
 
 
 
