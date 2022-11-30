@@ -1,4 +1,6 @@
-/*NO LONGER WORKS PROPERLY on CA versions: Check PRN generators*/
+/*NO LONGER WORKS PROPERLY on a single CA version on offset 0
+OK on offsets 2 and 4
+Probably damaded EEPROM location*/
 
 
 /**************Proj_2C1_random_LED kaleidoscope***************************/
