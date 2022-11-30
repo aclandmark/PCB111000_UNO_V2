@@ -222,6 +222,7 @@ case 'R': Auto_cal(); break;
 
 case 'X': cal_spot_check();break;
 
+
 default: break;}}}
 
 /**********Mode'T' is used by Auto_cal()***************************/
