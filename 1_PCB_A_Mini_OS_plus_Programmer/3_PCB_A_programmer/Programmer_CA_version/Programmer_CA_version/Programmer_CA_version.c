@@ -107,7 +107,6 @@ if(!(target_detected))sendChar('!');
 if(target_detected == 1){
 UCSR0B |= (1<< TXEN0);									//It is now OK to activate the UART TX
 
-
 while(1){
 do{sendString("?  ");one_second_delay;} 				//User prompt
 while((isCharavailable() == 0));
@@ -127,6 +126,7 @@ asm("jmp 0x6080");}
 PageSZ = 0x40; PAmask = 0x3FC0;							//Define flash parameters
 
 while ((keypress = waitforkeypress()) != ':')			//Ignore characters before the first ':'
+
 
 Initialise_variables_for_programming_flash;
 
