@@ -73,6 +73,7 @@ EEPROM reservations:
 0x3F1 PRN generator random number HB
 0x3F0 PRN generator random number LB
 0x3EF PRN EEPROM location offset 0, 1 or 2
+0x3EE NOT used
 0x3ED Used by use projects to control WDT reset source
 
 
