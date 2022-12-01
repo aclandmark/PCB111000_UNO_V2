@@ -1,31 +1,24 @@
 
 
-char watch_dog_reset = 0;
-char MCUSR_copy;
-char User_response;
-char num_as_string[12];
 
-
-/*****************************************************************************/
 #include <avr/wdt.h>
 
 
-unsigned char PRN_8bit_GEN(unsigned char, char *);
-char isCharavailable_A (int);
+char watch_dog_reset = 0;
+char MCUSR_copy;
+char User_response;
+char num_as_string[12];                           //Required by pcb_A calibration routine to print out cal results
+
+
 
 /*****************************************************************************/
-
-#define switch_2_down  ((PIND & 0x80)^0x80)
-#define switch_2_up   (PIND & 0x80)
+#define switch_2_down             ((PIND & 0x80)^0x80)
+#define switch_2_up               (PIND & 0x80)
 
 #define set_up_PCI_on_sw2         PCICR |= (1 << PCIE2);
 #define enable_pci_on_sw2         PCMSK2 |= (1 << PCINT23);
 
 
-/*****************************************************************************/
-#define SW_reset {wdt_enable(WDTO_30MS);while(1);}
-
-#define switch_2_up   (PIND & 0x80)
 
 /*****************************************************************************/
 #define setup_HW_Arduino_IO \
@@ -61,63 +54,20 @@ Cal_UNO_pcb_A_Arduino();
 
 
 /*****************************************************************************/
-/*Users press -t- to upload the project commentry and hex file
- They then press -r- to print out the commentary line by line and -X- to run the project
- Having printed the commentary once pressing -r- again will run the project immediately
- with no commentary
- EEPROM 0x3F6 controls printing the project commentary.
-After each line has been printed 0x3F6 increments and the program resets.
-When X is pressed when program control jumps to the user app.
-*/
-
-
-#define User_app_commentary_mode \
-\
-if(eeprom_read_byte((uint8_t*)0x3F6) == 0xFF)\
-eeprom_write_byte((uint8_t*)0x3F6,0);\
-\
-if(eeprom_read_byte((uint8_t*)0x3F6) == 0x40){\
-for(int m = 0; m < 10; m++)Serial.write("\r\n");\
-Serial.write\
-("Project commentary: Press 'X' to escape or AOK\r\n");\
-\
-eeprom_write_byte((uint8_t*)0x3F6,0x41);}\
-\
-if ((eeprom_read_byte((uint8_t*)0x3F6) & 0x40)){\
-eeprom_write_byte((uint8_t*)0x3F6,\
-(eeprom_read_byte((uint8_t*)0x3F6) | 0x80));\
-\
-for(int m = 0; m < 4; m++)Serial.write("\r\n");\
-\
-asm("jmp 0x6C00");}                                     /*Go to Text_Verification.hex to print the next string*/ 
-
-
-
-
-
-
-/*****************************************************************************/
 #define setup_watchdog_for_UNO \
 if (MCUSR_copy & (1 << WDRF))watch_dog_reset = 1;\
 wdr();\
-MCUSR &= ~(1<<WDRF);                          /*Line not needed WD flag already reset by bootloader */\
+MCUSR &= ~(1<<WDRF);                          /*Line not really needed WD flag already reset by bootloader */\
 WDTCSR |= (1 <<WDCE) | (1<< WDE);\
 WDTCSR = 0;
 
 
 #define wdr()  __asm__ __volatile__("wdr")
 
-#define wd_timer_off \
-wdr();\
-MCUSR &= (~(1 << WDRF));\
-WDTCSR |= (1<<WDCE) | (1<<WDE);\
-WDTCSR = 0x00;
+
+#define SW_reset {wdt_enable(WDTO_30MS);while(1);}
 
 
-#define One_Sec_WDT_with_interrupt \
-wdr();\
-WDTCSR |= (1 <<WDCE) | (1<< WDE);\
-WDTCSR = (1<< WDE) | (1 << WDIE) |  (1 << WDP2)  |  (1 << WDP1);
 
 /*****************************************************************************/
 #define set_up_I2C \
@@ -132,7 +82,6 @@ DDRD &= (~((1 << PD2)|(1 << PD7)));             /*Ports D2 and D7 configured for
 PORTD |= ((1 << PORTD2) | (1 << PORTD7));        /*Set Port data registers high */\
 DDRB &= (~(1 << PB2));                           /*Repeat for PORTB2*/\
 PORTB |= (1 << PB2);
-
 
 
 
@@ -162,25 +111,12 @@ DDRD &= (~((1 << PD3)|(1 << PD4)|(1 << PD5)));\
 PORTC |= ((1 << PC0)|(1 << PC1)|(1 << PC2));\
 PORTD |= ((1 << PD3)|(1 << PD4)|(1 << PD5));
 
-
 /*
 Note: The hex_text_bootloader reads PD6 to control the reset operation.
 It should really be weak pull up but has been left in its default condition (tri-state) 
 This is OK because it is always connected to a defined logic level
 */
 
-
-
-/*****************************************************************************/
-#define OSC_CAL_328                                /*User cal bytes if set are stored in EEPROM locations 0x3FF and 0x3FE*/\
-if ((eeprom_read_byte((uint8_t*)0x3FE) > 0x0F)\
-&&  (eeprom_read_byte((uint8_t*)0x3FE) < 0xF0)\
-&& (eeprom_read_byte((uint8_t*)0x3FE)\
-== eeprom_read_byte((uint8_t*)0x3FF)))\
-{OSCCAL = eeprom_read_byte((uint8_t*)0x3FE);}       //At reset the micro reads register OSCCAL to obtain the calibration byte
-
-
-//Note: Arduino reads the EEPROM as unsigned 8 bit chars
 
 
 /*****************************************************************************/
@@ -203,13 +139,35 @@ TWCR = (1 << TWINT);
 
 
 
+/*****************************************************************************/
+#define User_app_commentary_mode \
+\
+if(eeprom_read_byte((uint8_t*)0x3F6) == 0xFF)\
+eeprom_write_byte((uint8_t*)0x3F6,0);\
+\
+if(eeprom_read_byte((uint8_t*)0x3F6) == 0x40){\
+for(int m = 0; m < 10; m++)Serial.write("\r\n");\
+Serial.write\
+("Project commentary: Press 'X' to escape or AOK\r\n");\
+\
+eeprom_write_byte((uint8_t*)0x3F6,0x41);}\
+\
+if ((eeprom_read_byte((uint8_t*)0x3F6) & 0x40)){\
+eeprom_write_byte((uint8_t*)0x3F6,\
+(eeprom_read_byte((uint8_t*)0x3F6) | 0x80));\
+\
+for(int m = 0; m < 4; m++)Serial.write("\r\n");\
+\
+asm("jmp 0x6C00");}                                     /*Go to Text_Verification.hex to print the next string*/ 
+
+
+
 /**********************************************************************************/
 #include "UNO_proj_resources\Chip2chip_comms\I2C_slave_Rx_Tx.c"
 #include "UNO_proj_resources\Chip2chip_comms\I2C_subroutines_1.c"
 #include "UNO_proj_resources\PC_comms\Basic_Rx_Tx_Arduino.c"
-#include "UNO_proj_resources\PC_comms\Arduino_Rx_Tx_UNO_pcb.c"
 #include "UNO_proj_resources\Subroutines\HW_timers.c"
-#include "UNO_proj_resources\Subroutines\FPN_subroutines.c"
+
 
 
 /**********************************************************************************/
