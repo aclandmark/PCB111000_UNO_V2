@@ -3,6 +3,8 @@
 
 #include <avr/wdt.h>
 
+char  digits[8];                                                        //stores the digits to be displayed
+volatile char Data_Entry_complete;
 
 char watch_dog_reset = 0;
 char MCUSR_copy;
@@ -41,8 +43,8 @@ PCICR |= ((1 << PCIE0) | (1 << PCIE2));
 #define enable_pci  PCMSK0 |= (1 << PCINT2);\
 PCMSK2 |= (1 << PCINT18) | (1 << PCINT23);
 
-#define clear_PCI_on_sw1_and_sw2    PCIFR |= (1<< PCIF2);
-
+#define disable_pci PCMSK0 &= (~(1 << PCINT2)); \
+PCMSK2 &= (~((1 << PCINT18) | (1 << PCINT23)));
 
 #define Init_display_for_pci_data_entry \
 clear_digits;\
