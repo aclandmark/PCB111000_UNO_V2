@@ -31,9 +31,9 @@ set_up_PCI_on_sw2;
   enable_pci_on_sw2;
 
 
-//if(reset_status == 3)Serial.write(message_1);
-//if(reset_status == 2)Serial.write(message_2);
-Serial.write(message_1);
+if(!(watch_dog_reset))Serial.write(message_1);
+else Serial.write(message_2);{watch_dog_reset = 0;}
+
 
 while(1){digit_num=0;
 while(digit_num < 8){
@@ -57,6 +57,6 @@ wdr();
 /***************************************************************************************************************/
 ISR(PCINT2_vect)
 { if (switch_2_up)return;
-  sei(); I2C_Tx_any_segment_clear_all();
+  I2C_Tx_any_segment_clear_all();
   SW_reset;
 }
