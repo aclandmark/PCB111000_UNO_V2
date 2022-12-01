@@ -1,11 +1,15 @@
 
 
+
+#include <avr/wdt.h>
+
+
 char watch_dog_reset = 0;
 char MCUSR_copy;
 char User_response;
-char num_as_string[12];
+char num_as_string[12];                           //Required by pcb_A calibration routine to print out cal results
 
-
+char PCMSK0_backup, PCMSK2_backup, float_display_mode;
 
 
 #define message_1 \
@@ -18,18 +22,9 @@ sw2 to divide it by 10\r\n\
 press sw3 before sw1 or 2 to repeat\r\n\
 enter 0 to reset.\r\n"
 
-     
-char PCMSK0_backup, PCMSK2_backup, float_display_mode;
 
 
-/*****************************************************************************/
-#include <avr/wdt.h>
 
-
-unsigned char PRN_8bit_GEN(unsigned char, char *);
-char isCharavailable_A (int);
-
-/*****************************************************************************/
 #define switch_1_down  ((PIND & 0x04)^0x04)
 #define switch_1_up   (PIND & 0x04)
 #define switch_2_down ((PIND & 0x80)^0x80)
@@ -38,6 +33,8 @@ char isCharavailable_A (int);
 #define switch_3_up   (PINB & 0x04)
 
 
+
+/*****************************************************************************/
 #define set_up_pci \
 PCICR |= ((1 << PCIE0) | (1 << PCIE2));
 
@@ -46,19 +43,17 @@ PCMSK2 |= (1 << PCINT18) | (1 << PCINT23);
 
 #define clear_PCI_on_sw1_and_sw2    PCIFR |= (1<< PCIF2);
 
+
 #define Init_display_for_pci_data_entry \
 clear_digits;\
 digits[0] = '0';\
 I2C_Tx_8_byte_array(digits);
 
+
 #define clear_digits {for(int m = 0; m<=7; m++)digits[m]=0;}
 #define shift_digits_left {for (int n = 0; n < 7; n++){digits[7-n] = digits[6-n];}}
 
 
-/*****************************************************************************/
-#define SW_reset {wdt_enable(WDTO_30MS);while(1);}
-
-#define switch_2_up   (PIND & 0x80)
 
 /*****************************************************************************/
 #define setup_HW_Arduino_IO \
@@ -94,63 +89,20 @@ Cal_UNO_pcb_A_Arduino();
 
 
 /*****************************************************************************/
-/*Users press -t- to upload the project commentry and hex file
- They then press -r- to print out the commentary line by line and -X- to run the project
- Having printed the commentary once pressing -r- again will run the project immediately
- with no commentary
- EEPROM 0x3F6 controls printing the project commentary.
-After each line has been printed 0x3F6 increments and the program resets.
-When X is pressed when program control jumps to the user app.
-*/
-
-
-#define User_app_commentary_mode \
-\
-if(eeprom_read_byte((uint8_t*)0x3F6) == 0xFF)\
-eeprom_write_byte((uint8_t*)0x3F6,0);\
-\
-if(eeprom_read_byte((uint8_t*)0x3F6) == 0x40){\
-for(int m = 0; m < 10; m++)Serial.write("\r\n");\
-Serial.write\
-("Project commentary: Press 'X' to escape or AOK\r\n");\
-\
-eeprom_write_byte((uint8_t*)0x3F6,0x41);}\
-\
-if ((eeprom_read_byte((uint8_t*)0x3F6) & 0x40)){\
-eeprom_write_byte((uint8_t*)0x3F6,\
-(eeprom_read_byte((uint8_t*)0x3F6) | 0x80));\
-\
-for(int m = 0; m < 4; m++)Serial.write("\r\n");\
-\
-asm("jmp 0x6C00");}                                     /*Go to Text_Verification.hex to print the next string*/ 
-
-
-
-
-
-
-/*****************************************************************************/
 #define setup_watchdog_for_UNO \
 if (MCUSR_copy & (1 << WDRF))watch_dog_reset = 1;\
 wdr();\
-MCUSR &= ~(1<<WDRF);                          /*Line not needed WD flag already reset by bootloader */\
+MCUSR &= ~(1<<WDRF);                          /*Line not really needed WD flag already reset by bootloader */\
 WDTCSR |= (1 <<WDCE) | (1<< WDE);\
 WDTCSR = 0;
 
 
 #define wdr()  __asm__ __volatile__("wdr")
 
-#define wd_timer_off \
-wdr();\
-MCUSR &= (~(1 << WDRF));\
-WDTCSR |= (1<<WDCE) | (1<<WDE);\
-WDTCSR = 0x00;
+
+#define SW_reset {wdt_enable(WDTO_30MS);while(1);}
 
 
-#define One_Sec_WDT_with_interrupt \
-wdr();\
-WDTCSR |= (1 <<WDCE) | (1<< WDE);\
-WDTCSR = (1<< WDE) | (1 << WDIE) |  (1 << WDP2)  |  (1 << WDP1);
 
 /*****************************************************************************/
 #define set_up_I2C \
@@ -165,7 +117,6 @@ DDRD &= (~((1 << PD2)|(1 << PD7)));             /*Ports D2 and D7 configured for
 PORTD |= ((1 << PORTD2) | (1 << PORTD7));        /*Set Port data registers high */\
 DDRB &= (~(1 << PB2));                           /*Repeat for PORTB2*/\
 PORTB |= (1 << PB2);
-
 
 
 
@@ -195,25 +146,12 @@ DDRD &= (~((1 << PD3)|(1 << PD4)|(1 << PD5)));\
 PORTC |= ((1 << PC0)|(1 << PC1)|(1 << PC2));\
 PORTD |= ((1 << PD3)|(1 << PD4)|(1 << PD5));
 
-
 /*
 Note: The hex_text_bootloader reads PD6 to control the reset operation.
 It should really be weak pull up but has been left in its default condition (tri-state) 
 This is OK because it is always connected to a defined logic level
 */
 
-
-
-/*****************************************************************************/
-#define OSC_CAL_328                                /*User cal bytes if set are stored in EEPROM locations 0x3FF and 0x3FE*/\
-if ((eeprom_read_byte((uint8_t*)0x3FE) > 0x0F)\
-&&  (eeprom_read_byte((uint8_t*)0x3FE) < 0xF0)\
-&& (eeprom_read_byte((uint8_t*)0x3FE)\
-== eeprom_read_byte((uint8_t*)0x3FF)))\
-{OSCCAL = eeprom_read_byte((uint8_t*)0x3FE);}       //At reset the micro reads register OSCCAL to obtain the calibration byte
-
-
-//Note: Arduino reads the EEPROM as unsigned 8 bit chars
 
 
 /*****************************************************************************/
@@ -236,29 +174,26 @@ TWCR = (1 << TWINT);
 
 
 
-/******************************************************************/
-#define pci_on_sw1_and_sw2_enabled (PCMSK2 & 0x84) == 0x84
-#define pci_on_sw3_enabled (PCMSK0 & 0x04) == 0x04
-#define PCIenabled ((pci_on_sw1_and_sw2_enabled) || (pci_on_sw3_enabled))
-#define disable_pci_on_sw1_and_sw2  PCMSK2 &= (~((1 << PCINT18) | (1 << PCINT23)));
-#define disable_pci_on_sw3  PCMSK0 &= (~(1 << PCINT2));
-
-#define I2C_Tx_float_display_control \
-{\
-PCMSK0_backup= PCMSK0;\
-PCMSK2_backup= PCMSK2;\
-float_display_mode = '0';\
-if (PCIenabled){disable_pci_on_sw3;disable_pci_on_sw1_and_sw2;}\
-while(1){\
-if(switch_3_down)float_display_mode = '1'; else float_display_mode = '0';\
-if((switch_1_down)||(switch_2_down))float_display_mode = '2';\
-waiting_for_I2C_master;\
-send_byte_with_Nack(float_display_mode);\
-clear_I2C_interrupt;\
-if(float_display_mode == '2')break;}\
-PCMSK0 = PCMSK0_backup;\
-PCMSK2 = PCMSK2_backup;}
-
+/*****************************************************************************/
+#define User_app_commentary_mode \
+\
+if(eeprom_read_byte((uint8_t*)0x3F6) == 0xFF)\
+eeprom_write_byte((uint8_t*)0x3F6,0);\
+\
+if(eeprom_read_byte((uint8_t*)0x3F6) == 0x40){\
+for(int m = 0; m < 10; m++)Serial.write("\r\n");\
+Serial.write\
+("Project commentary: Press 'X' to escape or AOK\r\n");\
+\
+eeprom_write_byte((uint8_t*)0x3F6,0x41);}\
+\
+if ((eeprom_read_byte((uint8_t*)0x3F6) & 0x40)){\
+eeprom_write_byte((uint8_t*)0x3F6,\
+(eeprom_read_byte((uint8_t*)0x3F6) | 0x80));\
+\
+for(int m = 0; m < 4; m++)Serial.write("\r\n");\
+\
+asm("jmp 0x6C00");}                                     /*Go to Text_Verification.hex to print the next string*/ 
 
 
 
@@ -266,10 +201,11 @@ PCMSK2 = PCMSK2_backup;}
 #include "UNO_proj_resources\Chip2chip_comms\I2C_slave_Rx_Tx.c"
 #include "UNO_proj_resources\Chip2chip_comms\I2C_subroutines_1.c"
 #include "UNO_proj_resources\PC_comms\Basic_Rx_Tx_Arduino.c"
+#include "UNO_proj_resources\Subroutines\HW_timers.c"
 #include "UNO_proj_resources\PC_comms\KBD_to_display.c"
 #include "UNO_proj_resources\PC_comms\Arduino_Rx_Tx_UNO_pcb.c"
-#include "UNO_proj_resources\Subroutines\HW_timers.c"
-#include "UNO_proj_resources\Subroutines\FPN_subroutines.c"
+
+
 
 
 /**********************************************************************************/
