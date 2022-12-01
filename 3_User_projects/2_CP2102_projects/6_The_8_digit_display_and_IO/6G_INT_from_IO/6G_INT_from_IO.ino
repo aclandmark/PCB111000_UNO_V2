@@ -26,17 +26,12 @@ PB6 calls ISR(PCINT0_vect)*/
 
 #include "INT_IO_to_display_header.h"
 
-char  digits[8];                                                        //stores the digits to be displayed
-volatile char Data_Entry_complete;
-
 
 
 int main (void){
 long num;
 
 setup_HW_Arduino_IO;
-
-User_prompt;
 
 Serial.write("\r\nDATA FROM I/O");
 Serial.write(message_1);
@@ -46,10 +41,11 @@ while(1){Serial.write("?\r\n");
   while((switch_1_down) || (switch_2_down) ||(switch_3_down));        //wait for switch release
     
   num = number_from_IO();                                            //Call get_number subroutine
-  Serial.print(num);
+  
+   Serial.print(num);
    Serial.write("\r\n");
   if(!(num)){SW_reset;}                                               //If the number is zero reset
-  while(1){
+  while(num){
     while((switch_1_up) && (switch_2_up));                             //Wait for sw1 or 2 to be pressed
     if(switch_3_down)break;                                           //If sw3 is already down request a new number
     if(switch_1_down)num *=10;                                         //If sw1 was pressed multiply the number by 10
@@ -68,11 +64,9 @@ set_up_pci;
 enable_pci;
 
 Init_display_for_pci_data_entry;                                    //Set digit[0] to zero and display it.
-
-sei();                                                              //Enable interrupts
 while(!(Data_Entry_complete));                                      //Line A. wait here for pci interrupts used to enter data
 Data_Entry_complete = 0;
-cli();
+disable_pci;
 return I2C_displayToNum();}                                         //Acquire binary value of the display and return it.
 
 
@@ -97,17 +91,9 @@ if(switch_2_down) {                                               //Use switch 3
 
 /********************************************************************************************************************/
 ISR(PCINT0_vect){
-char disp_bkp[8];
-
 if(switch_3_up)return;                                           //Ignore switch release
-
-for(int m = 0; m<=7; m++)
-  {disp_bkp[m]=digits[m];
-  digits[m]=0;}
-I2C_Tx_8_byte_array(digits);
+I2C_Tx_any_segment_clear_all();
 Timer_T0_10mS_delay_x_m(25);                                      //Flash display
-for(int m = 0; m<=7; m++)
-  {digits[m]=disp_bkp[m];}
 I2C_Tx_8_byte_array(digits);
 Data_Entry_complete=1;}                                           //Return to Line A
 
