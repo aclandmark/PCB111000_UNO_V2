@@ -12,7 +12,7 @@ bit of DIY programming is required.
 
 
 
-#include "display_INT_header.h"
+#include "Segment_driver_header.h"
 
 
 int main (void){
