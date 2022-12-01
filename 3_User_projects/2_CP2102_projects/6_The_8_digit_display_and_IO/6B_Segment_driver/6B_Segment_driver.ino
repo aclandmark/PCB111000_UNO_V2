@@ -17,9 +17,9 @@ char keypress = 0, digit_num=0;
 
 setup_HW_Arduino_IO;
 
-//if(reset_status == 3)Serial.write(message_1);
-//if(reset_status == 2)Serial.write(message_2);
-Serial.write(message_1);
+if(!(watch_dog_reset))Serial.write(message_1);
+else Serial.write(message_2);{watch_dog_reset = 0;}
+
 while(1){                                                               //Keep inputting data until x is received
 
 while(!(Serial.available()))wdr(); keypress = Serial.read();            
@@ -34,13 +34,13 @@ case 'd': case 'e': case 'f':
 case 'g': I2C_Tx_any_segment(keypress, digit_num); break;
 
 case 'x': {
-I2C_Tx_any_segment_clear_all();SW_reset;} break;                                          //if any other key (AOK) execute a SW_reset.
+I2C_Tx_any_segment_clear_all();SW_reset;} break;                         //if any other key (AOK) execute a SW_reset.
 
 defaut: break;
 
 }                                                                        //Bottom of switch block return to top of "do-loop"
 }
-}                                                                         //Repeat program
+}                                                                        //Repeat program
 
 
 
