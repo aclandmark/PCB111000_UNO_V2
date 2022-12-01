@@ -18,11 +18,26 @@ char PCMSK0_backup, PCMSK2_backup, float_display_mode;
 #define switch_3_down ((PINB & 0x04)^0x04)
 #define switch_3_up   (PINB & 0x04)
 
-#define pci_on_sw1_and_sw2_enabled (PCMSK2 & 0x84) == 0x84
-#define pci_on_sw3_enabled (PCMSK0 & 0x04) == 0x04
-#define PCIenabled ((pci_on_sw1_and_sw2_enabled) || (pci_on_sw3_enabled))
-#define disable_pci_on_sw1_and_sw2  PCMSK2 &= (~((1 << PCINT18) | (1 << PCINT23)));
-#define disable_pci_on_sw3  PCMSK0 &= (~(1 << PCINT2));
+
+
+/*****************************************************************************/
+#define set_up_pci \
+PCICR |= ((1 << PCIE0) | (1 << PCIE2));
+
+#define enable_pci  PCMSK0 |= (1 << PCINT2);\
+PCMSK2 |= (1 << PCINT18) | (1 << PCINT23);
+
+#define clear_PCI_on_sw1_and_sw2    PCIFR |= (1<< PCIF2);
+
+
+#define Init_display_for_pci_data_entry \
+clear_digits;\
+digits[0] = '0';\
+I2C_Tx_8_byte_array(digits);
+
+#define clear_digits {for(int m = 0; m<=7; m++)digits[m]=0;}
+#define shift_digits_left {for (int n = 0; n < 7; n++){digits[7-n] = digits[6-n];}}
+
 
 
 /*****************************************************************************/
@@ -192,6 +207,8 @@ clear_I2C_interrupt;\
 if(float_display_mode == '2')break;}\
 PCMSK0 = PCMSK0_backup;\
 PCMSK2 = PCMSK2_backup;}
+
+
 
 /**********************************************************************************/
 #include "UNO_proj_resources\Chip2chip_comms\I2C_slave_Rx_Tx.c"
