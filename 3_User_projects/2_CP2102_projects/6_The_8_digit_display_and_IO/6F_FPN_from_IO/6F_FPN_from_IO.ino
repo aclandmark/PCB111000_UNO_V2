@@ -33,8 +33,6 @@ volatile char Data_Entry_complete, digit_entry;
 volatile char scroll_control;
 char digits[8];
 
-//long fpn_from_IO(char *, long *);
-
 
 int main (void){
   float x1;
@@ -45,40 +43,27 @@ int main (void){
 
   setup_HW_Arduino_IO;
 
-//if((!watch_dog_reset))
 {Serial.write("Press: sw_1 to populate digit_0, sw2 to shift the display left\r\n\
 sw_3 to enter the number and sw1 to clear the display.\r\n\
-Note: display flashes to indicate number has been entered.\r\n");
-}
-
-  //watch_dog_reset = 0;
+Note: display flashes to indicate number has been entered.\r\n");}
  
  Significand = fpn_from_IO(&expnt, &Denominator);
  x1 = Significand_to_FPN((float)Significand, Denominator, expnt);
- Sc_Num_to_PC(x1, 1, 6, '\r');
  if(x1 > 0.0)power = 1.2; else power = 3.0;
  
 while(1){
-Sc_Num_to_PC(x1,1,5 ,'\r');
+Sc_Num_to_PC(x1,1,6 ,'\r');
 Significand = FPN_to_Significand(x1, &Denominator, &expnt);
 Significand = Fraction_to_Binary_Signed(Significand, Denominator);
 I2C_Tx_float_num(Significand, expnt);
 I2C_Tx_float_display_control;
 
-
 while(switch_1_down);
 
-x1 = pow(x1, power);                                  //Do some arithmetic
-}       
+x1 = pow(x1, power); }                                //Do some arithmetic
 
-
-
-  while(switch_1_up);
-
-
-  
-SW_reset;
-}
+while(switch_1_up);
+SW_reset;}
 
 
 
