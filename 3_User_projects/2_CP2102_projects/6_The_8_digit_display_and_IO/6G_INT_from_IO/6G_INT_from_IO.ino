@@ -26,8 +26,6 @@ PB6 calls ISR(PCINT0_vect)*/
 
 #include "INT_IO_to_display_header.h"
 
-long number_from_IO(void);
-
 char  digits[8];                                                        //stores the digits to be displayed
 volatile char Data_Entry_complete;
 
@@ -49,9 +47,7 @@ while(1){Serial.write("?\r\n");
     
   num = number_from_IO();                                            //Call get_number subroutine
   Serial.print(num);
-  //Num_to_PC(10, num);                                                 //Echo the number to the PC
-  //newline();
-  Serial.write("\r\n");
+   Serial.write("\r\n");
   if(!(num)){SW_reset;}                                               //If the number is zero reset
   while(1){
     while((switch_1_up) && (switch_2_up));                             //Wait for sw1 or 2 to be pressed
@@ -59,7 +55,6 @@ while(1){Serial.write("?\r\n");
     if(switch_1_down)num *=10;                                         //If sw1 was pressed multiply the number by 10
     else num /=10;                                                    //If sw2 was pressed divide it by 10
     I2C_Tx_long(num);                                                 //send the result to the display
-    //Num_to_PC(10, num);                                               //Send the result to the PC
     Serial.print(num);
     Serial.write("\r\n");
     Timer_T0_10mS_delay_x_m(25);}}}
@@ -68,18 +63,15 @@ while(1){Serial.write("?\r\n");
 
 /********************************************************************************************************************/
 long number_from_IO(void){
-//char copy_of_SREG;
 
-//setup_and_enable_PCI;
 set_up_pci;
 enable_pci;
 
 Init_display_for_pci_data_entry;                                    //Set digit[0] to zero and display it.
-//copy_of_SREG = SREG;                                                //Save interrupt state
+
 sei();                                                              //Enable interrupts
 while(!(Data_Entry_complete));                                      //Line A. wait here for pci interrupts used to enter data
 Data_Entry_complete = 0;
-//SREG = copy_of_SREG;                                                //Restore original interrupt state
 cli();
 return I2C_displayToNum();}                                         //Acquire binary value of the display and return it.
 
@@ -118,3 +110,9 @@ for(int m = 0; m<=7; m++)
   {digits[m]=disp_bkp[m];}
 I2C_Tx_8_byte_array(digits);
 Data_Entry_complete=1;}                                           //Return to Line A
+
+
+
+
+
+/**********************************************************************************************************************/
