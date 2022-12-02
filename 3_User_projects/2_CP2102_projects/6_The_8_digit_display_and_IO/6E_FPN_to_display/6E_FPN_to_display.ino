@@ -21,7 +21,7 @@ char digits[15];
 long Significand;
 long  Denominator;
 char  expnt;
-
+char counter = 0;
 
 
 setup_HW_Arduino_IO;
@@ -33,19 +33,44 @@ Serial.write("\r\nEnter scientific number \
 Significand = fpn_from_KBD(digits, &expnt, &Denominator);
 Num_1 = Significand_to_FPN((float)Significand, Denominator, expnt);
 //Sc_Num_to_PC(Num_1, 1, 6, '\r');
-if(Num_1 > 0.0)power = 1.5; else power = 3.0;
+if(Num_1 > 0.0)power = 0.5; else power = 3.0;
 
 
 while (1){
+Int_Num_to_PC(counter,num_as_string, '\t');  
 Sc_Num_to_PC(Num_1,1,6 ,'\r');                            //Send number to PC
-Significand = FPN_to_Significand(Num_1, &Denominator, &expnt);
+
+if (!(counter%5))
+{Significand = FPN_to_Significand(Num_1, &Denominator, &expnt);
 Significand = Fraction_to_Binary_Signed(Significand, Denominator);
 I2C_Tx_float_num(Significand, expnt);
 I2C_Tx_float_display_control;
 
-while(switch_1_down);
+while(switch_1_down);}
 
-Num_1 = pow(Num_1, power);                                  //Do some arithmetic
-}                                                         //Generates reset if result of arithmetic is too large or small
+Num_1 = pow(Num_1, power);  counter += 1;                                //Do some arithmetic
+if((Num_1 - 1.0) < 5.0e-3)break;}
+
+power = 1.0/power;
+do{
+Int_Num_to_PC(counter,num_as_string, '\t'); 
+Sc_Num_to_PC(Num_1,1,6 ,'\r');                            //Send number to PC
+
+if (!(counter%5))
+{Significand = FPN_to_Significand(Num_1, &Denominator, &expnt);
+Significand = Fraction_to_Binary_Signed(Significand, Denominator);
+I2C_Tx_float_num(Significand, expnt);
+I2C_Tx_float_display_control;
+
+while(switch_1_down);}
+
+Num_1 = pow(Num_1, power);  counter -= 1; }                               //Do some arithmetic
+while(counter+1);
+
+
+                                                        //Generates reset if result of arithmetic is too large or small
+
+
+
 
 SW_reset;}
