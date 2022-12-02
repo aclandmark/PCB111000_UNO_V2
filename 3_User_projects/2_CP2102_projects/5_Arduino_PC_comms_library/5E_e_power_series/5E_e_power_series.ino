@@ -83,7 +83,7 @@ Sc_Num_to_PC(Result,1,5,'\r');
 Serial.write("Library result\t");                   //remove to save overwriting commentary
 Sc_Num_to_PC((pow(Num_bkp,Pow)),1,5,'\r');          //remove to save overwriting commentary
 
-FPN_digits = FPN_to_FPN_digits(Result, &Denominator, &expnt);
+FPN_digits = FPN_to_Significand(Result, &Denominator, &expnt);
 FPN_digits = Fraction_to_Binary_Signed(FPN_digits, Denominator);
 I2C_Tx_float_num(FPN_digits, expnt);
 I2C_Tx_float_display_control;
