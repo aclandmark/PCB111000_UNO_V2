@@ -56,7 +56,7 @@ if ((pie = (float)Area / (float)R / (float)R * 4) < 0.0)              //Convert 
 Serial.write ("Overflows\r\n");
 else {Serial.print (pie,6);                                           //Arduino converts FPN to string and sends this to the PC
 
-FPN_digits = FPN_to_FPN_digits(pie, &Denominator, &expnt);
+FPN_digits = FPN_to_Significand(pie, &Denominator, &expnt);
 
 FPN_digits = Fraction_to_Binary_Signed(FPN_digits, Denominator);
 
