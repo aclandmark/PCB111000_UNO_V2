@@ -7,8 +7,8 @@ Like 5D but processes floating point data
 Use the term Significand in place of FPN_digits
 
 Does NOT send 100,100,1000 10000 etc correctly to the display
-ut does acquire them correctly!!
-
+but does acquire them correctly!!
+Affects proj_6F too
 */
 
 
