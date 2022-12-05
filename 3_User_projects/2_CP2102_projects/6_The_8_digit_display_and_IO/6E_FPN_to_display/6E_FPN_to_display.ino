@@ -29,19 +29,21 @@ char counter = 0;
 
 setup_HW_Arduino_IO;
 
-Serial.write("\r\nEnter scientific number_2 \
+Serial.write("\r\nEnter scientific number \
 & terminate with Return key.\r\n");
 
 Significand = fpn_from_KBD(digits, &expnt, &Denominator);
-Num_1 = Significand_to_FPN((float)Significand, Denominator, expnt);
 
+Num_1 = Significand_to_FPN((float)Significand, Denominator, expnt);
 while (1){
 Int_Num_to_PC(counter,num_as_string, '\t');  
-Sc_Num_to_PC(Num_1,1,6 ,'\r');                            //Send number to PC
+Sc_Num_to_PC(Num_1,1,6 ,'\r'); 
 
 if (!(counter%5))
 {Significand = FPN_to_Significand(Num_1, &Denominator, &expnt);
+
 Significand = Fraction_to_Binary_Signed(Significand, Denominator);
+
 I2C_Tx_float_num(Significand, expnt);
 I2C_Tx_float_display_control;
 
