@@ -19,14 +19,12 @@ char PCMSK0_backup, PCMSK2_backup, float_display_mode;
 Press sw1 to populate digits[0]\r\n\
 sw2 to shift display left\r\n\
 sw3 to enter the number\r\n\
-sw1 to multiply the number by 10\r\n\
-sw2 to divide it by 10\r\n\
-press sw3 before sw1 or 2 to repeat\r\n\
-enter 0 to reset.\r\n"
+sw1 to pause the display \r\n\
+and restart the program.\r\n"
 
 
 
-
+/*****************************************************************************/
 #define switch_1_down  ((PIND & 0x04)^0x04)
 #define switch_1_up   (PIND & 0x04)
 #define switch_2_down ((PIND & 0x80)^0x80)
