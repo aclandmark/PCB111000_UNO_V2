@@ -16,36 +16,57 @@ bit of DIY programming is required.
 
 
 int main (void){
-long Num_1;
-char digits[8];
-int counter = 0;
+float Arith_mean;
+float Geom_mean;
 
+char digits[8];
+char expnt;
+long Denominator;
+long Significand;
+
+int counter = 1;
+ int num_from_KBD;
 setup_HW_Arduino_IO;
 
 
-Serial.write("\r\nEnter positive number \
+Serial.write("\r\nEnter positive numbers \
 & terminate with Return key.\r\n");
-Num_1 = Int_KBD_to_display(digits);                                  //Acquires data from keyboard
+Arith_mean = (float)Int_KBD_to_display(digits);
+Geom_mean = Arith_mean;
 
-do{
-Serial.print(++counter); Serial.write('\t');
-Serial.print(Num_1); Serial.write("\r\n");
 
-I2C_Tx_long(Num_1);                                           //Sends number to the display
+while(1){
+num_from_KBD = Int_KBD_to_display(digits);
+Arith_mean = Arith_mean * (float)counter;
+Geom_mean = pow (Geom_mean, (float)counter);
 
-waitforkeypress_A();
+Arith_mean += (float)num_from_KBD;
+Geom_mean *= (float)num_from_KBD;
 
-Num_1 = (Num_1 / 2) *3;} while (Num_1 < 66666666);                   //Do some arithmetic
 
-Num_1 = (Num_1 / 3) *2; 
+counter += 1;
+Arith_mean = (Arith_mean) / (float)counter;
+Geom_mean =  pow (Geom_mean , 1/(float)counter);
 
-do{Num_1 = (Num_1 / 3) *2;                                           //Do the arithmetic in reverse
-Serial.print(--counter); Serial.write('\t');
-Serial.print(Num_1); 
-Serial.write("\r\n");                                             
-I2C_Tx_long(Num_1);
 
-waitforkeypress_A();}while (counter-1);
+Significand = FPN_to_Significand(Arith_mean, &Denominator, &expnt);
+Significand = Fraction_to_Binary_Signed(Significand, Denominator);
+I2C_Tx_float_num(Significand, expnt);
+I2C_Tx_float_display_control;
+
+while(switch_1_down);
+
+
+Significand = FPN_to_Significand(Geom_mean, &Denominator, &expnt);
+Significand = Fraction_to_Binary_Signed(Significand, Denominator);
+I2C_Tx_float_num(Significand, expnt);
+I2C_Tx_float_display_control;
+
+while(switch_1_down);
+
+
+}
+
 SW_reset;}
 
 
