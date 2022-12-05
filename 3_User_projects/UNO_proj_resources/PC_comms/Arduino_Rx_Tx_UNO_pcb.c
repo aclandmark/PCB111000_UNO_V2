@@ -78,9 +78,6 @@ Serial.print(num_as_string);Serial.print(next_char);
 
 
 
-
-
-
 /*****************************************************************************************/
 float Significand_to_FPN(float num, long denom, char expt){
 
@@ -97,6 +94,7 @@ if (exp_bkp < 0)
 return num;}
 
 
+
 /*****************************************************************************************/
 long FPN_to_Significand(float FPN, long * Denom, char * expnt){
 float FPN_bkp;
@@ -109,15 +107,12 @@ sign = '+';
 if (FPN < 0){FPN = FPN * (-1); sign = '-';}
 
 FPN_bkp = FPN;
-if(FPN_bkp > 1){while (FPN > 1){FPN = FPN/10.0; *expnt += 1;}}
+if(FPN_bkp >= 1){while (FPN >= 1){FPN = FPN/10.0; *expnt += 1;}}
 if(FPN_bkp < 0.1){while (FPN < 0.1){FPN = FPN*10.0; *expnt -= 1;}}
 while (FPN != (long)FPN) {FPN = FPN * 10.0; *Denom *= 10;}
 if (sign == '-')FPN = FPN * (-1);
+
 return (long)FPN; }
-
-
-
-
 
 
 
