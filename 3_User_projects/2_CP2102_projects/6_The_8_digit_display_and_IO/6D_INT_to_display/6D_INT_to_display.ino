@@ -3,11 +3,15 @@
 
 /*
 Here we leave the mini_OS (the Attiny1606) to deal with all the details of displaying a number.
-We can use one_wire_comms to send it a string or binary number.
+We can use one_wire_comms to send it as string or binary number.
 If we send it a string then it will return the number in binary form.
 
 Obviously Arduino do not supply library functions to drive the display and therefore a
 bit of DIY programming is required.
+
+Enter a series of numbers at the keyboard but not 0.
+Enter 0 to display interim result
+Press SW1 twice to enter next number before entering next number
 */
 
 
@@ -25,19 +29,29 @@ long Denominator;
 long Significand;
 
 int counter = 1;
- int num_from_KBD;
+long num_from_KBD;
 setup_HW_Arduino_IO;
 
 
-Serial.write("\r\nEnter positive numbers \
-& terminate with Return key.\r\n");
+
+Serial.write("\r\nEnter positive numbers \r\n\
+& terminate with Return key.\r\n\
+To display interim reults press SW1 before -cr-.\r\n\
+Press sw1 twice to resume entering numbers.\r\n\
+Note: Zero entry is ignored.\r\n");
+
+
+
 Arith_mean = (float)Int_KBD_to_display(digits);
 Geom_mean = Arith_mean;
 
 
 while(1){
-num_from_KBD = Int_KBD_to_display(digits);
-Arith_mean = Arith_mean * (float)counter;
+
+while ((switch_1_down) || (switch_2_down) || (switch_3_down));
+if ((num_from_KBD = Int_KBD_to_display(digits)))
+
+{Arith_mean = Arith_mean * (float)counter;
 Geom_mean = pow (Geom_mean, (float)counter);
 
 Arith_mean += (float)num_from_KBD;
@@ -46,8 +60,9 @@ Geom_mean *= (float)num_from_KBD;
 
 counter += 1;
 Arith_mean = (Arith_mean) / (float)counter;
-Geom_mean =  pow (Geom_mean , 1/(float)counter);
+Geom_mean =  pow (Geom_mean , 1/(float)counter);}
 
+if(switch_1_down)while(switch_1_down); else continue;
 
 Significand = FPN_to_Significand(Arith_mean, &Denominator, &expnt);
 Significand = Fraction_to_Binary_Signed(Significand, Denominator);
@@ -62,10 +77,7 @@ Significand = Fraction_to_Binary_Signed(Significand, Denominator);
 I2C_Tx_float_num(Significand, expnt);
 I2C_Tx_float_display_control;
 
-while(switch_1_down);
-
-
-}
+while(switch_1_down);}
 
 SW_reset;}
 
