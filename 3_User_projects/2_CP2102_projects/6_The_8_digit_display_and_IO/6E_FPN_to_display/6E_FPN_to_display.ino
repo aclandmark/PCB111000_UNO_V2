@@ -2,6 +2,9 @@
 /**************Proj_5E_Acquire_and process_FPN_Data_from_the _KBD********************/
 
 /*
+ * PRINTS column of numbers each one the square root of the previous
+ * untill within 0.005 of unity then cntinues calculating te squares
+ * 
 Like 5D but processes floating point data
 
 Use the term Significand in place of FPN_digits
