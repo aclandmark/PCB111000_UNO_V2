@@ -2,6 +2,8 @@
 /**************Proj_5D_Acquire_and process_Integer_Data_from_the _KBD********************/
 
 /*
+ * 
+ * RUNNING AVERAGES
 Here we leave the mini_OS (the Attiny1606) to deal with all the details of displaying a number.
 We can use one_wire_comms to send it as string or binary number.
 If we send it a string then it will return the number in binary form.
