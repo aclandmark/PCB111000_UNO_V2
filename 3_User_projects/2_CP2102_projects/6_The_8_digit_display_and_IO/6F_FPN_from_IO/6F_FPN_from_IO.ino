@@ -5,6 +5,8 @@
 
 /*A look at getting floating point numbers from the user switches.
 
+Repeat of 5C but usesIO data entry
+Calculates power until FPN limit is reached
 
 IT INTRODUCES
 
