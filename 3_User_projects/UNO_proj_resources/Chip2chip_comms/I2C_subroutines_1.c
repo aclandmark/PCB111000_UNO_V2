@@ -138,12 +138,12 @@ Timer_T0_10mS_delay_x_m(50);}}
 /************************************************************************/
 void FPN_to_display(float num){
   long Denominator;
-  long FPN_digits;
+  long Significand;
   char expnt;
 
-FPN_digits = FPN_to_Significand(num, &Denominator, &expnt);
-FPN_digits = Fraction_to_Binary_Signed(FPN_digits, Denominator);
-I2C_Tx_float_num(FPN_digits, expnt);
+Significand = FPN_to_Significand(num, &Denominator, &expnt);
+Significand = Fraction_to_Binary_Signed(Significand, Denominator);
+I2C_Tx_float_num(Significand, expnt);
 I2C_Tx_float_display_control;}
 
 
