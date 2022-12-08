@@ -1,28 +1,4 @@
 
-void I2C_Tx_2_integers(unsigned int, unsigned int);
-void I2C_Tx_any_segment(char, char);
-void I2C_Tx_any_segment_clear_all(void);
-void I2C_Tx_8_byte_array(char*);
-void I2C_Tx_8_byte_array_plus_mode(char, char*);
-void I2C_Tx_BWops(char*);
-void I2C_Tx_OS_timer(char, char*);
-void I2C_Tx_Clock_command(char, char);
-void I2C_Tx_display_char (char, char);
-void I2C_Tx_2_chars(char, char, char);
-void I2C_initiate_10mS_ref(void);
-void I2C_Tx_display(void);
-void I2C_Tx_LED_dimmer(void);
-void I2C_Tx_LED_dimmer_UNO(void);
-void Cal_UNO_pcb_A(void);
-void I2C_Tx_long(long );
-long I2C_displayToNum(void);
-
-char Char_from_PC_Basic(void);
-char isCharavailable_Basic(char);
-char waitforkeypress_Basic(void);
-void String_to_PC_Basic(const char*);
-void Num_to_PC_Basic(char, long);
-void newline(void);
 
 void I2C_Tx_initiate_mode(char);
 void I2C_Tx(char, char, char*);
@@ -33,11 +9,9 @@ unsigned char receive_byte_with_Nack(void);
 
 void Timer_T0_10mS_delay_x_m(int);
 
-
-
-void Num_to_PC(char, long);					//was sendLongNum()
-void SBtoAL(char*, long, char);	
-void NumericString_to_PC(char*);			//was sendNumericString
+long FPN_to_Significand(float, long *, char *);
+long Fraction_to_Binary_Signed(long, long);
+void I2C_Tx_float_num(long, char);
 
 
 /************************************************************************/
@@ -162,24 +136,15 @@ Timer_T0_10mS_delay_x_m(50);}}
 
 
 /************************************************************************/
-/*void Cal_UNO_pcb_A(void)
-{unsigned char OSCCAL_mini_OS;
-int error_mag;
+void FPN_to_display(float num){
+  long Denominator;
+  long FPN_digits;
+  char expnt;
 
-User_prompt;
-I2C_Tx_initiate_mode('R');
-String_to_PC_Basic("\r\nPCB_A (mini_OS) device calibrating");
-waiting_for_I2C_master;  
-OSCCAL_mini_OS = receive_byte_with_Ack();
-error_mag = receive_byte_with_Ack() << 8;
-error_mag += receive_byte_with_Nack();
-clear_I2C_interrupt;
-String_to_PC_Basic("\r\nOSCCAL user value   "); 
-itoa(OSCCAL_mini_OS, num_as_string, 10);String_to_PC_Basic(num_as_string);
-
-String_to_PC_Basic("\r\ncalibration error  "); 
-itoa(error_mag, num_as_string, 10);String_to_PC_Basic(num_as_string);
-if (error_mag < 750) String_to_PC_Basic("  OK\r\n");}*/
+FPN_digits = FPN_to_Significand(num, &Denominator, &expnt);
+FPN_digits = Fraction_to_Binary_Signed(FPN_digits, Denominator);
+I2C_Tx_float_num(FPN_digits, expnt);
+I2C_Tx_float_display_control;}
 
 
 
