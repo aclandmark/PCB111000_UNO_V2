@@ -1,9 +1,6 @@
 
 /*
- * 
- * EEPROM location ox3ED reserved for WDT reset source
- * 
- Raises number Num to a power Pow
+  Raises number Num to a power Pow
  Num must be reduced to the form 1.A * 2^B 
  where 1.A is between 1 and 2 and 1.A * 2^B = Num
 
@@ -13,6 +10,8 @@
  
  The power series expansion of the exponential function
  is then used to obtain the final result (i.e the antilog)
+
+ Note: ln 2 can also be obtained by summing a similar series of terms 
 
 See https://en.wikipedia.org/wiki/Exponential_function
 and https://en.wikipedia.org/wiki/Natural_logarithm
@@ -38,16 +37,15 @@ int twos_exp;                                     //Power to which 2 is raised
 float logN;                                       //The log of Num
 float Log_result;                                 
 float Result;
-char expnt;
-long  Denominator;
-long FPN_digits;
+
 
 setup_HW_Arduino_IO;
 
-//if(reset_status == 2)Serial.write("?\r\n");
-//if(reset_status == 3)Serial.write(message_1);
-//if(reset_status == 5)Serial.write(message_2);
-Serial.write(message_1);
+if(!(watch_dog_reset))Serial.write(message_1);
+if(watch_dog_reset){watch_dog_reset = 0; Serial.write(message_2);}
+
+while(1){
+Serial.write("?\r\n");
 Num = Sc_Num_from_PC(Num_string, '\t');           //User enters the scientific number
 
 Num_bkp = Num;
@@ -63,15 +61,11 @@ if (Num < 1.0)
 Sc_Num_to_PC(Num, 1, 6, '\t'); 
 Int_Num_to_PC(twos_exp, Num_string, '\r');
 
-
-
-//Reset_ATtiny1606;
 logN = logE_power_series(Num) + 
-((float)twos_exp * 0.693147);                     //Log to base e of the scientific number
+((float)twos_exp * 0.6931472);                     //Log to base e of the scientific number
 
 Serial.write("Natural log is  "); 
 Sc_Num_to_PC(logN,1,5,'\r');
-
 
 Serial.write("Enter power  ");
 Pow = Sc_Num_from_PC(Num_string, '\t');           //User enters the power.
@@ -83,15 +77,9 @@ Sc_Num_to_PC(Result,1,5,'\r');
 Serial.write("Library result\t");                   //remove to save overwriting commentary
 Sc_Num_to_PC((pow(Num_bkp,Pow)),1,5,'\r');          //remove to save overwriting commentary
 
-FPN_digits = FPN_to_Significand(Result, &Denominator, &expnt);
-FPN_digits = Fraction_to_Binary_Signed(FPN_digits, Denominator);
-I2C_Tx_float_num(FPN_digits, expnt);
-I2C_Tx_float_display_control;
+FPN_to_display(Result);}
 
-
-SW_reset;
-return 1; 
-}
+return 1;}
 
 
 
@@ -122,10 +110,8 @@ ans_old = ans;}
 
 setup_watchdog_for_UNO;
 
-
 if(!(sign))return ans;
-else return 1.0/ans;
-}
+else return 1.0/ans;}
 
 //e^x = 1 + x + (x^2)/2 + (x^3)/6 + (x^4)/24.....etc.     //Every increment is related to the previous one (i.e *x/(inc_num)
 
@@ -134,9 +120,7 @@ else return 1.0/ans;
 
 /**************************************************************************************************************************/
 ISR (WDT_vect)
-{
-//Signal_WDTout_with_interrupt;    //write to eeprom location 0x3ED
-wdt_enable(WDTO_30MS);while(1);}
+{wdt_enable(WDTO_30MS);while(1);}
 
 
 
@@ -149,7 +133,7 @@ float difference;                                     //difference berween conse
 
 
 Num -= 1;
-if (Num > 0.9999){logE = 6.9315E-1;}
+if (Num > 0.9999){logE = 6.931472E-1;}
 else if (Num < 0.00001){logE = 1E-6;}
 else                                                  //Use power series to calculate the natural logarithm
 {
@@ -176,20 +160,6 @@ return logE;}
 
 
 /**************************************************************************************************************************/
-/*void display_float_num_local(float FP_num){
-char * Char_ptr;
-
-pause_pin_change_interrupt_on_PC5;
-Char_ptr = (char*)&FP_num;
-One_wire_Tx_char = 'D';                               //Command 'D' indicates that a floating point number will be sent
-UART_Tx_1_wire();
-for(int m = 0; m <= 3; m++){                          //Split the number into 4 chars
-One_wire_Tx_char = *Char_ptr;                         //and send them individually
-UART_Tx_1_wire(); 
-Char_ptr += 1;}
-reinstate_pin_change_interrupt_on_PC5;}*/
-
-
 
 
 
