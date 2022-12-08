@@ -13,6 +13,11 @@ decimal point in the required position.
 Here when printing a scientific number greater than about 10^7 we first repetitively divide it by 10 
 while at the same time incrementing the exponent.  We then use "Serial.print" to print the resulting 
 real number followed by the exponent.  
+
+In project 5C we enter numbers at the KBD. These are raised to a power and the result is 
+returned to the PC. A SW_reset is generated if a result exceeds the limits alloweed 
+for by 32 bit FP numbers.
+
 */
 
 
@@ -31,11 +36,11 @@ int main (void)
  
  setup_HW_Arduino_IO;
     
-   //if (reset_status == 1) User_prompt;
- 
-   Serial.write("\r\nScientific number\r\n");
+   if (watch_dog_reset == 1) {watch_dog_reset = 0; User_prompt;}
+  else {Serial.write("\r\n\r\nUsing Arduino functions to receive and print scientific numbers.\r\n");}
+   Serial.write("\r\nScientific number?\r\n");
    
-num = Sc_Num_from_PC_local(num_string, '\r');
+num = Sc_Num_from_PC(num_string, '\r');
 
 if (num < 1.0) index = 3;                                   //Raise small numbers and negative ones to the power of 3
 else index = 1.5;                                           //Raise remaining numbers to the power of 1.5
@@ -44,7 +49,7 @@ while(1){
   while(!(Serial.available()))wdr();
 Serial.read();                                            //The equivalent of waitforkeypress()
 num = pow (num,index);                                    //-C- library function
-Sc_Num_to_PC_local(num, 2, 4, '\r');
+Sc_Num_to_PC(num, 2, 4, '\r');
 }
 
  SW_reset;
