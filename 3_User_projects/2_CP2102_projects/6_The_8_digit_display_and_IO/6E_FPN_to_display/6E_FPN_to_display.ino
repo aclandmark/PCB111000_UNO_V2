@@ -13,7 +13,7 @@ but does acquire them correctly!!
 Affects proj_6F too
 */
 
-
+//UPDATING IS ONGOING///////////////////////////////////////////////////////
 
 #include "FPN_KBD_to_display_header.h"
 
