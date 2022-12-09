@@ -23,7 +23,7 @@ setup_HW_Arduino_IO;
 if(!(watch_dog_reset))Serial.write(message_1);
 else {watch_dog_reset = 0; Serial.write ("?\r\n");}
 Num = Sc_Num_from_PC(Num_string, '\t');           //User enters the scientific number
-if(!(Num));
+if(!(Num))Num = 0.0001;
 else{
 Num = Num *2.0 * Pie /360.0;}
 Sc_Num_to_PC (Num, 1,5,'\r');
