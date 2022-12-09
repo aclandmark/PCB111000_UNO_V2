@@ -26,15 +26,10 @@ float Arith_mean;
 float Geom_mean;
 
 char digits[8];
-char expnt;
-long Denominator;
-long Significand;
-
 int counter = 1;
 long num_from_KBD;
+
 setup_HW_Arduino_IO;
-
-
 
 Serial.write("\r\nEnter positive numbers \r\n\
 & terminate with Return key.\r\n\
@@ -42,11 +37,8 @@ To display interim reults press SW1 before -cr-.\r\n\
 Press sw1 twice to resume entering numbers.\r\n\
 Note: Zero entry is ignored.\r\n");
 
-
-
 Arith_mean = (float)Int_KBD_to_display(digits);
 Geom_mean = Arith_mean;
-
 
 while(1){
 
@@ -59,26 +51,16 @@ Geom_mean = pow (Geom_mean, (float)counter);
 Arith_mean += (float)num_from_KBD;
 Geom_mean *= (float)num_from_KBD;
 
-
 counter += 1;
 Arith_mean = (Arith_mean) / (float)counter;
 Geom_mean =  pow (Geom_mean , 1/(float)counter);}
 
 if(switch_1_down)while(switch_1_down); else continue;
 
-Significand = FPN_to_Significand(Arith_mean, &Denominator, &expnt);
-Significand = Fraction_to_Binary_Signed(Significand, Denominator);
-I2C_Tx_float_num(Significand, expnt);
-I2C_Tx_float_display_control;
-
+FPN_to_display(Arith_mean);
 while(switch_1_down);
 
-
-Significand = FPN_to_Significand(Geom_mean, &Denominator, &expnt);
-Significand = Fraction_to_Binary_Signed(Significand, Denominator);
-I2C_Tx_float_num(Significand, expnt);
-I2C_Tx_float_display_control;
-
+FPN_to_display(Geom_mean);
 while(switch_1_down);}
 
 SW_reset;}
