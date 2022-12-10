@@ -5,7 +5,7 @@
 
 /*A look at getting floating point numbers from the user switches.
 
-Repeat of 5C but usesIO data entry
+Repeat of 5C but uses IO data entry
 Calculates power until FPN limit is reached
 
 IT INTRODUCES
@@ -18,12 +18,31 @@ IT INTRODUCES
   This is used to enter the latest digit and note any subsequent digits which may now be 
   illegal (i.e. only one decimal point is allowed). 
   
-3.  Project subroutine "Double_from_IO()".
-  This is where program execution pauses while the user is entering data at the keyboard. 
-  A return key press causes program execution to  leave this subroutine.
-  
-4.  Project subroutine "acquire_fpn()" the subroutine used to initiate the acquisition of a fpn.
+3.  Project subroutine "fpn_from_IO()" the subroutine used to initiate the acquisition of a fpn.
 
+3.  Project subroutine "FPN_as_string()".
+  This is where program execution pauses while the user is entering data at the keyboard. 
+
+1.     Subroutine FPN_as_string()
+              Acquires a string such as 1234.567e8 and
+              Converts it to 12345678 with an exponent of 4 
+
+2.     Subroutine fpn_from_IO()
+              Generates the string 12345678 known as the significand which is converted to a long number and
+              a denominator of 100000000 is generated 
+
+3.     Subroutine fpn_from_IO()
+              Converts the significant to a long number and
+              Generates a denominator 100000000 in the case. It also
+              Adjusts the exponent so that 1234.5678e8 can represented as 0.12345678e12
+
+4.     Subroutine Significand_to_FPN()
+            Generates the FPN 12345678/100000000 which it stores in float format.
+            It then multiplies this number by 10^12 and returns it in a forn suitable for use by 
+            the standard c and arduino libraries
+
+
+  
 */
 
 
@@ -90,16 +109,21 @@ long fpn_from_IO(char *expnt, long *Denominator)
   bit 2: negative sign enabled
   bit 3: LHS of exponent
   bit 4: Waiting for first character
+  
+  Converts FP string to a long number plus denominator and exponent
   */
   
   sei();
 *expnt = FPN_as_string(FPN_string);
 
-if (FPN_string[0]== '-'){for (int m = 0; m <= 13; m++)FPN_string[m] =  FPN_string[m + 1];
+if (FPN_string[0]== '-')
+{for (int m = 0; m <= 13; m++)
+FPN_string[m] =  FPN_string[m + 1];
 sign = '-';}
 num_1 = atol(FPN_string);
 num_2 = num_1;
-while(num_2){(*expnt)++; *Denominator *=10; num_2 /= 10; }
+while(num_2){(*expnt)++; *Denominator *=10; 
+num_2 /= 10; }
 
 if (sign == '-') num_1 = num_1 * (-1);
 disable_pci_on_sw3;
@@ -108,52 +132,55 @@ return num_1;}
 
 
 /*************************************************************************/
-int FPN_as_string(char * FPN_string){
-  char keypress = 0;
-  int dig_counter = 1;
-  char expnt, test;
+int FPN_as_string(char * FPN_string){                       //Returns the exponent
+
+char keypress = 0;
+int dig_counter = 1;
+char expnt;
 
 char decimal_place = 0;
 char decimal_place_counter = 0;
 char keypress_E = 0;
+char * string_add;                                         //Saves address of FPN_string
 
-    
-    char * string_add;
-    string_add = FPN_string;
-    
-  Data_Entry_complete = 0;
-  digit_entry = 0;
+string_add = FPN_string;
+Data_Entry_complete = 0;
+digit_entry = 0;
   
- while(1){
-while (!(digit_entry));
+while(1){                                                   //Data entry loop
+while (!(digit_entry));                                    //Wait here while each digit is entered
 dig_counter += 1;
 digit_entry = 0;
-if (Data_Entry_complete)break;
-*(FPN_string++) = digits[1]; _delay_us(1);  
+if (Data_Entry_complete)break;                              //Leave loop when data entry is complete
+*(FPN_string++) = digits[1]; _delay_us(1);                  //Increment string adddress after saving digit 
 
-
-if (digits[1] == '.'){decimal_place = 1;continue;}
+if (digits[1] == '.'){decimal_place = 1;continue;}          //Skip bact to top of loop if decimal place is entered         
 if (digits[1] == 'e'){keypress_E = 1; continue;}
-if((decimal_place) && (!(keypress_E)))decimal_place_counter += 1;
-}
-*(FPN_string++) = digits[0]; 
-*FPN_string = '\r';
+if((decimal_place) && (!(keypress_E)))
+decimal_place_counter += 1;}                                //Only count decimal places untill E is detected
 
-if((decimal_place_counter)&& (!keypress_E))decimal_place_counter += 1;
+*(FPN_string++) = digits[0];                                //Save final digit
+*FPN_string = '\r';                                         //Terminate string with cr.
 
-while(dig_counter){if (*(--FPN_string) != 'e')dig_counter -= 1; else break;} 
-if (*(FPN_string) == 'e')(*(FPN_string) = 0);
+if((decimal_place_counter)&& (!keypress_E))
+decimal_place_counter += 1;                                 //Increment decimal_place counter if there is no E
+
+while(dig_counter){if (*(--FPN_string) != 'e')              //Get the location of E
+dig_counter -= 1; else break;} 
+if (*(FPN_string) == 'e')(*(FPN_string) = 0);               //Replace the E with the null character
 if(!(dig_counter))expnt = 0;
-else expnt = atoi ((++FPN_string));
+else expnt = atoi ((++FPN_string));                         //Calculate the value of the exponent
 
 {int m,p;
-for (m = 0; m <=14; m++)if(*(string_add + m) == '.')break;
-if(*(string_add + m) == '.'){for (int p = m; p <= 14; p++)(*(string_add + p)) = (*(string_add + p + 1));}}
+for (m = 0; m <=14; m++)
+if(*(string_add + m) == '.')break;                          //Locate the decimal place
+if(*(string_add + m) == '.')
+{for (int p = m; p <= 14; p++)
+(*(string_add + p)) = (*(string_add + p + 1));}}            //Sfift digits to remove the decimal point
 
-expnt -= decimal_place_counter;
+expnt -= decimal_place_counter;                             //Adjust the exponent to account for the decimal places
 
-return expnt;
-}
+return expnt;}
 
 
 
@@ -235,48 +262,6 @@ I2C_Tx_8_byte_array(digits);}
 
 
 
-
-/*int FPN_as_string(char * FPN_string){
-  char keypress = 0;
-  int dig_counter = 1;
-  char expnt, test;
-    
-    char * string_add;
-    string_add = FPN_string;
-    
-  Data_Entry_complete = 0;
-  digit_entry = 0;
-  
- while(1){
-while (!(digit_entry));
-dig_counter += 1;
-digit_entry = 0;
-if (Data_Entry_complete)break;
-*(FPN_string++) = digits[1]; _delay_us(1);  
-}
-*(FPN_string++) = digits[0]; 
-*FPN_string = '\r';
-
-while(dig_counter){if (*(--FPN_string) != 'e')dig_counter -= 1; else break;} 
-if (*(FPN_string) == 'e')(*(FPN_string) = 0);
-if(!(dig_counter))expnt = 0;
-else
-expnt = atoi ((++FPN_string));
-
-
-Serial.write("\r\ntest\t");Serial.write(string_add);Serial.write("\r\n");
-for(int m = 0; m <= 14; m++)Serial.write(*(string_add + m));Serial.write("\r\n");
-
-
-
-{int m,p;
-for (m = 0; m <=14; m++)if(*(string_add + m) == '.')break;
-if(*(string_add + m) == '.'){for (int p = m; p <= 14; p++)(*(string_add + p)) = (*(string_add + p + 1));}
-
-
-Serial.write("\r\ntest\t");for(int m = 0; m <= 14; m++)Serial.write(*(string_add + m));Serial.write("\r\n");}
-
-return expnt;}*/
 
 
 
