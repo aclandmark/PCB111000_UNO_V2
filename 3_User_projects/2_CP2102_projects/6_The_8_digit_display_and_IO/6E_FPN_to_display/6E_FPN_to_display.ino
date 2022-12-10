@@ -5,15 +5,7 @@
  * PRINTS column of numbers each one the square root of the previous
  * until within 0.005 of unity then continues but calculates the squares
  * 
-
-Use the term Significand in place of FPN_digits
-
-Does NOT send 100,100,1000 10000 etc correctly to the display
-but does acquire them correctly!!
-Affects proj_6F too
 */
-
-//UPDATING IS ONGOING///////////////////////////////////////////////////////
 
 #include "FPN_KBD_to_display_header.h"
 
@@ -41,14 +33,7 @@ while (1){
 Int_Num_to_PC(counter,num_as_string, '\t');  
 Sc_Num_to_PC(Num_1,1,6 ,'\r'); 
 
-if (!(counter%5))
-{Significand = FPN_to_Significand(Num_1, &Denominator, &expnt);
-
-Significand = Fraction_to_Binary_Signed(Significand, Denominator);
-
-I2C_Tx_float_num(Significand, expnt);
-I2C_Tx_float_display_control;
-
+if (!(counter%5)){FPN_to_display(Num_1);
 while(switch_1_down);}
 
 Num_1 = pow(Num_1, power);  counter += 1;                                //Do some arithmetic
@@ -59,15 +44,15 @@ do{
 Int_Num_to_PC(counter,num_as_string, '\t'); 
 Sc_Num_to_PC(Num_1,1,6 ,'\r');                            //Send number to PC
 
-if (!(counter%5))
-{Significand = FPN_to_Significand(Num_1, &Denominator, &expnt);
-Significand = Fraction_to_Binary_Signed(Significand, Denominator);
-I2C_Tx_float_num(Significand, expnt);
-I2C_Tx_float_display_control;
-
+if (!(counter%5)){FPN_to_display(Num_1);
 while(switch_1_down);}
 
 Num_1 = pow(Num_1, power);  counter -= 1; }                               //Do some arithmetic
 while(counter+1);
 
 SW_reset;}
+
+
+
+
+/************************************************************************************************/
