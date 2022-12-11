@@ -15,9 +15,6 @@ float Num_1;
 float power = 0.5;
 char digits[15];
 
-long Significand;
-long  Denominator;
-char  expnt;
 char counter = 0;
 
 
@@ -26,9 +23,8 @@ setup_HW_Arduino_IO;
 Serial.write("\r\nEnter scientific number \
 & terminate with Return key.\r\n");
 
-Significand = fpn_from_KBD(digits, &expnt, &Denominator);
+Num_1 = fpn_from_KBD(digits); //digits, &expnt, &Denominator);
 
-Num_1 = Significand_to_FPN((float)Significand, Denominator, expnt);
 while (1){
 Int_Num_to_PC(counter,num_as_string, '\t');  
 Sc_Num_to_PC(Num_1,1,6 ,'\r'); 
