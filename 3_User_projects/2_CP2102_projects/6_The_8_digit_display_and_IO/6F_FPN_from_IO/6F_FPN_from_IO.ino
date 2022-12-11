@@ -1,6 +1,6 @@
 
 
-/*Proj_8E_fp_nos_from_IO
+/*Proj_8F_fp_nos_from_IO
 **************************************************************/
 
 /*A look at getting floating point numbers from the user switches.
@@ -20,7 +20,7 @@ IT INTRODUCES
   
 3.     Subroutine FPN_as_string()
               Acquires a string such as 1234.567e8 and
-              returns the number as a string and exponent as an integer
+              returns the real part as a string and exponent as an integer
 
 4.     Subroutine fpn_from_IO()
               Converts the string to a real number and then multiplies it by the exponent
@@ -83,8 +83,6 @@ float fpn_from_IO()
   bit 2: negative sign enabled
   bit 3: LHS of exponent
   bit 4: Waiting for first character
-  
-  Converts FP string to a long number plus denominator and exponent
   */
   
   sei();
