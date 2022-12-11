@@ -39,9 +39,13 @@ int main (void){
  
   setup_HW_Arduino_IO;
 
+if(!(watch_dog_reset))
+
 {Serial.write("Press: sw_1 to populate digit_0, sw2 to shift the display left\r\n\
 sw_3 to enter the number and sw1 to clear the display.\r\n\
 Note: display flashes to indicate number has been entered.\r\n");}
+
+else {Serial.write("\r\nAgain\r\n"); watch_dog_reset = 0;}
   
  x1 = fpn_from_IO();
  if(x1 > 0.0)power = 1.2; else power = 3.0;
