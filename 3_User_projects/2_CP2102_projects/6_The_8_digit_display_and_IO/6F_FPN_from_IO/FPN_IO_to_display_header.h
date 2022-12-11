@@ -9,6 +9,14 @@ char MCUSR_copy;
 char User_response;
 char num_as_string[12];                           //Required by pcb_A calibration routine to print out cal results
 
+volatile char Data_Entry_complete, digit_entry;
+volatile char scroll_control;
+char digits[8];
+
+
+
+
+
 char PCMSK0_backup, PCMSK2_backup, float_display_mode;
 
 #define switch_1_down  ((PIND & 0x04)^0x04)
