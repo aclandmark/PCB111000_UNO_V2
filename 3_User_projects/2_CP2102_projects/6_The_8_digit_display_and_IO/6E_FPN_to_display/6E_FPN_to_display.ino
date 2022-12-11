@@ -23,7 +23,7 @@ setup_HW_Arduino_IO;
 Serial.write("\r\nEnter scientific number \
 & terminate with Return key.\r\n");
 
-Num_1 = fpn_from_KBD(digits); //digits, &expnt, &Denominator);
+Num_1 = FPN_KBD_to_display(digits); //digits, &expnt, &Denominator);
 
 while (1){
 Int_Num_to_PC(counter,num_as_string, '\t');  
