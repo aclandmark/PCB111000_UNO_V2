@@ -6,7 +6,9 @@ Tests have shown that they are generally OK but there is probably a bug some whe
 */
 
 int strLength (char *);
-char Float_num_string_from_KBD(char *);
+void reverse (char *);
+char FPN_string_KBD_to_display(char *);
+char Float_num_string_from_KBD_OLD(char *);
 
 
 
@@ -59,7 +61,7 @@ char  expnt;
 float num_1 = 0;
  char sign = '+';
 
-expnt =  Float_num_string_from_KBD(digits); 
+expnt =  FPN_string_KBD_to_display(digits); 
 
 if (digits[0]== '-'){for (int m = 0; m <= 13; m++)digits[m] =  digits[m + 1];
 sign = '-';}
@@ -225,7 +227,7 @@ long num_1=0, num_2 = 0;
  char sign = '+';
 
 *Denominator = 1;
-*expnt =  Float_num_string_from_KBD(digits); 
+*expnt =  Float_num_string_from_KBD_OLD(digits); 
 if (digits[0]== '-'){for (int m = 0; m <= 13; m++)digits[m] =  digits[m + 1];
 sign = '-';}
 num_1 = atol(digits);
