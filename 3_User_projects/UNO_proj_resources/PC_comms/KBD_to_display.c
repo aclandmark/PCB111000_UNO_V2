@@ -47,7 +47,7 @@ _delay_ms(100);
 I2C_Tx_8_byte_array(display_buffer);
 
 Long_Num_from_mini_OS = I2C_displayToNum();
-return Long_Num_from_mini_OS;
+
 return Long_Num_from_mini_OS;}
 
 
