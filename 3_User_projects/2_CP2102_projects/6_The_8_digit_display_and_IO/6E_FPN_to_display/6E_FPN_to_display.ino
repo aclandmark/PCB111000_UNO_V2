@@ -5,6 +5,11 @@
  * PRINTS column of numbers each one the square root of the previous
  * until within 0.005 of unity then continues but calculates the squares
  * 
+ * Introduces subroutine subroutine "float FPN_KBD_to_display(char *)"
+ * This is a development of subroutine "long Int_KBD_to_display(char *)"
+ * It allows for decimal points, E and the backspace key
+ * The library function "atof" is used to generate the binary form rather than the mini-OS
+ * 
 */
 
 #include "FPN_KBD_to_display_header.h"
