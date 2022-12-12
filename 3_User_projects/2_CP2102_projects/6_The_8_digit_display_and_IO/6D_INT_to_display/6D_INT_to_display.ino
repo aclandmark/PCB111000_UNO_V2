@@ -32,6 +32,7 @@ char digits[8];
 int counter = 1;
 long num_from_KBD;
 
+
 setup_HW_Arduino_IO;
 
 Serial.write("\r\nEnter positive numbers \r\n\
@@ -40,7 +41,8 @@ To display interim reults press SW1 before -cr-.\r\n\
 Press sw1 twice to resume entering numbers.\r\n\
 Note: Zero entry is ignored.\r\n");
 
-Arith_mean = (float)Int_KBD_to_display(digits);
+num_from_KBD = Int_KBD_to_display(digits);
+Arith_mean = (float)num_from_KBD;
 Geom_mean = Arith_mean;
 
 while(1){
@@ -51,11 +53,13 @@ if ((num_from_KBD = Int_KBD_to_display(digits)))
 {Arith_mean = Arith_mean * (float)counter;
 Geom_mean = pow (Geom_mean, (float)counter);
 
+
 Arith_mean += (float)num_from_KBD;
 Geom_mean *= (float)num_from_KBD;
 
 counter += 1;
 Arith_mean = (Arith_mean) / (float)counter;
+if(Geom_mean < 0.0)Geom_mean *= -1;
 Geom_mean =  pow (Geom_mean , 1/(float)counter);}
 
 if(switch_1_down)while(switch_1_down); else continue;
