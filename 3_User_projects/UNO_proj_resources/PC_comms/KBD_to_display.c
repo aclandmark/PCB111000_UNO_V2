@@ -75,64 +75,49 @@ return num_1;}
 /********************************************************************************************************************************************/
 char FPN_string_KBD_to_display(char display_buffer[]){              //Operation is similar to that of Int_KBD_to_display()
 char keypress;
-float Float_from_mini_OS = 0;
-char decimal_place_counter = 0;
-char keypress_counter = 1;
-char expt;
-char * exp_string;
 
- for(int m = 0; m <=14; m++)exp_string[m] = 0;
-for(int n = 0; n<=14; n++) display_buffer[n] = 0;                                    //Clear the buffer used to the string
+for(int n = 0; n<=14; n++) display_buffer[n] = 0;                   //Clear the buffer used to the string
 
-while(1){                                                                         //Remain in loop until a valid character is received
+while(1){                                                          	//Remain in loop until a valid character is received
 keypress = waitforkeypress_A();
 if ((!(decimal_digit_A(keypress)))
 && (keypress != '-')
-&& (keypress != '.'))continue;                                                //Ignore keypress if it is not OK
+&& (keypress != '.'))continue;                                     	//Ignore keypress if it is not OK
 display_buffer[0] = keypress;
 break;}
 
-I2C_Tx_8_byte_array(display_buffer);                                                      //Update display with the first key press
+I2C_Tx_8_byte_array(display_buffer);                               	//Update display with the first key press
 
 while(1){
-if ((keypress = wait_for_return_key_A())  =='\r')break;                                     //Stay in loop until return key press is detected
+if ((keypress = wait_for_return_key_A())  =='\r')break;               //Stay in loop until return key press is detected
 
-if ((decimal_digit_A(keypress)) || (keypress == '.')                                    //Check for valid keypresses
-|| (keypress == '\b')|| (keypress == '-')
-|| (keypress == 'E') || (keypress == 'e'))
+if (!(decimal_digit_A(keypress)) && (keypress != '.')                 //Check for valid keypresses
+&& (keypress != '-') && (keypress != 'E') 
+&& (keypress != 'e') &&  (keypress != '\b'))continue;
 
-{
 switch (keypress){
 
-case '\b':  for (int n = 0; n <= 11; n++)                                  //Backspace keypress
+case '\b':  for (int n = 0; n <= 11; n++)                             //Backspace keypress
 display_buffer[n] = display_buffer[n + 1];
 I2C_Tx_8_byte_array(display_buffer); break;
 
-
-case 'E':
-case 'e': exp_string = 	display_buffer + keypress_counter + 1; 
-
 default:
-for(int n = 14; n>=1; n--)                                                            //Shift display for each new keypress except '.'
+for(int n = 14; n>=1; n--)                                            //Shift display for each new keypress except '.'
 display_buffer[n] = display_buffer[n-1];
-display_buffer[0] = keypress;                                                     //Add new keypress           
-keypress_counter += 1;
-I2C_Tx_8_byte_array(display_buffer); break;
+display_buffer[0] = keypress;                                         //Add new keypress to display           
+I2C_Tx_8_byte_array(display_buffer); break;}}
 
-} } }
 
-I2C_Tx_any_segment_clear_all();
+I2C_Tx_any_segment_clear_all();											//Flash display
 _delay_ms(100);
 I2C_Tx_8_byte_array(display_buffer);
 
-reverse (display_buffer);
-expt = atoi(exp_string);
+reverse (display_buffer);}
 
-return expt;}
 
 
 /***********************************************************************************************************************/
-void reverse (char s[]){
+void reverse (char s[]){											//See Joe Pardue's book p 83
     int c,i,j;
   for (i=0, j = strLength(s) - 1; i < j; i++, j--){
     c = s[i];
@@ -151,7 +136,7 @@ return i;}
 
 
 /*************************************************************************************************************************************************/
-char Float_num_string_from_KBD_OLD(char display_buffer[]){              //Operation is similar to that of Int_KBD_to_display()
+char Float_num_string_from_KBD_Legacy(char display_buffer[]){            //Operation is similar to that of Int_KBD_to_display()
 char keypress;
 float Float_from_mini_OS = 0;
 char decimal_place_counter = 0;
@@ -160,74 +145,78 @@ char expt;
 char exp_string[15];
 
  for(int m = 0; m <=14; m++)exp_string[m] = 0;
-for(int n = 0; n<=14; n++) display_buffer[n] = 0;                                    //Clear the buffer used to the string
+for(int n = 0; n<=14; n++) display_buffer[n] = 0;                         //Clear the buffer used to the string
 
-while(1){                                                                         //Remain in loop until a valid character is received
+while(1){                                                                 //Remain in loop until a valid character is received
 keypress = waitforkeypress_A();
 if ((!(decimal_digit_A(keypress)))
 && (keypress != '-')
-&& (keypress != '.'))continue;                                                //Ignore keypress if it is not OK
+&& (keypress != '.'))continue;                                            //Ignore keypress if it is not OK
 display_buffer[0] = keypress;
 break;}
 
-I2C_Tx_8_byte_array(display_buffer);                                                      //Update display with the first key press
+I2C_Tx_8_byte_array(display_buffer);                                      //Update display with the first key press
 
 while(1){
-if ((keypress = wait_for_return_key_A())  =='\r')break;                                     //Stay in loop until return key press is detected
+if ((keypress = wait_for_return_key_A())  =='\r')break;                   //Stay in loop until return key press is detected
 
-if ((decimal_digit_A(keypress)) || (keypress == '.')                                    //Check for valid keypresses
+if ((decimal_digit_A(keypress)) || (keypress == '.')                      //Check for valid keypresses
 || (keypress == '\b')|| (keypress == '-')
 || (keypress == 'E') || (keypress == 'e'))
 
 {if(display_buffer[0] == '.')decimal_place_counter = 1;
 if((keypress == 'E') || (keypress == 'e'))keypress_E = 1;
   
-  if(keypress == '\b'){for (int n = 0; n <= 11; n++)                                  //Backspace keypress
+  if(keypress == '\b'){for (int n = 0; n <= 11; n++)                      //Backspace keypress
 display_buffer[n] = display_buffer[n + 1];
 I2C_Tx_8_byte_array(display_buffer);}
 
 else
 
-{{for(int n = 14; n>=1; n--)                                                            //Shift display for each new keypress except '.'
+{{for(int n = 14; n>=1; n--)                                              //Shift display for each new keypress except '.'
 display_buffer[n] = display_buffer[n-1];
-display_buffer[0] = keypress;}                                                      //Add new keypress           
-I2C_Tx_8_byte_array(display_buffer);}}                                                        //Update display includes "cr_keypress"                                                 
+display_buffer[0] = keypress;}                                            //Add new keypress           
+I2C_Tx_8_byte_array(display_buffer);}}                                    //Update display includes "cr_keypress"                                                 
 
-if((decimal_place_counter) && (!(keypress_E))) decimal_place_counter += 1;}
+if((decimal_place_counter) && (!(keypress_E))) 
+decimal_place_counter += 1;}
 
-I2C_Tx_any_segment_clear_all();
+I2C_Tx_any_segment_clear_all();												//Flash display
 _delay_ms(100);
 I2C_Tx_8_byte_array(display_buffer);
 
 expt = -(decimal_place_counter);
-if(expt) (expt) += 1;
+if(expt) (expt) += 1;														//Value of exponent based on number of decimal places
 
 reverse (display_buffer);
 
 {int m, n;
-for (m = 0; m <=14; m++)if(display_buffer[m] == 'e')break;
+for (m = 0; m <=14; m++)if(display_buffer[m] == 'e')break;					//Find location of E
 if(display_buffer[m] == 'e'){
   display_buffer[m] = 0;
  n = m+1; 
-  for (int p = n; p <= 14; p++){exp_string[p - n] = display_buffer[++m];}}}
+  for (int p = n; p <= 14; p++)
+  {exp_string[p - n] = display_buffer[++m];}}}
 
-expt += atoi(exp_string);
+expt += atoi(exp_string);													//Value of expnt adjusted to allow for value enteredat KBD
 
 {int m,p;
-for (m = 0; m <=14; m++)if(display_buffer[m] == '.')break;
-if(display_buffer[m] == '.'){for (int p = m; p <= 14; p++)display_buffer[p] = display_buffer[p+1];}}
+for (m = 0; m <=14; m++)if(display_buffer[m] == '.')break;					//Remove decimal point
+if(display_buffer[m] == '.')
+{for (int p = m; p <= 14; p++)
+display_buffer[p] = display_buffer[p+1];}}
 
 return expt;}
 
 
 /***********************************************************************************************************************/
-long fpn_from_KBD_OLD(char digits[], char *expnt, long *Denominator ){
+long fpn_from_KBD_Legacy(char digits[], char *expnt, long *Denominator ){		//Defines FPN in terms of significant, denominate and exponent
 
 long num_1=0, num_2 = 0;
  char sign = '+';
 
 *Denominator = 1;
-*expnt =  Float_num_string_from_KBD_OLD(digits); 
+*expnt =  Float_num_string_from_KBD_Legacy(digits); 
 if (digits[0]== '-'){for (int m = 0; m <= 13; m++)digits[m] =  digits[m + 1];
 sign = '-';}
 num_1 = atol(digits);
