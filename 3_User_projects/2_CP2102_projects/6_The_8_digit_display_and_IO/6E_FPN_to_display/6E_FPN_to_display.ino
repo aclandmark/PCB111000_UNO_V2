@@ -102,7 +102,7 @@ display_buffer[n] = display_buffer[n-1];
 display_buffer[0] = keypress;                                            //Add new keypress           
 I2C_Tx_8_byte_array(display_buffer); }
 
-I2C_Tx_any_segment_clear_all();                                           //Flash displar when -cr- is pressed
+I2C_Tx_any_segment_clear_all();                                           //Flash display when -cr- is pressed
 _delay_ms(100);
 I2C_Tx_8_byte_array(display_buffer);
 
