@@ -10,10 +10,13 @@ If we send it a string then it will return the number in binary form.
 
 Obviously Arduino do not supply library functions to drive the display and therefore a
 bit of DIY programming is required.
+The result is the subroutine "long Int_KBD_to_display(char *)"
+This accepts decimal digits from the KBD and sends them to the display.
 
+Instructions:
 Enter a series of numbers at the keyboard but not 0.
 Enter 0 to display interim result
-Press SW1 twice to enter next number before entering next number
+Press SW1 twice before entering next number
 */
 
 
@@ -93,7 +96,7 @@ _delay_ms(100);
 I2C_Tx_8_byte_array(display_buffer);
 
 Long_Num_from_mini_OS = I2C_displayToNum();
-return Long_Num_from_mini_OS;
+return Long_Num_from_mini_OS;                                       //Mini-OS converts the string to a binary number 
 }
 
 
