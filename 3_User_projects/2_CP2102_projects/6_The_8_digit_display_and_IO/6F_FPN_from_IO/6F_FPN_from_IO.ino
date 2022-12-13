@@ -52,7 +52,7 @@ else {Serial.write("\r\nAgain\r\n"); watch_dog_reset = 0;}
  
 while(1){
 Sc_Num_to_PC(x1,1,6 ,'\r');
-FPN_to_display(x1);
+I2C_FPN_to_display(x1);
 
 while(switch_1_down);
 
@@ -67,13 +67,9 @@ SW_reset;}
 float fpn_from_IO()
 {
   char FPN_string[15];
-  float num = 0;
+  float num = 0.0;
   char sign = '+';
-  char exp_bkp;
-  char expnt;
-  long Denominator;
   
-  Denominator = 1;
   for(int m = 0; m <= 14; m++)FPN_string[m] = 0;
   
   set_up_pci;
@@ -90,21 +86,13 @@ float fpn_from_IO()
   */
   
   sei();
-expnt = FPN_as_string(FPN_string);
-exp_bkp = expnt;
-
+FPN_as_string(FPN_string);
 
 if (FPN_string[0]== '-')
 {for (int m = 0; m <= 13; m++)
 FPN_string[m] =  FPN_string[m + 1];
 sign = '-';}
 num = atof(FPN_string);
-
-if (exp_bkp > 0)
-{while (expnt > 0){num = num * 10.0; expnt -=1; }}
-
-if (exp_bkp < 0)
-{while (expnt < 0){num = num / 10.0; expnt +=1; }}
 
 if (sign == '-') num = num * (-1);
 disable_pci_on_sw3;
@@ -113,33 +101,21 @@ return num;}
 
 
 /*************************************************************************/
-int FPN_as_string(char * Real_num_string){              //Returns the exponent
+int FPN_as_string(char * FPN_num_string){              //Returns the exponent
 
 char keypress = 0;
-int dig_counter = 1;
-char expnt;
-char keypress_E = 0;
-char * expnt_add;                                         
 
 Data_Entry_complete = 0;
 digit_entry = 0;
   
 while(1){                                               //Data entry loop
 while (!(digit_entry));                                 //Wait here while each digit is entered
-dig_counter += 1;
 digit_entry = 0;
 if (Data_Entry_complete)break;                          //Leave loop when data entry is complete
-*(Real_num_string++) = digits[1]; _delay_us(1);         //Increment string adddress after saving digit 
-if ((digits[1] == 'e') || (digits[1] == 'e'))
-{expnt_add = Real_num_string;                           //Save address of the exponential string 
-*(Real_num_string - 1) = '\r';                          //Terminate real number string
-keypress_E = 1;}}
-*(Real_num_string++) = digits[0];                        //Save final digit
-*Real_num_string = '\r';                                 //Terminate string with cr.
+*(FPN_num_string++) = digits[1]; _delay_us(1);}         //Increment string adddress after saving digit 
 
-if(keypress_E)
-return atoi(expnt_add);
-else return 0;}
+*(FPN_num_string++) = digits[0];                        //Save final digit
+*FPN_num_string = '\r';   }                              //Terminate string with cr.
 
 
 
