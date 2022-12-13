@@ -32,7 +32,7 @@ setup_HW_Arduino_IO;
 Serial.write("\r\nEnter scientific number \
 & terminate with Return key.\r\n");
 
-Num_1 = FPN_KBD_to_display(digits); 
+Num_1 = FPN_KBD_to_display_Local(digits); 
 
 if(Num_1 > 0.0)power = 0.5;
 else power = 3.0;
