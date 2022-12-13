@@ -136,7 +136,7 @@ Timer_T0_10mS_delay_x_m(50);}}
 
 
 /************************************************************************/
-void FPN_to_display(float num){
+void I2C_FPN_to_display(float num){
   long Denominator;
   long Significand;
   char expnt;
