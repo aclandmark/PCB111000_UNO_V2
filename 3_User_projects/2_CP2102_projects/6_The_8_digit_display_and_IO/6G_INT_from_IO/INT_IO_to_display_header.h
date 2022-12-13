@@ -11,7 +11,6 @@ char MCUSR_copy;
 char User_response;
 char num_as_string[12];                           //Required by pcb_A calibration routine to print out cal results
 
-char PCMSK0_backup, PCMSK2_backup, float_display_mode;
 
 
 #define message_1 \
@@ -25,6 +24,9 @@ and restart the program.\r\n"
 
 
 /*****************************************************************************/
+
+char PCMSK0_backup, PCMSK2_backup, float_display_mode;
+
 #define switch_1_down  ((PIND & 0x04)^0x04)
 #define switch_1_up   (PIND & 0x04)
 #define switch_2_down ((PIND & 0x80)^0x80)
@@ -194,6 +196,32 @@ eeprom_write_byte((uint8_t*)0x3F6,\
 for(int m = 0; m < 4; m++)Serial.write("\r\n");\
 \
 asm("jmp 0x6C00");}                                     /*Go to Text_Verification.hex to print the next string*/ 
+
+
+/*****************************************************************************/
+#define pci_on_sw1_and_sw2_enabled (PCMSK2 & 0x84) == 0x84
+#define pci_on_sw3_enabled (PCMSK0 & 0x04) == 0x04
+#define PCIenabled ((pci_on_sw1_and_sw2_enabled) || (pci_on_sw3_enabled))
+#define disable_pci_on_sw1_and_sw2  PCMSK2 &= (~((1 << PCINT18) | (1 << PCINT23)));
+#define disable_pci_on_sw3  PCMSK0 &= (~(1 << PCINT2));
+
+
+/*****************************************************************************/
+#define I2C_Tx_float_display_control \
+{\
+PCMSK0_backup= PCMSK0;\
+PCMSK2_backup= PCMSK2;\
+float_display_mode = '0';\
+if (PCIenabled){disable_pci_on_sw3;disable_pci_on_sw1_and_sw2;}\
+while(1){\
+if(switch_3_down)float_display_mode = '1'; else float_display_mode = '0';\
+if((switch_1_down)||(switch_2_down))float_display_mode = '2';\
+waiting_for_I2C_master;\
+send_byte_with_Nack(float_display_mode);\
+clear_I2C_interrupt;\
+if(float_display_mode == '2')break;}\
+PCMSK0 = PCMSK0_backup;\
+PCMSK2 = PCMSK2_backup;}
 
 
 
