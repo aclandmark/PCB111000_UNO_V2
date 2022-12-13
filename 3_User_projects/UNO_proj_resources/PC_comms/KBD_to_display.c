@@ -7,7 +7,7 @@ Tests have shown that they are generally OK but there is probably a bug some whe
 
 int strLength (char *);
 void reverse (char *);
-char FPN_string_KBD_to_display(char *);
+void FPN_string_KBD_to_display(char *);
 char Float_num_string_from_KBD_OLD(char *);
 
 
@@ -57,11 +57,10 @@ return Long_Num_from_mini_OS;}
 /***********************************************************************************************************************/
 float FPN_KBD_to_display(char digits[]){			//char digits[], char *expnt, long *Denominator ){
 
-char  expnt;
 float num_1 = 0;
  char sign = '+';
 
-expnt =  FPN_string_KBD_to_display(digits); 
+FPN_string_KBD_to_display(digits); 
 
 if (digits[0]== '-'){for (int m = 0; m <= 13; m++)digits[m] =  digits[m + 1];
 sign = '-';}
@@ -73,7 +72,7 @@ return num_1;}
 
 
 /********************************************************************************************************************************************/
-char FPN_string_KBD_to_display(char display_buffer[]){              //Operation is similar to that of Int_KBD_to_display()
+void FPN_string_KBD_to_display(char display_buffer[]){              //Operation is similar to that of Int_KBD_to_display()
 char keypress;
 
 for(int n = 0; n<=14; n++) display_buffer[n] = 0;                   //Clear the buffer used to the string
