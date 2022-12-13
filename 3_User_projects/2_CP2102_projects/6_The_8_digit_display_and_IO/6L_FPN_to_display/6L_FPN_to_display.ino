@@ -2,8 +2,8 @@
 /**************Proj_6L_Acquire_and process_FPN_Data_from_the KBD********************/
 
 /*
- * PRINTS column of numbers each one the square root of the previous
- * until within 0.005 of unity then continues but calculates the squares
+ * Repeat of 6E_FPN to display but uses legacy routines
+ * Acqures number in terms of the Significand in string form, a denominator and exponent
  * 
 */
 
