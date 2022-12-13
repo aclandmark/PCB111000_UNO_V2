@@ -64,11 +64,16 @@ int main (void){
 
   setup_HW_Arduino_IO;
 
+if(!(watch_dog_reset))
+
 {Serial.write("Press: sw_1 to populate digit_0, sw2 to shift the display left\r\n\
 sw_3 to enter the number and sw1 to clear the display.\r\n\
 Note: display flashes to indicate number has been entered.\r\n");}
+
+else {Serial.write("\r\nAgain\r\n"); watch_dog_reset = 0;}
+
  
- Significand = fpn_from_IO(&expnt, &Denominator);
+ Significand = fpn_from_IO_Legacy(&expnt, &Denominator);
  x1 = Significand_to_FPN((float)Significand, Denominator, expnt);
  if(x1 > 0.0)power = 1.2; else power = 3.0;
  
@@ -89,7 +94,7 @@ SW_reset;}
 
 
 /********************************************************************************/
-long fpn_from_IO(char *expnt, long *Denominator)
+long fpn_from_IO_Legacy(char *expnt, long *Denominator)
 {
   char FPN_string[15];
   long num_1=0, num_2 = 0;
@@ -114,7 +119,7 @@ long fpn_from_IO(char *expnt, long *Denominator)
   */
   
   sei();
-*expnt = FPN_as_string(FPN_string);
+*expnt = FPN_as_string_Legacy(FPN_string);
 
 if (FPN_string[0]== '-')
 {for (int m = 0; m <= 13; m++)
@@ -132,7 +137,7 @@ return num_1;}
 
 
 /*************************************************************************/
-int FPN_as_string(char * FPN_string){                       //Returns the exponent
+int FPN_as_string_Legacy(char * FPN_string){                       //Returns the exponent
 
 char keypress = 0;
 int dig_counter = 1;
