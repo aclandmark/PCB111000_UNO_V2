@@ -9,20 +9,12 @@ char MCUSR_copy;
 char User_response;
 char num_as_string[12];                           //Required by pcb_A calibration routine to print out cal results
 
-char PCMSK0_backup, PCMSK2_backup, float_display_mode;
-
 #define switch_1_down  ((PIND & 0x04)^0x04)
 #define switch_1_up   (PIND & 0x04)
 #define switch_2_down ((PIND & 0x80)^0x80)
 #define switch_2_up   (PIND & 0x80)
 #define switch_3_down ((PINB & 0x04)^0x04)
 #define switch_3_up   (PINB & 0x04)
-
-#define pci_on_sw1_and_sw2_enabled (PCMSK2 & 0x84) == 0x84
-#define pci_on_sw3_enabled (PCMSK0 & 0x04) == 0x04
-#define PCIenabled ((pci_on_sw1_and_sw2_enabled) || (pci_on_sw3_enabled))
-#define disable_pci_on_sw1_and_sw2  PCMSK2 &= (~((1 << PCINT18) | (1 << PCINT23)));
-#define disable_pci_on_sw3  PCMSK0 &= (~(1 << PCINT2));
 
 
 /*****************************************************************************/
@@ -166,40 +158,13 @@ for(int m = 0; m < 4; m++)Serial.write("\r\n");\
 asm("jmp 0x6C00");}                                     /*Go to Text_Verification.hex to print the next string*/ 
 
 
-
-/*****************************************************************************/
-#define pci_on_sw1_and_sw2_enabled (PCMSK2 & 0x84) == 0x84
-#define pci_on_sw3_enabled (PCMSK0 & 0x04) == 0x04
-#define PCIenabled ((pci_on_sw1_and_sw2_enabled) || (pci_on_sw3_enabled))
-#define disable_pci_on_sw1_and_sw2  PCMSK2 &= (~((1 << PCINT18) | (1 << PCINT23)));
-#define disable_pci_on_sw3  PCMSK0 &= (~(1 << PCINT2));
-
-
-
-/*****************************************************************************/
-#define I2C_Tx_float_display_control \
-{\
-PCMSK0_backup= PCMSK0;\
-PCMSK2_backup= PCMSK2;\
-float_display_mode = '0';\
-if (PCIenabled){disable_pci_on_sw3;disable_pci_on_sw1_and_sw2;}\
-while(1){\
-if(switch_3_down)float_display_mode = '1'; else float_display_mode = '0';\
-if((switch_1_down)||(switch_2_down))float_display_mode = '2';\
-waiting_for_I2C_master;\
-send_byte_with_Nack(float_display_mode);\
-clear_I2C_interrupt;\
-if(float_display_mode == '2')break;}\
-PCMSK0 = PCMSK0_backup;\
-PCMSK2 = PCMSK2_backup;}
-
 /**********************************************************************************/
 #include "UNO_proj_resources\Chip2chip_comms\I2C_slave_Rx_Tx.c"
 #include "UNO_proj_resources\Chip2chip_comms\I2C_subroutines_1.c"
 #include "UNO_proj_resources\PC_comms\Basic_Rx_Tx_Arduino.c"
 #include "UNO_proj_resources\Subroutines\HW_timers.c"
 #include "UNO_proj_resources\PC_comms\KBD_to_display.c"
-#include "UNO_proj_resources\Subroutines\FPN_subroutines.c"
+#include "UNO_proj_resources\Subroutines\FPN_subs_plus_extras.c"
 #include "UNO_proj_resources\PC_comms\Arduino_Rx_Tx_UNO_pcb.c"
 
 
