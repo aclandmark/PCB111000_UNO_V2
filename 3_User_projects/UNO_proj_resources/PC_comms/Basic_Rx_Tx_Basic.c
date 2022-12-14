@@ -26,6 +26,14 @@ void I2C_Tx_8_byte_array(char *);
 char wait_for_return_key_Basic(void);
 long I2C_displayToNum(void);
 
+void I2C_Tx_initiate_mode(char);
+void I2C_Tx(char, char, char*);
+
+void send_byte_with_Ack(char);
+void send_byte_with_Nack(char);
+unsigned char receive_byte_with_Ack(void);
+unsigned char receive_byte_with_Nack(void);
+
 
 /**********************************************************************************************************************************************************************************/
 void setup_PC_comms_Basic (unsigned char UBRROH_N, unsigned char UBRR0L_N ){
