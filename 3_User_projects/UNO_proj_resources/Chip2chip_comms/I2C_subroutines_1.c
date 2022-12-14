@@ -9,9 +9,7 @@ unsigned char receive_byte_with_Nack(void);
 
 void Timer_T0_10mS_delay_x_m(int);
 
-long FPN_to_Significand(float, long *, char *);
-long Fraction_to_Binary_Signed(long, long);
-void I2C_Tx_float_num(long, char);
+
 
 
 /************************************************************************/
@@ -136,15 +134,7 @@ Timer_T0_10mS_delay_x_m(50);}}
 
 
 /************************************************************************/
-void I2C_FPN_to_display(float num){
-  long Denominator;
-  long Significand;
-  char expnt;
 
-Significand = FPN_to_Significand(num, &Denominator, &expnt);
-Significand = Fraction_to_Binary_Signed(Significand, Denominator);
-I2C_Tx_float_num(Significand, expnt);
-I2C_Tx_float_display_control;}
 
 
 
