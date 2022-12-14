@@ -1,6 +1,5 @@
 
 
-void I2C_Tx_initiate_mode(char);
 void I2C_Tx(char, char, char*);
 void send_byte_with_Ack(char);
 void send_byte_with_Nack(char);
@@ -130,11 +129,6 @@ if(!(Dimmer_control))continue;
 I2C_Tx(1, 'Q', &Dimmer_control);
 I2C_Tx_2_integers(Port_1, ~Port_1);
 Timer_T0_10mS_delay_x_m(50);}}
-
-
-
-/************************************************************************/
-
 
 
 
