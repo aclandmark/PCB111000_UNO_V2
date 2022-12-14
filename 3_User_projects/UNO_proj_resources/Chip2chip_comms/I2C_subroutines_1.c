@@ -1,5 +1,4 @@
 
-
 void I2C_Tx(char, char, char*);
 void send_byte_with_Ack(char);
 void send_byte_with_Nack(char);
@@ -7,6 +6,7 @@ unsigned char receive_byte_with_Ack(void);
 unsigned char receive_byte_with_Nack(void);
 
 void Timer_T0_10mS_delay_x_m(int);
+
 
 
 
