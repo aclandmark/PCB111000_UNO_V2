@@ -64,10 +64,10 @@ Geom_mean =  pow (Geom_mean , 1/(float)counter);}
 
 if(switch_1_down)while(switch_1_down); else continue;
 
-FPN_to_display(Arith_mean);
+I2C_FPN_to_display(Arith_mean);
 while(switch_1_down);
 
-FPN_to_display(Geom_mean);
+I2C_FPN_to_display(Geom_mean);
 while(switch_1_down);}
 
 SW_reset;}
