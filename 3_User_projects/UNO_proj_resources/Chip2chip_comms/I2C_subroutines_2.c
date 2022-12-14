@@ -41,13 +41,6 @@ char num_bytes=4; char mode='J';
 for(int m=0; m<=3; m++){s[m] = (L_number >> (8*(3-m)));}
 I2C_Tx(num_bytes,mode, s);}
 
-/************************************************************************/
-void I2C_Tx_float_num(long L_number, char expnt){
-char s[5];
-char num_bytes=5; char mode='K';
-for(int m=0; m<=3; m++){s[m] = (L_number >> (8*(3-m)));}
-s[4] = expnt;
-I2C_Tx(num_bytes,mode, s);}
 
 
 
