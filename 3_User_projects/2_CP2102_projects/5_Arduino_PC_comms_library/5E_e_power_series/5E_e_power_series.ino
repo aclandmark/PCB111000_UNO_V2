@@ -77,7 +77,7 @@ Sc_Num_to_PC(Result,1,5,'\r');
 Serial.write("Library result\t");                   //remove to save overwriting commentary
 Sc_Num_to_PC((pow(Num_bkp,Pow)),1,5,'\r');          //remove to save overwriting commentary
 
-FPN_to_display(Result);}
+I2C_FPN_to_display(Result);}
 
 return 1;}
 
