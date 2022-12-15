@@ -12,6 +12,8 @@ char num_as_string[12];
 #include <avr/wdt.h>
 
 
+#define newline       String_to_PC_Basic("\r\n");
+
 unsigned char PRN_8bit_GEN(unsigned char, char *);
 
 
@@ -48,7 +50,7 @@ I2C_Tx_LED_dimmer_UNO();\
 \
 if(((PIND & 0x04)^0x04) && \
 ((PIND & 0x80)^0x80))                         /*Press SW1 and SW2 to trigger recalibration*/\
-Cal_UNO_pcb_A();
+Cal_UNO_pcb_A_Basic();
 
 
 
