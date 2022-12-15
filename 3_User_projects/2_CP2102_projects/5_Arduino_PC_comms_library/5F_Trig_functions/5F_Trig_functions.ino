@@ -38,7 +38,7 @@ case 't': Result = Sine_power_series(Num)/Cos_power_series(Num);Serial.write("Ta
 
 Sc_Num_to_PC(Result,1,8,'\r');
 
-FPN_to_display(Result);
+I2C_FPN_to_display(Result);
 
 SW_reset;
 return 1; 
