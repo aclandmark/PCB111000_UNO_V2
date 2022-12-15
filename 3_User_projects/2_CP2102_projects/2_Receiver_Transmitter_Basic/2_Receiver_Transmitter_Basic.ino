@@ -19,21 +19,17 @@ digits 1, 2 and 5 can therfore by extracted by subtracting 48 from 49, 50 and 53
 
 #include "Receiver_Transmitter_header.h"
  
-int main (void)                          //Example 2
-  { char symbol;
-  setup_HW_basic;
+int main (void)                          //Example 1
+  { setup_HW_basic;
+  Char_to_PC_Basic('?');
   newline;
-  symbol = '!';
-  while (symbol <= '~')
-  { Char_to_PC_Local(symbol);
-    _delay_ms(10);
-    symbol++;
-    wdr();
+  while (1)
+  { Char_to_PC_Local
+    (//waitforkeypress_Basic());
+        waitforkeypress_Basic());
   }
-  waitforkeypress_Basic();
-  SW_reset;
   return 1;
-  }
+  }  
 
 
 /************************************************************************************************************
@@ -93,7 +89,7 @@ int main (void)                          //Example 3
   }
   String_to_PC_Basic("Done\r\n");
   SW_reset;
-  return 1;
+  return 1;}
  
 
 
