@@ -50,7 +50,7 @@ if ((pie = (float)Area / (float)R / (float)R * 4) < 0.0)              //Convert 
 Serial.write ("Overflows\r\n");
 else {Serial.print (pie,6);                                           //Arduino converts FPN to string and sends this to the PC
 
-FPN_to_display(pie);
+I2C_FPN_to_display(pie);
 
 Serial.write("\r\n");}
 
