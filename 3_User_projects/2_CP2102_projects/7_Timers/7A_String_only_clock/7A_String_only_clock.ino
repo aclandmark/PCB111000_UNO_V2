@@ -39,7 +39,7 @@ I2C_Tx_8_byte_array(digits);                                                    
 
 Serial.write("AK to start\r\n");
 waitforkeypress_A();
-while(1){Timer_T0_10mS_delay_x_m(20);Inc_display();}}
+while(1){Timer_T0_10mS_delay_x_m(20);Inc_display();Inc_display();}}
 
 
 
