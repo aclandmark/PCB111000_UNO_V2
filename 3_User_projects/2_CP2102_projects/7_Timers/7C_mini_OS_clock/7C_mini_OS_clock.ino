@@ -3,21 +3,6 @@
 ***********************************************************/
 
 
-/*IT INTRODUCES
-
-Simple clock in which the display is kept up to date by manipulating the string sent to the display every 100 mS.
-
-It uses a free running clock oscillator: accuracy is therefore poor.
-Pencil and paper recommended to understand string manipulation.
-
-
-USER INSTRUCTIONS
-
-Respond to the user prompt by pressing "R" and entering the time when requested or by pressing "r" and letting 
-the clock start at time zero.*/
-
-
-
 
 #include "Proj_7C_header_file_1.h"
 
@@ -28,38 +13,56 @@ the clock start at time zero.*/
 
 int main (void){
 char User_response;
-char start_time[8];
+char start_time[8], digits[8];
 unsigned char input_mode;
+char keypress;
 
 setup_HW_Arduino_IO;
 
 if (PIND & 0x80)
 {User_prompt;}
 
-input_mode = eeprom_read_byte((uint8_t*)0x02);                                      //Read mode. Default value is 255
+input_mode = eeprom_read_byte((uint8_t*)0x02);                 //Read mode. Default value is 255
 
 switch (input_mode){
-case 255:                                                                           //If EEPROM contains 255 initiate the clock
+case 255:                                                       //If EEPROM contains 255 initiate the clock
 Serial.write("\r\nSend time: hours mins secs\
-(24Hr clock, include spaces)");
-
+(24Hr clock)");
+       
+clear_display;
 for (int m = 0;  m < 8; m++)
-{start_time[m] = waitforkeypress_A();                                                 //Obtain time from KBD            
-eeprom_write_byte((uint8_t*)(m+3),start_time[m]); }                                 //and save each keypress directly to EEPROM
-eeprom_write_byte((uint8_t*)(0x02),0);                                              //Update mode and save in EEPROM location 2
+{                                                               //Obtain time from KBD            
+keypress = waitforkeypress_A();
+
+if((m == 2) ||(m == 5))
+{digits[0] = ' ';save_to_eeprom;
+shift_display_left; m += 1;}
+
+digits[0] = keypress;
+save_to_eeprom;
+I2C_Tx_8_byte_array(digits);
+if (m < 7){shift_display_left;}}
+
+eeprom_write_byte((uint8_t*)(0x02),0);                         //Update mode and save in EEPROM location 2
+
 Serial.write("\r\nPress SW2 & Power cycle!:\
 Can now use 5V USB charger if required");
+
+
+
 break;                                                                             //Exit and send Start clock command
 
 case 0:                                                                           //If EEPROM location 2 contains 0 start clock immediately
-for (int m = 0;  m < 8; m++)
-{start_time[m] = eeprom_read_byte((uint8_t*)(m+3));}                              //Read start time from EEPROM
 eeprom_write_byte((uint8_t*)(0x02),255);                                          //Restore the EEPROM location 2 to its default value
 break;
 
 default: eeprom_write_byte((uint8_t*)(0x02),255);                                 //If EEPROM ever gets corrupted reset it to 255  (0b11111111)
 wdt_enable(WDTO_15MS); while(1);break;}                                           //Exit and start clock          
-  
+
+for (int m = 0;  m < 8; m++)
+{start_time[m] = 
+eeprom_read_byte((uint8_t*)(m+3));}
+
 I2C_Tx_OS_timer(AT_clock_mode, start_time);                                       //Send Start clock command (AT clock mode is 7)
 
 while(1);}  
