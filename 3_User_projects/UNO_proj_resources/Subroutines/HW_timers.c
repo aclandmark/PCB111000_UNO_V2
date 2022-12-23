@@ -25,6 +25,14 @@ TIFR1 |= (1<<TOV1); 													//Clear overflow flag
 TCCR1B = 0;}															//Halt counter
 
 
+/*********************************************************************/
+void Timer_T1_sub_with_interrupt(char Counter_speed, unsigned int Start_point){ 
+TIMSK1 |= (1 << TOIE1);
+TCNT1H = (Start_point >> 8);
+TCNT1L = Start_point & 0x00FF;
+TCCR1B = Counter_speed;}
+
+
 
 /**********************************************************************************************************************************************************************************/
 void Timer_T0_10mS_delay_x_m(int m)
