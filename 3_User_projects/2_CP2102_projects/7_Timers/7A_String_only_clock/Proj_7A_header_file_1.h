@@ -9,8 +9,6 @@ char num_as_string[12];
 
 
 
-
-
 /*****************************************************************************/
 #include <avr/wdt.h>
 
@@ -59,13 +57,6 @@ WDTCSR = 0;
 
 
 #define wdr()  __asm__ __volatile__("wdr")
-
-#define wd_timer_off \
-wdr();\
-MCUSR &= (~(1 << WDRF));\
-WDTCSR |= (1<<WDCE) | (1<<WDE);\
-WDTCSR = 0x00;
-
 
 
 /*****************************************************************************/
@@ -125,5 +116,5 @@ TWCR = (1 << TWINT);
 #include "UNO_proj_resources/PC_comms/Arduino_Rx_Tx_UNO_pcb.c"
 
 
-void Inc_display(void);
-void set_time(void);
+
+/*****************************************************************************/
