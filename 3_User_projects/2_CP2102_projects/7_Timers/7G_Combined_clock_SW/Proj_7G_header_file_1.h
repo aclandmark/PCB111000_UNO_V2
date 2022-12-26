@@ -24,7 +24,7 @@ eeprom_read_byte((uint8_t*)0x3FC);            /*Saved to EEPROM by the bootloade
 if (MCUSR_copy & (1 << PORF))                 /*Power on reset flag set*/\
 {MCUSR_copy = (1 << PORF);\
 eeprom_write_byte((uint8_t*)0x3F5,0);}        /*Initialise random generator memory */\
-setup_watchdog_for_UNO;\
+setup_watchdog;\
 \
 set_up_I2C;                                   /*UNO hosts the slave I2C*/\
 ADMUX |= (1 << REFS0);                        /*Set analogue reference to +5V*/\
@@ -39,10 +39,10 @@ sei();
 
 
 /*****************************************************************************/
-#define setup_watchdog_for_UNO \
+#define setup_watchdog \
 if (MCUSR_copy & (1 << WDRF))watch_dog_reset = 1;\
 wdr();\
-MCUSR &= ~(1<<WDRF);                          /*Line not needed WD flag already reset by bootloader */\
+MCUSR &= ~(1<<WDRF);\
 WDTCSR |= (1 <<WDCE) | (1<< WDE);\
 WDTCSR = 0;
 
