@@ -12,13 +12,7 @@ control of the "Project_SW".
 The UNO clock has been found accurrate to about 1% which is not really adequate for monitoring the time.
 
 
-2.  Two wire serial interface TWI.
-  
-This is the term Atmel use for the Inter IC bus also known as the I-squared C or I2C bus.  Within the limits 
-of these projects TWI and I2C hardware and protocols appear to be identical.
-
-
-3.  An "atomic process".
+2.  An "atomic process".
 
 Elapsed time is recorded in seconds in a variable known as "sec_counter".  It is updated by a TWI ISR and processed 
 by "main" and other subroutines. If any of these processes were interrupted by the TWI ISR then "sec_counter" would 
@@ -29,14 +23,9 @@ in progress, using the following code
 
   " cli(); sec_counter = sec_counter_V; sei();"
 
-4.  Project subroutine "I2C_initiate_10mS_ref();" 
+3.  Project subroutine "I2C_initiate_10mS_ref();" 
 
 This is used to initiate the 10mS TWI interrupt
-Note:
-The firmware can crash during a TWI data transfer and to guard against this happening the Watch dog timer has been 
-implemented in Interrupt and System Reset Mode on both Atmega devices. The 7 digit clock can be changed to 8 digits 
-(10ms tick) see optional line in subroutine “update_7_seg_display()”.
-
 
 
 EEPROM USAGE
