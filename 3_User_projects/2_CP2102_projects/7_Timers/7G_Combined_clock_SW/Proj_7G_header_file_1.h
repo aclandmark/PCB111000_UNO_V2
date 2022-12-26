@@ -49,12 +49,6 @@ WDTCSR = 0;
 
 #define wdr()  __asm__ __volatile__("wdr")
 
-#define wd_timer_off \
-wdr();\
-MCUSR &= (~(1 << WDRF));\
-WDTCSR |= (1<<WDCE) | (1<<WDE);\
-WDTCSR = 0x00;
-
 
 
 /*****************************************************************************/
