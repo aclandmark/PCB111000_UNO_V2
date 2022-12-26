@@ -1,28 +1,19 @@
 
 
-/************Define clock memory locations********************/
+/************Define clock memory locations**********************************************************************/
 #define HoursH digits[7]
 #define HoursL digits[6]
 #define MinsH digits[5]
 #define MinsL digits[4]
 #define SecsH digits[3]
 #define SecsL digits[2]
-
-//#define msecsH digits[1]
-//#define msecsL digits[0]
-
-
 #define deci_SecsH digits[1]
 #define deci_SecsL digits[0]
 
 
 
-/***********Define clock display functions and modes***************/
+/***********Define clock display functions and modes*************************************************************/
 #define reset_clock_1   {digits[0] = 0; for (int m = 1; m < 8; m++)digits[m] = '0'; }
-#define reset_clock_2   {for (int m = 0;  m < 8; m++)\
-{if ((m==2) || (m== 5))digits[m] = ' '; else digits[m] = '0'; }\
-I2C_Tx_8_byte_array_plus_mode(7, digits);I2C_Tx_3(8, '2');}
-
 
 
 
@@ -46,10 +37,7 @@ I2C_Tx_8_byte_array_plus_mode(7, digits);I2C_Tx_3(8, '2');}
 
 
 
-
-
-
-/*****************************************************************************/
+/****************************************************************************************************************/
 #define  set_up_activity_leds                   /*Common cathode dual LEDs connected between B0 and B1 and 0V*/\
 DDRB |= (1 << DDB0) | (1 << DDB1);               /*Ports B0 and B1 set to output*/\
 LED_1_off;\
@@ -90,3 +78,8 @@ eeprom_write_byte((uint8_t*)0x3F4,\
 for(int m = 0; m < 4; m++)Serial.write("\r\n");\
 \
 asm("jmp 0x6C00");}
+
+
+
+
+/************************************************************************************************************/
