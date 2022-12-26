@@ -16,8 +16,6 @@
 #define shift_display_left   for (int p = 7;  (p); p--)\
 digits[p] = digits[p-1];
 
-#define save_to_eeprom    eeprom_write_byte((uint8_t*)(m+3),digits[0]);
-
 #define switch_1_down  ((PIND & 0x04)^0x04)
 #define switch_1_up   (PIND & 0x04)
 #define switch_2_down ((PIND & 0x80)^0x80)
@@ -37,6 +35,8 @@ PCICR |= ((1 << PCIE0) | (1 << PCIE2));
 #define restore_PCI_on_sw1_and_sw2  PCICR |= (1 << PCIE2);
 
 
+
+/*************************************************************************************************************************/
 #define AT_clock_mode 'C'
 #define AT_exit_stop_watch 10, '1'
 #define AT_mode_1 1
@@ -54,9 +54,6 @@ PCICR |= ((1 << PCIE0) | (1 << PCIE2));
 #define store_time 'E', '2'
 #define one100ms_mode 'E', '1'
 #define ten_ms_mode 'E', '2'
-
-
-
 
 
 
@@ -78,37 +75,8 @@ else {PORTB |= (1 << PB1);}
 
 
 
-/************************************/
-//Test programmmer writes 0x40 to 0x3F4 before quitting 
-//Text verification.c increments 0x3F4 each time a string is printed in commentary mode
-//bit 7 of 0x3F4 tells the bootloader that the WDTout is not due to a user app
-
-#define User_app_commentary_mode \
-\
-if(eeprom_read_byte((uint8_t*)0x3F4) == 0xFF)\
-eeprom_write_byte((uint8_t*)0x3F4,0);\
-\
-if(eeprom_read_byte((uint8_t*)0x3F4) == 0x40){\
-for(int m = 0; m < 10; m++)Serial.write("\r\n");\
-Serial.write("Project commentary: Press 'X' to escape or AOK\r\n");\
-\
-eeprom_write_byte((uint8_t*)0x3F4,0x41);}\
-\
-if ((eeprom_read_byte((uint8_t*)0x3F4) & 0x40)){\
-eeprom_write_byte((uint8_t*)0x3F4,\
-(eeprom_read_byte((uint8_t*)0x3F4) | 0x80));\
-\
-for(int m = 0; m < 4; m++)Serial.write("\r\n");\
-\
-asm("jmp 0x6C00");}
-
-
-
-
-
-
-
-# define User_instructions \
+/***************************************************************************************************************************/
+#define User_instructions \
 Serial.write(message_1);\
 Serial.write(message_2);\
 Serial.write(message_3);\
@@ -171,11 +139,6 @@ Char_to_EEPROM( 0x3EE, 0);
 Char_to_EEPROM( 0x3EE, 0xFF);
 
 
-
-
-
-//volatile char T0_OVF_FLAG,  T1_OVF_counter=0; 
-//volatile char T0_OVF_FLAG;
 volatile char mode;
 volatile char  TWI_flag;
 
@@ -200,7 +163,6 @@ void Calculate_time(void);                                //Converts seconds ("s
 void timer_utoa(char);                                    //Converts hours, minutes and seconds to strings
 
 void Timer(void);                                         //Calls "update_7_seg_display", to close one I2C transaction and sets payload to initiate the next one          
-//ISR (TWI_vect)                                          //Detects 10mS interrupt. Initiates I2C_transaction and responds by sending payload size
 void update_7_seg_display(void);                          //I2C controler: supervises transmission of timer data to the mini OS.
 long clockTOstop_watch(void);                             //Saves time before selecting stop watch display (i.e. reseting time to zero)
 long restore_Clock(void);                                 //Restores time by adding "clock_time" to the current SW time
@@ -209,3 +171,8 @@ void restore_display(void);                               //Re-activate Stop wat
 void clear_display(void);                                 //Blanks the display
 char sw_de_bounce(void);                                  //User Timer with interrupt to control SW bounce
 void print_out_bkp(void);                                 //For test only: prints out contents of BKP store EEPROM 7 - 18
+
+
+
+
+/*************************************************************************************************************************/
