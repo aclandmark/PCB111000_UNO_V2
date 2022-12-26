@@ -12,13 +12,14 @@ char num_as_string[12];
 
 
 /*****************************************************************************/
-#include <avr/io.h>
-#include <avr/wdt.h>
+/*#include <avr/io.h>
+
 #include <avr/interrupt.h>
 #include <avr/eeprom.h>
 #include <stdint.h>
-#include <stdio.h>
+#include <stdio.h>*/
 
+#include <avr/wdt.h>
 
 /*****************************************************************************/
 #define setup_HW_Arduino_IO \
