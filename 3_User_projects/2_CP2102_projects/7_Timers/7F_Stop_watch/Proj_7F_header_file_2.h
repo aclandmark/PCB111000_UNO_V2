@@ -1,27 +1,5 @@
 
 
-/************Define clock memory locations********************/
-#define HoursH digits[7]
-#define HoursL digits[6]
-#define MinsH digits[5]
-#define MinsL digits[4]
-#define SecsH digits[3]
-#define SecsL digits[2]
-
-//#define msecsH digits[1]
-//#define msecsL digits[0]
-
-
-#define deci_SecsH digits[1]
-#define deci_SecsL digits[0]
-
-
-
-/***********Define clock display functions and modes***************/
-//#define reset_clock_1   {digits[0] = 0; for (int m = 1; m < 8; m++)digits[m] = '0'; }
-//#define reset_clock_2   {for (int m = 0;  m < 8; m++)\
-//{if ((m==2) || (m== 5))digits[m] = ' '; else digits[m] = '0'; }\
-//I2C_Tx_8_byte_array_plus_mode(7, digits);I2C_Tx_3(8, '2');}
 
 #define shift_display_left   for (int p = 7;  (p); p--)\
 digits[p] = digits[p-1];
@@ -44,6 +22,9 @@ PCICR |= ((1 << PCIE0) | (1 << PCIE2));
 #define enable_pci  PCMSK0 |= (1 << PCINT2);    PCMSK2 |= (1 << PCINT18) | (1 << PCINT23);
 #define disable_pci_on_sw1_and_sw2  PCMSK2 &= (~((1 << PCINT18) | (1 << PCINT23)));
 
+
+
+/**********************************************************************************************************/
 #define AT_clock_mode 'C'
 #define AT_exit_stop_watch 10, '1'
 #define AT_mode_1 1
@@ -64,10 +45,7 @@ PCICR |= ((1 << PCIE0) | (1 << PCIE2));
 
 
 
-
-
-
-/*****************************************************************************/
+/**********************************************************************************************************/
 #define  set_up_activity_leds                   /*Common cathode dual LEDs connected between B0 and B1 and 0V*/\
 DDRB |= (1 << DDB0) | (1 << DDB1);               /*Ports B0 and B1 set to output*/\
 LED_1_off;\
@@ -84,6 +62,8 @@ if (PORTB & (1 << PB1)){LED_1_off;}                 /*If output high set low*/\
 else {PORTB |= (1 << PB1);}
 
 
+
+/**********************************************************************************************************/
 #define User_instructions \
 Serial.write(message_1);\
 Serial.write(message_2);
@@ -100,9 +80,7 @@ Press sw3 to re-initialise SW\r\n"
 
 
 
-
-
-/************************************/
+/**********************************************************************************************************/
 //Test programmmer writes 0x40 to 0x3F4 before quitting 
 //Text verification.c increments 0x3F4 each time a string is printed in commentary mode
 //bit 7 of 0x3F4 tells the bootloader that the WDTout is not due to a user app
@@ -125,3 +103,9 @@ eeprom_write_byte((uint8_t*)0x3F4,\
 for(int m = 0; m < 4; m++)Serial.write("\r\n");\
 \
 asm("jmp 0x6C00");}
+
+
+
+
+
+/**********************************************************************************************************/
