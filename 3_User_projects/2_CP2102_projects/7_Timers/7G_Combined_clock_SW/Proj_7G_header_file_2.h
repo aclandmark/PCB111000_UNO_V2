@@ -1,6 +1,6 @@
 
 
-/************Define clock memory locations********************/
+/************Define clock memory locations*******************************************************************************/
 #define HoursH digits[7]
 #define HoursL digits[6]
 #define MinsH digits[5]
@@ -12,7 +12,7 @@
 
 
 
-/***********Define clock display functions and modes***************/
+/***********Define clock display functions and modes***********************************************************************/
 #define shift_display_left   for (int p = 7;  (p); p--)\
 digits[p] = digits[p-1];
 
@@ -57,7 +57,7 @@ PCICR |= ((1 << PCIE0) | (1 << PCIE2));
 
 
 
-/*****************************************************************************/
+/****************************************************************************************************************************/
 #define  set_up_activity_leds                   /*Common cathode dual LEDs connected between B0 and B1 and 0V*/\
 DDRB |= (1 << DDB0) | (1 << DDB1);               /*Ports B0 and B1 set to output*/\
 LED_1_off;\
