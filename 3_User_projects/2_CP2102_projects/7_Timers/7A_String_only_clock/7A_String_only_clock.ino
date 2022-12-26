@@ -1,13 +1,13 @@
 
-/*Proj_5A_Demo_Clock_A
-***********************************************************/
+/*Proj_7A_Demo_Clock_A
+****************************************************************************************************************************/
 
 
 /*IT INTRODUCES
 
 Simple clock in which the display is kept up to date by manipulating the string sent to the display every 100 mS.
 
-It uses a free running clock oscillator: accuracy is therefore poor.
+A watch crystal is not used to ensure accuracy which is therefore poor.
 Pencil and paper recommended to understand string manipulation.
 
 
@@ -35,7 +35,7 @@ User_prompt;
 
 if(User_response == 'R')set_time();
 else {reset_clock_1;}
-I2C_Tx_8_byte_array(digits);                                                                                //set display to "0000000_"
+I2C_Tx_8_byte_array(digits);  
 
 Serial.write("AK to start\r\n");
 waitforkeypress_A();
@@ -44,7 +44,7 @@ while(1){Timer_T0_10mS_delay_x_m(20);Inc_display();Inc_display();}}
 
 
 
-/**********************************************************************************************************************************************************/
+/***********************************************************************************************************************/
 void Inc_display(void){
  if (deci_SecsH < '9') deci_SecsH++; 
   else {deci_SecsH = '0'; if ((SecsL) < '9') SecsL++;   
@@ -64,7 +64,7 @@ I2C_Tx_8_byte_array(digits);}
 
 
 
-/**********************************************************************************************************************************************************/
+/***********************************************************************************************************************/
 void set_time(void){
 
 for(int m = 0; m <= 7; m++)digits[m] = 0;
@@ -85,4 +85,4 @@ _delay_ms(50);}
 
 
 
-/****************************************************************************************************************/
+/***********************************************************************************************************************/
