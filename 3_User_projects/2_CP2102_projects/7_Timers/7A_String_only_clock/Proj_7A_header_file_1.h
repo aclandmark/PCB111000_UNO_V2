@@ -12,14 +12,9 @@ char num_as_string[12];
 
 
 /*****************************************************************************/
-/*#include <avr/io.h>
-
-#include <avr/interrupt.h>
-#include <avr/eeprom.h>
-#include <stdint.h>
-#include <stdio.h>*/
-
 #include <avr/wdt.h>
+
+
 
 /*****************************************************************************/
 #define setup_HW_Arduino_IO \
@@ -31,7 +26,7 @@ eeprom_read_byte((uint8_t*)0x3FC);            /*Saved to EEPROM by the bootloade
 if (MCUSR_copy & (1 << PORF))                 /*Power on reset flag set*/\
 {MCUSR_copy = (1 << PORF);\
 eeprom_write_byte((uint8_t*)0x3F5,0);}        /*Initialise random generator memory */\
-setup_watchdog_for_UNO;\
+setup_watchdog;\
 \
 set_up_I2C;                                   /*UNO hosts the slave I2C*/\
 ADMUX |= (1 << REFS0);                        /*Set analogue reference to +5V*/\
@@ -55,7 +50,7 @@ Cal_UNO_pcb_A_Arduino();
 
 
 /*****************************************************************************/
-#define setup_watchdog_for_UNO \
+#define setup_watchdog \
 if (MCUSR_copy & (1 << WDRF))watch_dog_reset = 1;\
 wdr();\
 MCUSR &= ~(1<<WDRF);                          /*Line not needed WD flag already reset by bootloader */\
@@ -103,15 +98,6 @@ PORTC |= ((1 << PC0)|(1 << PC1)|(1 << PC2));\
 PORTD |= ((1 << PD3)|(1 << PD4)|(1 << PD5)|(1 << PD6));
 
 
-/*****************************************************************************/
-#define OSC_CAL_328 \
-if ((eeprom_read_byte((uint8_t*)0x3FE) > 0x0F)\
-&&  (eeprom_read_byte((uint8_t*)0x3FE) < 0xF0) && (eeprom_read_byte((uint8_t*)0x3FE)\
-== eeprom_read_byte((uint8_t*)0x3FF))) {OSCCAL = eeprom_read_byte((uint8_t*)0x3FE);}
-
-
-//Note: both WinAVR and Arduino read the EEPROM as unsigned 8 bit chars
-
 
 /*****************************************************************************/
 #define User_prompt \
@@ -138,15 +124,6 @@ TWCR = (1 << TWINT);
 #include "UNO_proj_resources/PC_comms/Basic_Rx_Tx_Arduino.c"
 #include "UNO_proj_resources/PC_comms/Arduino_Rx_Tx_UNO_pcb.c"
 
-
-
-/*
-#include "Resources_V15/Subroutines/Basic_HW_plus_Timer.c"
-#include "Resources_V15/I2C_Subroutines/I2C_subroutines_1.c"
-#include "Resources_V15/Subroutines/Basic_PC_comms.c"
-#include "Resources_V15/Header_files/clock_stop_watch.h"
-#include "Resources_V15/I2C_Subroutines/I2C_slave_Rx_Tx.c"
-*/
 
 void Inc_display(void);
 void set_time(void);
