@@ -81,15 +81,6 @@ PORTC |= ((1 << PC0)|(1 << PC1)|(1 << PC2));\
 PORTD |= ((1 << PD3)|(1 << PD4)|(1 << PD5)|(1 << PD6));
 
 
-/*****************************************************************************/
-#define OSC_CAL_328 \
-if ((eeprom_read_byte((uint8_t*)0x3FE) > 0x0F)\
-&&  (eeprom_read_byte((uint8_t*)0x3FE) < 0xF0) && (eeprom_read_byte((uint8_t*)0x3FE)\
-== eeprom_read_byte((uint8_t*)0x3FF))) {OSCCAL = eeprom_read_byte((uint8_t*)0x3FE);}
-
-
-//Note: both WinAVR and Arduino read the EEPROM as unsigned 8 bit chars
-
 
 /*****************************************************************************/
 #define User_prompt \
