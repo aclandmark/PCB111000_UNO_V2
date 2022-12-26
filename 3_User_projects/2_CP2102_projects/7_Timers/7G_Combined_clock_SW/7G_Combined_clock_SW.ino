@@ -96,7 +96,7 @@ eeprom_write_byte((uint8_t*)(2),0xFF);}
 if(Arduino_non_WDTout){                             //EEPROM 0x3EE holds anything except zero
 clear_Arduino_WDT_flag;                             //set it to to 0xFF
 
-setup_HW_Arduino_IO;
+setup_HW_for_clock_SW;
 
 if (eeprom_read_byte((uint8_t*)(2)))                  //Zero is clock mode 0xFF is stopwatch mode
 {User_prompt;
@@ -119,7 +119,7 @@ payload=2;}
 if(!(Char_from_EEPROM(0x3EE))){                         //Arduino_WDTout
 clear_Arduino_WDT_flag;
       
-setup_HW_Arduino_IO;                                                                        
+setup_HW_for_clock_SW;                                                                        
 
 
 
