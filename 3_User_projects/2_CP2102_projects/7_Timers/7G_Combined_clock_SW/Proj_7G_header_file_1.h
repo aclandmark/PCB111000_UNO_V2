@@ -15,7 +15,7 @@ char num_as_string[12];
 
 
 /*****************************************************************************/
-#define setup_HW_Arduino_IO \
+#define setup_HW_for_clock_SW \
 CLKPR = (1 << CLKPCE);                        /*Reduce 16MHz crystal clock to 8MHz*/\
 CLKPR = (1 << CLKPS0);\
 \
@@ -36,19 +36,6 @@ Serial.begin(115200);\
 while (!Serial);\
 sei();
 
-
-
-#define setup_UNO \
-CLKPR = (1 << CLKPCE);\
-CLKPR = (1 << CLKPS0);\
-setup_watchdog_for_UNO;\
-set_up_I2C;\
-ADMUX |= (1 << REFS0);\
-set_up_switched_inputs;\
-Unused_I_O;\
-Timer_T0_10mS_delay_x_m(5);\
-Serial.begin(115200);\
-while (!Serial);
 
 
 /*****************************************************************************/
