@@ -1,15 +1,16 @@
 
-/*Proj_5A_Demo_Clock_A
-***********************************************************/
+/*Proj_7B_Demo_Clock_A
+*************************************************************************************************************************/
 
 
-/*IT INTRODUCES
 
-Simple clock in which the display is kept up to date by manipulating the string sent to the display every 100 mS.
+/*INTRODUCES
 
-It uses a free running clock oscillator: accuracy is therefore poor.
-Pencil and paper recommended to understand string manipulation.
+Simple clock in which the display is kept up to date by incrementing a counter every second
+The counter is converted to Hours, Minutes, Seconds each of which is then converted to askii 
+characters and sent to the display.
 
+As for Project 7A accurracy is not good
 
 USER INSTRUCTIONS
 
@@ -18,11 +19,7 @@ the clock start at time zero.*/
 
 
 
-
 #include "Proj_7B_header_file_1.h"
-
-
-
 
 
 
