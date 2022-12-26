@@ -114,6 +114,9 @@ Serial.write(message_2);\
 Serial.write(message_3);\
 Serial.write(message_4);\
 Serial.write(message_5);\
+Serial.write(message_6);
+
+
 
 # define message_1 \
 "\r\nCOMBINED CLOCK/SW:\r\n\
@@ -142,6 +145,11 @@ Release sw1 to increment time or sw2 to decrement it then both switches to resto
 "\r\n\
 Bug: Having pressed SW3 when no timer is running \
 it is neccessary to press SW2 twice to restore normal operation\r\n"
+
+# define message_6 \
+"\r\n\
+To force reset in clock mode press sw3 and then \
+press reset switch.\r\n"
 
 
 #define Update_sec_counter  if(sec_counter_save){cli(); sec_counter = sec_counter_V;\
