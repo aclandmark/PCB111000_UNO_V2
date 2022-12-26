@@ -9,6 +9,7 @@
 
 Timing is provided using a 10mS I2C interrupt provided by the mini-OS that puts all clock/SW features under the 
 control of the "Project_SW".
+The UNO clock has been found accurrate to about 1% which is not really adequate for monitoring the time.
 
 
 2.  Two wire serial interface TWI.
