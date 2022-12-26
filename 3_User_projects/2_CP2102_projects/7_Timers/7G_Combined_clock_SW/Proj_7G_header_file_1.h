@@ -38,21 +38,6 @@ sei();
 
 
 
-/*
-
-User_app_commentary_mode;\
-\
-if (((PINB & 0x04)^0x04) && \
-((PIND & 0x04)^0x04))\
-I2C_Tx_LED_dimmer_UNO();\
-\
-if(((PIND & 0x04)^0x04) && \
-((PIND & 0x80)^0x80))\
-Cal_UNO_pcb_A_Arduino();
-
-*/
-
-
 #define setup_UNO \
 CLKPR = (1 << CLKPCE);\
 CLKPR = (1 << CLKPS0);\
