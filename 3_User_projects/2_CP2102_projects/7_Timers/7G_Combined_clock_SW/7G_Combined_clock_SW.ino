@@ -78,7 +78,7 @@ int main (void){
 long SW_resume_time = 0;                              //Value in seconds: Used when switching from clock to SW
 long clock_resume_time=0;                            //Value is seconds: Used when switching from SW to clock time
 
-if(switch_3_down){                                   //Force reset in clock mode
+if(switch_3_down){                                   //Force reset in SW mode
 eeprom_write_byte((uint8_t*)(2),0xFF);}
 
 /*****************Normal program entry mode: Everything is OK********************************/
