@@ -43,6 +43,9 @@ PCICR |= ((1 << PCIE0) | (1 << PCIE2));
 #define set_Arduino_WDTout              Char_to_EEPROM( 0x3EE, 0);
 #define clear_Arduino_WDT_flag          Char_to_EEPROM( 0x3EE, 0xFF);
 
+void Char_to_EEPROM(int location, char text){eeprom_write_byte((uint8_t*)(location), text);}
+char Char_from_EEPROM(int location){return eeprom_read_byte((uint8_t*) location);}
+
 
 
 /*************************************************************************************************************************/
