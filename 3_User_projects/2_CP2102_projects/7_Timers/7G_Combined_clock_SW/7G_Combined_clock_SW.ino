@@ -94,8 +94,11 @@ setup_HW_for_clock_SW;
 
 Timer_T1_sub(T1_delay_100ms);
 if (switch_3_down)
-{while(switch_3_down);set_data_mode;                //Ensure that the user prompt is skipped
+{while(switch_3_down);clear_data_mode;                //Ensure that the user prompt is skipped
 Timer_T1_sub(T1_delay_100ms);}
+
+else set_data_mode;
+
 
 if(data_mode_not_set)                               //Goes here following POR
 {User_prompt;
