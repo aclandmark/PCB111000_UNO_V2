@@ -30,23 +30,22 @@ This is used to initiate the 10mS TWI interrupt
 
 EEPROM USAGE
 
-address 2 Initial mode: clock or SW
-addresses 3-6 Time input by user
-addresses 7-10 "sec_counter"
+address 2 Data entry mode   Time string or seconds read from EEPROM
+addresses 3-6 Time input by user in seconds
+addresses 7-10 Display time time in secs (Clock or SW)
 addresses 11-14 "clock time" in seconds: When a new SW is selected save the "sec_counter" in clock time and 
 "reset sec_counter"
-address 15 mode
-address 16 The number of WD time outs.
-
+address 15 clock_mode
 
 
 USER INSTRUCTIONS
 
-Connect to pc
-press sw1 get message enter time (if not reset and repeat)
+Connect to pc  Should get "R   R   R   R....." user prompt
+Keypress R gives the user insructions
+press sw1 get message enter time 
 Enter time 24 hour clock
 Power cycle to 5V supply if wanted 
-press sw2 to start
+press sw1 then sw2 to start
 press sw2 to toggle between clock and new SW
 press sw3 to restore old SW
 press sw1 to pause, blank and restore display
@@ -65,6 +64,14 @@ PD2&7 call ISR(PCINT2_vect)
 PB2 calls ISR(PCINT0_vect)
 ISR on SW2 is never used.*/
 
+/*
+clock_mode is storred in EEPROM address 2: When  subroutine set_time() is called
+    users enter time for a clock_mode of 255 and mode is set thzero so that
+    time is read from the EEPROM for a clock_mode of zero
+    Having entered time set clock mode to zero 
+*/
+
+
 
 
 #include "Proj_7G_header_file_1.h"
@@ -78,8 +85,6 @@ int main (void){
 long SW_resume_time = 0;                              //Value in seconds: Used when switching from clock to SW
 long clock_resume_time=0;                            //Value is seconds: Used when switching from SW to clock time
 
-if(switch_3_down){                                   //Force reset in SW mode
-eeprom_write_byte((uint8_t*)(2),0xFF);}
 
 /*****************Normal program entry mode: Everything is OK********************************/
 if(Arduino_non_WDTout){                             //EEPROM 0x3EE holds anything except zero
@@ -87,25 +92,30 @@ clear_Arduino_WDT_flag;                             //set it to to 0xFF
 
 setup_HW_for_clock_SW;
 
-if (eeprom_read_byte((uint8_t*)(2)))                  //Zero is clock mode 0xFF is stopwatch mode
+Timer_T1_sub(T1_delay_100ms);
+if (switch_3_down)
+{while(switch_3_down);set_data_mode;                //Ensure that the user prompt is skipped
+Timer_T1_sub(T1_delay_100ms);}
+
+if(data_mode_not_set)                               //Goes here following POR
 {User_prompt;
 User_instructions;}
 
 for(int m = 0; m<=11; m++)
 {eeprom_write_byte((uint8_t*)(m+7), 0);}              //clear BKP space
 
-while(1){if(switch_3_down) {mode = 2;break;}          //Select timer or clock
-    if(switch_1_down) {mode = 1;break;}}
+while(1){if(switch_3_down) {clock_mode = 2;break;}          //Select timer or clock
+    if(switch_1_down) {clock_mode = 1;break;}}
 while((switch_1_down) || (switch_3_down));
 
 clock_time_secs=0;
-old_mode = 0;
+old_clock_mode = 0;
 payload=2;}
 
  
 
 /*****************WDT revovery mode (usually caused by failure of the I2C)**********************/
-if(!(Char_from_EEPROM(0x3EE))){                         //Arduino_WDTout
+if(Arduino_WDTout){                         //Arduino_WDTout
 clear_Arduino_WDT_flag;
       
 setup_HW_for_clock_SW;                                                                        
@@ -126,7 +136,7 @@ Calculate_time();
 digits[0]='0'; digits[1] = '0';                            //Sets mS*10 to zero  masks mS*10     
 I2C_Tx_8_byte_array(digits);}}                             //Displays time as adjusted by user
 
-mode = eeprom_read_byte((uint8_t*)15);                     //Obtain "mode" and "clock_time_secs" from EEPROM
+clock_mode = eeprom_read_byte((uint8_t*)15);                     //Obtain "mode" and "clock_time_secs" from EEPROM
 clock_time_secs=eeprom_read_byte((uint8_t*)(14));   
 for(int m = 0; m<3; m++){
 clock_time_secs = (clock_time_secs<< 8) + eeprom_read_byte((uint8_t*)(13-m));}
@@ -143,7 +153,6 @@ clock_time_secs = (clock_time_secs<< 8) + eeprom_read_byte((uint8_t*)(13-m));}
 
 
 /**************************Normal program continues********************************/
-//setup_and_enable_PCI;
 set_up_PCI;
 enable_pci;
 
@@ -153,13 +162,13 @@ display_clear = 0;
 
 while(1){                                                                       //Main loop: Continuously cycles through this loop (every 188uS??).  
 
-switch(mode){
+switch(clock_mode){
 case 0: break;
 case 1: set_time();                                                             //Clock mode: "set_time()" requests start time  & saves it in "sec_counter"
-mode = 'A';break;   
+clock_mode = 'A';break;   
 case 2: sec_counter = 0;                                                        //SW mode: start at time zero                             
-    mode = 'A'; 
-    eeprom_write_byte((uint8_t*)(0x02),0);                                      //set clock mode
+    clock_mode = 'A'; 
+    set_data_mode;                                      
     for(int m = 0; m<=3; m++)                                                   //Clear EEPROM sec_counter value
     {eeprom_write_byte((uint8_t*)(m+3),0);}
     break;
@@ -170,39 +179,39 @@ case 'A':
   digits[0]='0'; digits[1] = '0';                                               //Sets mS*10 to zero  masks mS*10     
   I2C_Tx_8_byte_array(digits);                                                  //Displays time 
   clock_resume_time = sec_counter;
-  mode = 'E'; 
+  clock_mode = 'E'; 
   break;
   
 case 'E':                                                                       //Clock ready to start: Awaiting sw3 press
   if(switch_2_up); else{
   I2C_initiate_10mS_ref();                                                      //Initiate TWI interrupt (every 10mS)
   sei();
-  mode = 'B';
+  clock_mode = 'B';
   setup_64ms_WDT_with_interrupt;}                                               //User input finished: Start WDT
   break;                      
 
 case 'B': if(!(TWI_flag)); 
 else {TWI_flag = 0; Update_sec_counter;                                        //Clock running mode
-old_mode = 'B'; 
+old_clock_mode = 'B'; 
 if(((86400 + sec_counter - clock_resume_time)%86400>1) && ((switch_3_down) || (switch_2_down)))
-{if(switch_2_down){clock_time_secs = clockTOstop_watch();mode = 'F';}
-if(switch_3_down){SW_resume_time = restore_stop_watch(); mode = 'H';}}
+{if(switch_2_down){clock_time_secs = clockTOstop_watch();clock_mode = 'F';}
+if(switch_3_down){SW_resume_time = restore_stop_watch(); clock_mode = 'H';}}
 else Timer();} 
 break;                                                                          //Convert clock to stop watch
 
 case 'F': if(!(TWI_flag)); 
 else {TWI_flag = 0; Update_sec_counter;                                         //Stop watch mode     
-old_mode = 'F'; 
+old_clock_mode = 'F'; 
 if(((sec_counter)>1) && ((switch_2_down)))
-{clock_resume_time = restore_Clock();mode = 'B'; }
+{clock_resume_time = restore_Clock();clock_mode = 'B'; }
 else Timer();}
 break;                                                                          //Restore clock
 
 case 'H': if(!(TWI_flag)); 
 else {TWI_flag = 0;   Update_sec_counter;                                       //Stop watch restored mode      
-old_mode = 'H'; 
+old_clock_mode = 'H'; 
 if(((86400 + sec_counter-SW_resume_time)%86400 > 1) &&  (switch_2_down))
-{clock_resume_time = restore_Clock();mode = 'B'; }
+{clock_resume_time = restore_Clock();clock_mode = 'B'; }
 else Timer();}
 break;  
 
@@ -216,7 +225,7 @@ if (!(display_clear)) clear_display();break;                                    
 
 case 'D': 
 TWI_flag = 0;
-restore_display();  mode = old_mode;                                           //Stop watch/clock display re-activated
+restore_display();  clock_mode = old_clock_mode;                                           //Stop watch/clock display re-activated
 break;}
 
 Timer_T2_sub(T2_delay_2ms);
@@ -283,10 +292,10 @@ timer_utoa(Seconds); SecsH = charH; SecsL = charL; }                        //Co
 /*****************************************************************************************************************/
 void set_time(void){
 unsigned int Two_sec_counter;                                               //Required because of difficulties combining long and char variables            
-unsigned char clock_mode;
+unsigned char data_mode;
 
-clock_mode = eeprom_read_byte((uint8_t*)0x02);                              //Read mode. Default value is 255
-switch(clock_mode){
+data_mode = eeprom_read_byte((uint8_t*)0x02);                              //Read mode. Default value is 255
+switch(data_mode){
 
 case 255:                                                                   //Default mode: User enters time
 Serial.write("\r\nEnter start time Hours, Minutes and \
@@ -304,21 +313,20 @@ while(isCharavailable_A(50) == 0){Serial.write("T?  ");}
     sec_counter = Two_sec_counter;
     sec_counter *= 2;             
     if (((SecsH-'0') * 10 + SecsL-'0')%2)sec_counter++;
-    
-    
+        
     for(int m = 0; m<=3; m++)
     {eeprom_write_byte((uint8_t*)(m+3),sec_counter >> (m*8));
     Timer_T0_sub(T0_delay_5ms);}            
-    eeprom_write_byte((uint8_t*)(0x02),0);Timer_T0_sub(T0_delay_5ms);   
-    //eeprom_write_byte((uint8_t*)(19), 0);                                     //Ensures that User_prompt is skippped when device is switched to 5V supply
+    set_data_mode;
     break;
 
 case 0: 
     sec_counter=eeprom_read_byte((uint8_t*)(6));                              //Read start time and place in sec_counter
     for(int m = 0; m<3; m++){
     sec_counter = (sec_counter<< 8) + eeprom_read_byte((uint8_t*)(5-m));}
-    eeprom_write_byte((uint8_t*)(0x02),255);break;    
-default: eeprom_write_byte((uint8_t*)(0x02),255);
+    clear_data_mode;  break;
+        
+default: clear_data_mode;   
 wdt_enable(WDTO_30MS); 
 while(1);break; }}                                                            //Corrupt clock_mode variable: set to default value and restart
 
@@ -340,17 +348,17 @@ ISR(PCINT2_vect) {                                                            //
 if(switch_1_up)return;                                                        //Ignore interrupt on switch release
 if(switch_2_up){                                                              //User triggered WDTout to adjust clock
 
-switch(mode){
-case 0: mode = 1; break;                                                      //Enter the start timer
+switch(clock_mode){
+case 0: clock_mode = 1; break;                                                      //Enter the start timer
 case 'H':
 case 'F':
-case 'B':  mode = 'C'; break;                                                 //Mode B clock is running Mode C Display paused
-case 'C':  mode = 'G'; break;                                                 //Mode G clear display
-case 'G':  mode = 'D';break;}}
+case 'B':  clock_mode = 'C'; break;                                                 //Mode B clock is running Mode C Display paused
+case 'C':  clock_mode = 'G'; break;                                                 //Mode G clear display
+case 'G':  clock_mode = 'D';break;}}
 
 else
 
-if(mode != 'B')return;
+if(clock_mode != 'B')return;
 else { 
 payload = 8;sei(); while(1);}}
 
@@ -446,24 +454,17 @@ update_7_seg_display();}                                                        
 
 
 /*****************************************************************************************************************/
-/*ISR(TIMER0_OVF_vect){     /////////////////////////////////////Defined somewhere else!!!!!!!!!!!!!!!!
-T0_OVF_FLAG = 2;
-TCCR0B = 0;
-TIMSK0 &= (~(1 << TOIE0));}*/
-
-
-/*****************************************************************************************************************/
 ISR (WDT_vect){                                                                //the clock often crashes when the display 
 set_Arduino_WDTout;                                                            //is being switch between stationary and blank
 for(int m = 0; m<=3; m++)                                                      //WDTouts are also used to adjust the clock
 {eeprom_write_byte(((uint8_t*)(7+m)), (sec_counter >> (m*8)) );}  
 
-switch (mode){                                                                  //Save mode
+switch (clock_mode){                                                                  //Save mode
 case 'B':
 case 'F':
 case 'H':
-eeprom_write_byte((uint8_t*)(15),mode); 
-case 'C':  case 'G': case 'D': eeprom_write_byte((uint8_t*)(15),old_mode);
+eeprom_write_byte((uint8_t*)(15),clock_mode); 
+case 'C':  case 'G': case 'D': eeprom_write_byte((uint8_t*)(15),old_clock_mode);
 default: break;}
 
 for(int m = 0; m<=3; m++)
