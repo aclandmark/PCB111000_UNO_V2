@@ -128,7 +128,7 @@ it is neccessary to press SW2 twice to restore normal operation\r\n"
 
 # define message_6 \
 "\r\n\
-To force reset in clock mode press sw3 and then \
+To force reset avoiding user prompt press sw3 and then \
 press reset switch.\r\n"
 
 
