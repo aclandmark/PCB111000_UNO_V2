@@ -391,7 +391,8 @@ return clock_time_secs_L;}
 long restore_Clock(void){                                  //Restores time by adding "clock_time" to the current SW time
 long time, clock_restore_time;
 unsigned char x;
-time = (sec_counter * 100) + ms_counter + clock_time_long;     //Add saved "clock_time" to SW time to get current value of time      
+time = (sec_counter * 100) + ms_counter + 
+clock_time_long;                                           //Add saved "clock_time" to SW time to get current value of time      
 sec_counter = time/100;                                    //Calculate new value of "sec_counter" and "ms_counter"
 ms_counter = time%100 - 2;                                 //2mS fudge factor required for mseconds
 if(sec_counter >=86400)sec_counter -=86400;               //compensates for 24Hr roll-over
