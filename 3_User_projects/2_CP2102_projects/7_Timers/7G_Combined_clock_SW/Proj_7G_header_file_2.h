@@ -27,12 +27,21 @@ digits[p] = digits[p-1];
 #define set_up_PCI \
 PCICR |= ((1 << PCIE0) | (1 << PCIE2));
 
-#define enable_pci  PCMSK0 |= (1 << PCINT2);    PCMSK2 |= (1 << PCINT18) | (1 << PCINT23);
-#define disable_pci_on_sw1_and_sw2  PCMSK2 &= (~((1 << PCINT18) | (1 << PCINT23)));
-#define disable_pci_on_sw2  PCMSK2 &= (~(1 << PCINT23));
-#define disable_pci_on_sw3  PCMSK0 &= (~(1 << PCINT2));
-#define hold_PCI_on_sw1_and_sw2    PCICR &= (~(1 << PCIE2));
-#define restore_PCI_on_sw1_and_sw2  PCICR |= (1 << PCIE2);
+#define enable_pci                      PCMSK0 |= (1 << PCINT2);    PCMSK2 |= (1 << PCINT18) | (1 << PCINT23);
+#define disable_pci_on_sw1_and_sw2      PCMSK2 &= (~((1 << PCINT18) | (1 << PCINT23)));
+#define disable_pci_on_sw2              PCMSK2 &= (~(1 << PCINT23));
+#define disable_pci_on_sw3              PCMSK0 &= (~(1 << PCINT2));
+#define hold_PCI_on_sw1_and_sw2         PCICR &= (~(1 << PCIE2));
+#define restore_PCI_on_sw1_and_sw2      PCICR |= (1 << PCIE2);
+
+#define set_data_mode                   Char_to_EEPROM(0x02,0);
+#define clear_data_mode                 Char_to_EEPROM(0x02,0xFF); 
+#define data_mode_not_set               Char_from_EEPROM(0x02)
+
+#define Arduino_non_WDTout              Char_from_EEPROM(0x3EE)
+#define Arduino_WDTout                  !(Char_from_EEPROM(0x3EE))
+#define set_Arduino_WDTout              Char_to_EEPROM( 0x3EE, 0);
+#define clear_Arduino_WDT_flag          Char_to_EEPROM( 0x3EE, 0xFF);
 
 
 
@@ -128,22 +137,12 @@ wdr();\
 WDTCSR |= (1 <<WDCE) | (1<< WDE);\
 WDTCSR = (1<< WDE) | (1 << WDIE) | (1 << WDP1);
 
-#define Arduino_non_WDTout \
-Char_from_EEPROM(0x3EE)
 
-
-#define set_Arduino_WDTout \
-Char_to_EEPROM( 0x3EE, 0);
-
-#define clear_Arduino_WDT_flag \
-Char_to_EEPROM( 0x3EE, 0xFF);
-
-
-volatile char mode;
+volatile char clock_mode;                                        //
 volatile char  TWI_flag;
 
 volatile char ms_counter;                                  //Increments every 10mS 
-volatile char old_mode;                                   //Used to restore mode when display is re-activated
+volatile char old_clock_mode;                                   //Used to restore mode when display is re-activated
 char digits[8], charH, charL;                             //Holds characters to be displayed
 char Hours, Minutes, Seconds;
   
