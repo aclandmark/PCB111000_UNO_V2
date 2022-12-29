@@ -35,8 +35,9 @@ char keypress;
 
 setup_HW_Arduino_IO;
 
-if (PIND & 0x80)                                               //Press SW2 to omit user prompt
+if (switch_2_up)                                               //Press SW2 to omit user prompt
 {User_prompt;}
+while (switch_2_down);
 
 input_mode = eeprom_read_byte((uint8_t*)0x02);                 //Read mode. Default value is 255
 
@@ -61,8 +62,9 @@ if (m < 7){shift_display_left;}}
 
 eeprom_write_byte((uint8_t*)(0x02),0);                         //Update mode and save in EEPROM location 2
 
-Serial.write("\r\nPress SW2 & Power cycle!:\
-Can now use 5V USB charger if required");
+Serial.write("\r\nFollow carefully (POR may be needed)!!\r\n\Press SW2 & Power cycle!:\
+Can now use 5V USB charger if required.\r\n\
+Release SW2 ro restart clock at time entered.\r\n");
 
 break;                                                        //Exit and send Start clock command
 
