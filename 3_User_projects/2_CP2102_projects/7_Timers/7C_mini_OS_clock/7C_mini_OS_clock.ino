@@ -13,12 +13,15 @@ The various modes (i.e. pause, hode etc.) are saved in the "clock_stop_watch .h"
 
 USER INSTRUCTIONS
 
-Having programmed the UNO run the program and enter the time when requested which is then saved to EEPROM.
-It is now possible to transfer the project pcb to an independent 5V supply and the clock will automatically start 
-at the time entered.
+Following a reset we get the "R   R   R......" prompt. Press R and enter the time which is then saved to EEPROM.
+With SW2 pressed it is now possible to transfer the project pcb to an independent 5V supply and the clock will automatically start 
+at the time entered when SW2 is released.
 
-Note:  If it is power cycled for a second time the display will remain blank until the time is re-entered from 
-the PC keyboard.
+There is a problem: Use of the EEPROM means that the pcb powers up in either one of two modes so that the pcb
+can get out of step with what the user expects.
+
+If time is not requested as expected press the reset button.
+
  */
 
 
