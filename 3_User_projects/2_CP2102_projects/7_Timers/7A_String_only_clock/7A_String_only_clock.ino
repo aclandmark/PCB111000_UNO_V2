@@ -43,7 +43,6 @@ while(1){Timer_T0_10mS_delay_x_m(20);Inc_display();Inc_display();}}
 
 
 
-
 /***********************************************************************************************************************/
 void Inc_display(void){
  if (deci_SecsH < '9') deci_SecsH++; 
@@ -82,6 +81,7 @@ I2C_Tx_8_byte_array(digits);}
 waitforkeypress_A();
 I2C_Tx_any_segment_clear_all();
 _delay_ms(50);}
+
 
 
 
