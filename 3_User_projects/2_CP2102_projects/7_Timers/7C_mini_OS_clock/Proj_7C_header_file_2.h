@@ -1,5 +1,9 @@
 
 
+#define switch_2_down ((PIND & 0x80)^0x80)
+#define switch_2_up   (PIND & 0x80)
+
+
 /**********************************************************************************************************************/
 #define shift_display_left   for (int p = 7;  (p); p--)\
 digits[p] = digits[p-1];
