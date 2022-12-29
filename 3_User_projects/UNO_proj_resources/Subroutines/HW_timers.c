@@ -46,17 +46,16 @@ void Timer_T0_10mS_delay_x_m(int m)
 
 /*************************************************************************************************************************************************/
 void Timer_T0_sub(char Counter_speed, unsigned char Start_point){ 		//Operation is same as that of Timer 1
-TCNT2 = Start_point;
-TCCR2B = Counter_speed;
-while(!(TIFR2 & (1<<TOV2)));
-TIFR2 |= (1<<TOV2); TCCR2B = 0;}
+TCNT0 = Start_point;
+TCCR0B = Counter_speed;
+while(!(TIFR0 & (1<<TOV0)));
+TIFR0 |= (1<<TOV0); TCCR0B = 0;}
 
 
 
 /*************************************************************************************************************************************************/
 void Timer_T2_sub(char Counter_speed, unsigned char Start_point){ 
 TCNT2 = (Start_point );
-
 TCCR2B = Counter_speed;
 while(!(TIFR2 & (1<<TOV2)));
 TIFR2 |= (1<<TOV2); 
