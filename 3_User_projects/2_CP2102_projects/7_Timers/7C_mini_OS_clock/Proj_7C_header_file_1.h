@@ -96,7 +96,7 @@ PORTD |= ((1 << PD3)|(1 << PD4)|(1 << PD5)|(1 << PD6));
 /*****************************************************************************/
 #define User_prompt \
 while(1){\
-do{Serial.write("R?    ");}  while((isCharavailable_A(250) == 0));\
+do{Serial.write("R?    ");}  while((isCharavailable_A(50) == 0));\
 User_response = Serial.read();\
 if((User_response == 'R') || (User_response == 'r'))break;} Serial.write("\r\n");
 
