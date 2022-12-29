@@ -65,7 +65,7 @@ if (m < 7){shift_display_left;}}
 
 eeprom_write_byte((uint8_t*)(0x02),0);                         //Update mode and save in EEPROM location 2
 
-Serial.write("\r\nFollow carefully (POR may be needed)!!\r\n\Press SW2 & Power cycle!:\
+Serial.write("\r\nFollow carefully (POR may be needed)!!\r\nPress SW2 & Power cycle!:\
 Can now use 5V USB charger if required.\r\n\
 Release SW2 ro restart clock at time entered.\r\n");
 
