@@ -4,7 +4,7 @@
 
 #define message_1 \
 "\r\nSTAND-a-LONE CLOCK\r\n\
-Use sw1 and 2 to enter time (24Hr clock)\r\n\
+Use sw2 and 1 to enter time (24Hr clock)\r\n\
 and sw1 to start the clock.\r\n\
 Press sw2 to toggle the display on and off\r\n"
 
