@@ -17,11 +17,11 @@
 
 USER INSTRUCTIONS
 
-  sw1 selects 100ms clock, sw3 a 10ms clock
-  Press sw3 to pause SW and save time
-  Press sw1 the read back saved times
-  While pressing sw1 press sw3 to restore SW
-  Press sw2 to re-initialise SW
+  sw1 selects 100ms clock, sw2 a 10ms clock
+  Press sw1 to pause SW and save time
+  Press sw2 the read back saved times
+  Pressing sw1 to restore SW
+  Press sw3 to re-initialise SW
 
 Switch location SW1(PD2) - SW2(PD7) – SW3(PB2)*/
 
