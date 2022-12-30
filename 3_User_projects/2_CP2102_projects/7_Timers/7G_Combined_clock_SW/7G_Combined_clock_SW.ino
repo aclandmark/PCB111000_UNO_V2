@@ -40,7 +40,10 @@ address 15 clock_mode
 
 USER INSTRUCTIONS
 
+
+
 Connect to pc  Should get "R   R   R   R....." user prompt
+if not hold sw3 down and reset.
 Keypress R gives the user insructions
 press sw1 get message enter time 
 Enter time 24 hour clock
