@@ -10,29 +10,34 @@ crystal controlled timer provided by the mini-OS.
 
 OPERATION
 
-Following POR or programming, PCI is active and switches 1 and 3 are used to enter the start time
-When this is complete PCI is disabled and program execution polls the three switches in turn waiting 
+Following POR or programming, PCI is active and switches 1 and 2 are used to enter the start time
+and start the clock.
+PCI is then disabled and program execution polls the three switches in turn waiting 
 for the user to select either pause or blank the display or adjust the time.
 
 
 
 USER INSTRUCTIONS
 
-Power cycle the project pcb.
-Press SW1 to select each digit of the clock display.
-Press SW3 to move onto the next digit
-When this process is complete the clock starts automatically.
+Reset with sw2 down to print user instructions
+
+Power cycle or reset the project pcb.
+A cursor indicates the active digit. Pulse SW2 to set it.
+Pulse SW1 to set the next digit
+When display is complete pulse sw1 to start the clock
 
 
 During operation the three switches are continuously polled
-Press sw1 to toggle the display ON and OFF
-Press sw3 to pause or resume the clock
-To adjust the clock:
-pulse sw2 then press sw1 and sw3 to advance the time
-or press and hold sw2 (for 500ms)
-then press sw1 and sw3 to retard the time
-Always pulse sw2 when the time is correct
+Pulse sw1 to pause or restart the display           
+Pulse sw2 to toggle the display ON and OFF
 
+To adjust the clock:
+To advance it
+Pulse sw3 then press sw1 for minutes and sw2 for seconds. Pulse sw3 when done.
+
+To retard it
+Press and hold sw3 (for >= 500ms)
+Press sw1 for minutes and sw2 for seconds. Pulse sw3 when done.
 
 Switch location SW1(PD2) - SW2(PD7) – SW3(PB2)*/
 
