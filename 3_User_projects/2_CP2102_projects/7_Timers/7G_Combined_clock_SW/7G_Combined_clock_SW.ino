@@ -30,7 +30,7 @@ This is used to initiate the 10mS TWI interrupt
 
 EEPROM USAGE
 
-address 2 Data entry mode   Time string or seconds read from EEPROM
+address 2 Data entry mode   Time string entered manually or seconds read from EEPROM
 addresses 3-6 Time input by user in seconds
 addresses 7-10 Display time time in secs (Clock or SW)
 addresses 11-14 "clock time" in seconds: When a new SW is selected save the "sec_counter" in clock time and 
