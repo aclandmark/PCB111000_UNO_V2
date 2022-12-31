@@ -108,7 +108,7 @@ difference = ans - ans_old;
 if ((difference/ans > -0.0000001) && (difference/ans < 0.0000001))break;
 ans_old = ans;}
 
-setup_watchdog_for_UNO;
+setup_watchdog;
 
 if(!(sign))return ans;
 else return 1.0/ans;}
