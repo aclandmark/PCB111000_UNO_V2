@@ -7,7 +7,7 @@ The exponent can be as any thing between +38 and -38 (at least).
 The Arduino library can accept the full range of scientific numbers in string format and
 the -C- library function "atof" (askii to float) can generate the required floating point number.
 
-The Arduino function "Serial.print" accepts a floating point number and prints it out with the 
+The Arduino function "Serial.print" accepts a real number and prints it out with the 
 decimal point in the required position.
 
 Here when printing a scientific number greater than about 10^7 we first repetitively divide it by 10 
@@ -15,7 +15,7 @@ while at the same time incrementing the exponent.  We then use "Serial.print" to
 real number followed by the exponent.  
 
 In project 5C we enter numbers at the KBD. These are raised to a power and the result is 
-returned to the PC. A SW_reset is generated if a result exceeds the limits alloweed 
+returned to the PC. A SW_reset is generated if a result exceeds the limits allowed 
 for by 32 bit FP numbers.
 
 */
@@ -38,7 +38,7 @@ int main (void)
     
    if (watch_dog_reset == 1) {watch_dog_reset = 0; User_prompt;}
   else {Serial.write("\r\n\r\nUsing Arduino functions to receive and print scientific numbers.\r\n");}
-   Serial.write("\r\nScientific number?\r\n");
+   Serial.write("\r\nScientific number? Then press AK.\r\n");
    
 num = Sc_Num_from_PC(num_string, '\r');
 
@@ -83,7 +83,7 @@ Serial.write(next_char);}
 
 //Note Floating point numbers define zero (about 10^-38) and infinity (about 10^38).
 //Multiplying or dividing these numbers does not change them.
-//There will be no escape from the loops given in this subroutine and the program will crash.
+//There will be no escape from the loops given in this subroutine and the program may crash.
 
  
 
@@ -92,10 +92,8 @@ Serial.write(next_char);}
 float Sc_Num_from_PC_local(char * num_as_string,char next_char)
 {char strln;                                                          //Length of a string of characters
 
-//pause_WDT;                                                            //Allow time for number to be entered at the keyboard
 Serial.flush();                                                       //Clear the Arduino serial buffer   
 strln = Serial.readBytesUntil('\r',num_as_string, 20);                //Read upto 20 characters or until a -cr- is received 
-//resume_WDT;
 num_as_string[strln] = 0;                                             //Terminate the string with the null character
 Serial.write(num_as_string);                                          //Print out the numerical string
 Serial.write(next_char);                                              //new-line, space, \t or other specified character
