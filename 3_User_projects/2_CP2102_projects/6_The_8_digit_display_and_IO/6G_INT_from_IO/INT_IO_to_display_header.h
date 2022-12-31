@@ -94,7 +94,7 @@ Cal_UNO_pcb_A_Arduino();
 #define setup_watchdog_for_UNO \
 if (MCUSR_copy & (1 << WDRF))watch_dog_reset = 1;\
 wdr();\
-MCUSR &= ~(1<<WDRF);                          /*Line not really needed WD flag already reset by bootloader */\
+MCUSR &= ~(1<<WDRF);\
 WDTCSR |= (1 <<WDCE) | (1<< WDE);\
 WDTCSR = 0;
 
@@ -159,7 +159,7 @@ This is OK because it is always connected to a defined logic level
 /*****************************************************************************/
 #define User_prompt \
 while(1){\
-do{Serial.write("R?    ");}  while((isCharavailable_A (250) == 0));\
+do{Serial.write("R?    ");}  while((isCharavailable_A (50) == 0));\
 User_response = Serial.read();\
 if((User_response == 'R') || (User_response == 'r'))break;} Serial.write("\r\n");
 
