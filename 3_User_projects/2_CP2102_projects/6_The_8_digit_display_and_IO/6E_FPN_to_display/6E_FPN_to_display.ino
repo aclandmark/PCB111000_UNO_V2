@@ -30,7 +30,9 @@ char counter = 0;
 setup_HW_Arduino_IO;
 
 Serial.write("\r\nEnter scientific number \
-& terminate with Return key.\r\n");
+& terminate with Return key.\r\n\
+Press SW3 to pause the display.\r\n\
+SW1 to scroll through the results.\r\n");
 
 Num_1 = FPN_KBD_to_display_Local(digits); 
 
