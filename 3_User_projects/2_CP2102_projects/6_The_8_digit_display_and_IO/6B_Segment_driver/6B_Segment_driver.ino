@@ -7,7 +7,7 @@
 #include "Segment_driver_header.h"
 
 
-#define message_1 "\r\nFor each digit press 0 to 7 then a to g for segments.\t"
+#define message_1 "\r\nFor each digit press 0 to 7 then a to g for segments. Press x to reset display.\t"
 #define message_2 "Again!\t"
 
 
@@ -33,10 +33,10 @@ case 'a': case 'b': case 'c':                                           //If a l
 case 'd': case 'e': case 'f': 
 case 'g': I2C_Tx_any_segment(keypress, digit_num); break;
 
-case 'x': {
-I2C_Tx_any_segment_clear_all();SW_reset;} break;                         //if any other key (AOK) execute a SW_reset.
+case 'x': {                                                             //Press x to reset the display
+I2C_Tx_any_segment_clear_all();SW_reset;} break;  
 
-defaut: break;
+defaut: break;                                                            //if any other key (AOK) execute a SW_reset.
 
 }                                                                        //Bottom of switch block return to top of "do-loop"
 }
