@@ -1,6 +1,6 @@
 
 /*
- Similar to 5A and 5B but uses define statements to specify which segments are required to produce each 
+ Similar to 6A and 6B but uses define statements to specify which segments are required to produce each 
  digit.
  Users simply press digits 0 to 9 at the keyboard and the number is displayed.
  Note however that it is displayed in the reverse order (a common problem with number processing).
