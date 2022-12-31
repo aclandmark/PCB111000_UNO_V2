@@ -30,7 +30,7 @@ sei();
 if (watch_dog_reset == 1) 
 {watch_dog_reset = 0;Serial.write("?\t");}
 else Serial.write("\r\nEstimate value for PIE. Enter radius (50000 max)?\r\n\
-Push and hold SW1 to repeat.\r\n\t");
+Push and hold SW1 to repeat. SW3 to pause display.\r\n\t");
 
 
 
@@ -43,6 +43,8 @@ for(unsigned int m = 1; m <= R; m++){wdr();                           //Count nu
 X = R - m;  
 while (Y*Y <= ((R*R) - (X*X))) Y += 1; Y -= 1;
 Area += Y;}
+
+
 
 /************************Calculate 4*Area/R^2****************************/
 
