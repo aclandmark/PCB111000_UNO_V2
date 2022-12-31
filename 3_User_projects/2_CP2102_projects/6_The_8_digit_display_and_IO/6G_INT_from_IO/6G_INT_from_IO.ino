@@ -1,5 +1,5 @@
 
-/**************Proj_5D_Acquire_and process_Integer_Data_from_the _KBD********************/
+/**************Proj_6G_Acquire_and process_Integer_Data_from_the _KBD********************/
 
 /*
  * Prints colum of numbers each 1.5 times the previous until 99999999 or -9999999 is reached
