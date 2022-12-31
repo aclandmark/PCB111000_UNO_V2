@@ -39,7 +39,9 @@ Serial.write("\r\nEnter positive numbers \r\n\
 & terminate with Return key.\r\n\
 To display interim reults press SW1 before -cr-.\r\n\
 Press sw1 twice to resume entering numbers.\r\n\
-Note: Zero entry is ignored.\r\n");
+Note: Zero entry is ignored.\r\n\
+Press SW3 to pause the display\r\n\
+Press reset to repeat.\r\n");
 
 num_from_KBD = Int_KBD_to_display(digits);
 Arith_mean = (float)num_from_KBD;
