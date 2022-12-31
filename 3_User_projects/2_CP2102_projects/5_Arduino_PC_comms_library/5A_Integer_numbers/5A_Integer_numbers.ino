@@ -37,8 +37,7 @@ int main (void)
     int m = 1;
  
  setup_HW_Arduino_IO;
-    //sei();
-  // if (reset_status == 1) 
+
   User_prompt;
  
    Serial.write("\r\nInteger number\t");
@@ -60,10 +59,8 @@ return 1;
 long Int_Num_from_PC_local(char * num_as_string,char next_char)
 {char strln;
 
-//pause_WDT;
 Serial.flush();   
 strln = Serial.readBytesUntil('\r',num_as_string, 20);
-//resume_WDT;
 num_as_string[strln] = 0;
 Serial.write(num_as_string);
 Serial.write(next_char);
@@ -79,8 +76,7 @@ void Int_Num_to_PC_local(long Int_num, char * num_as_string, char next_char)
 {
 ltoa(Int_num, num_as_string, 10);
 Serial.print(num_as_string);
-Serial.print(next_char);
-}
+Serial.print(next_char);}
 
 
 
