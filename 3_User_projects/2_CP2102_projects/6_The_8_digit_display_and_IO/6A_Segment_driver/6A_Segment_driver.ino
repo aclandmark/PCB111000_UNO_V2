@@ -4,6 +4,7 @@
  This indicates that there is not necessarily any connection between 
  the display and an actual number.
 
+
  Note:  The PCB111000 bootloader enables user programs to distinguish between
  SW_resets and other resets (i.e POR and first time run following programming).
  This facility is exercised here.
@@ -15,7 +16,8 @@
 
 
 
-#define message_1 "\r\nPress key a to g (x for next digit)\r\n"
+#define message_1 "\r\nPress key a to g (x for next digit).\r\n\
+Press sw_2 to clear the display.\r\n"
 #define message_2 "  ?"
 
 
