@@ -366,7 +366,8 @@ case 0: clock_mode = 1; break;                             //Enter the start tim
 case 'H':
 case 'F':
 case 'B':  clock_mode = 'C'; break;                         //Mode B clock is running Mode C Display paused
-case 'C':  clock_mode = 'G'; break; }}                        
+case 'C':  clock_mode = 'G'; break; 
+case 'G':  clock_mode = 'D'; break;}}                        
 
 else
 
