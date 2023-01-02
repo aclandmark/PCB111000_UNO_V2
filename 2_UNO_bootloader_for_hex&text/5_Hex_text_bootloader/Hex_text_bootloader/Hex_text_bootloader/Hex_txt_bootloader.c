@@ -74,10 +74,18 @@ EEPROM reservations:
 0x3F0 PRN generator random number LB
 0x3EF PRN EEPROM location offset 0, 1 or 2
 0x3EE Used by combined Clock_SW to signal Arduino WDTout with ISR
-0x3ED Used by use projects to control WDT reset source
+0x3ED Used by user projects to control WDT reset source
 
 
 0x3EB	Last EEPROM location required by Hello World file
+
+0x3ED	Controls reset and program flow						
+	bit 0	POR_bit	
+	bit 1	WDTout_bit
+	bit 2	Run_BL_bit
+	bit 3	prtD_bit
+	Note: There is no external reset facility. User control is enabled using a switch on PINC5.
+
 
 */
 
