@@ -26,7 +26,7 @@ Serial.write("\r\nProgram running following POR\t"); break;
 case 2: Serial.write("\r\nProgram triggered by a SW_reset.\t"); break;
 case 3: Serial.write("\r\nProgram triggered by external reset or run (the -r- keypress)."); break;
 case 4: Serial.write("\r\nProgram triggered by a flagged WDTout.\t"); break;
-case 5: Serial.write("\r\nProgram triggered by a WDTout with interrupt\r\n");break;
+case 5: Serial.write("\r\nProgram triggered by a WDTout with interrupt");break;
 case 6: Serial.write("\r\nJumps to 0x0000 rather than 0x7000\r\n(WDT configured with interrupt but ISR missing.)");break;}
 
 
@@ -44,7 +44,6 @@ if (switch_1_up)return;
 if((switch_2_up) && (switch_3_up));                                             //Followed by SW_reset
 if((switch_2_down) && (switch_3_up)){Signal_flagged_WDTout;}                    //Followed by SW_reset
 if((switch_2_up) && (switch_3_down)){while(1);}                                 //WDT times out with interrupt                                 
-if((switch_2_down) && (switch_3_down)){cli();while(1);}                         //WDT times out but no interrupt is raised
 
 while(switch_1_down)wdr();                                                      //Wait for switch to be released
 
