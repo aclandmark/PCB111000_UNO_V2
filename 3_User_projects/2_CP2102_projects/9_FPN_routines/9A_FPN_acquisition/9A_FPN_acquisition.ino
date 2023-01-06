@@ -9,15 +9,22 @@ char digits[15];
 
 long Significand;
 long  twos_denominator;
-char  twos_expnt, tens_expnt;
+char   tens_expnt;
+unsigned char twos_expnt;
 char counter = 0;
 
+long FPN_as_long;
+
+long RHS_of_BP;
+long zero_pt_one_denominator = 1717986918;
+long Tens_denominator = 1342177280;
+char zero_pt_one_twos_exponent = 1;
+char Tens_twos_exponent  = 4;
 
 setup_HW_Arduino_IO;
 
 Serial.write("\r\nEnter scientific number \
 & terminate with Return key.\r\n");
-
 Significand = Get_fpn_from_KBD(digits, &twos_expnt, &tens_expnt, &twos_denominator);
 
 Serial.print (twos_denominator);Serial.write('\t');
@@ -26,6 +33,23 @@ Serial.print(Significand);Serial.write('\t');
 Serial.print ((int)tens_expnt); Serial.write("\r\n");
 //////////////////////Num_1 = Significand_to_FPN((float)Significand, twos_denominator, twos_expnt);
 
+RHS_of_BP = Fraction_to_Binary_Signed(Significand, twos_denominator);
+Serial.print(RHS_of_BP);Print_long_as_binary(RHS_of_BP);Serial.write("\r\n");
+
+for(int m = 0; m <=4; m++){
+while (RHS_of_BP > zero_pt_one_denominator){RHS_of_BP /= 2; twos_expnt += 1;}
+RHS_of_BP = Fraction_to_Binary_Signed(RHS_of_BP, zero_pt_one_denominator);twos_expnt += 1;
+Serial.print(RHS_of_BP);Print_long_as_binary(RHS_of_BP);Serial.write('\t');
+
+twos_expnt += 127;
+FPN_as_long = RHS_of_BP >> 8;
+FPN_as_long = FPN_as_long  &  (~((unsigned long)0x80000000 >> 8));
+Serial.print(~((unsigned long)0x80000000 >> 8));Serial.write('\t');
+//FPN_as_long  = FPN_as_long | ((long)twos_expnt << 23);
+Serial.print(FPN_as_long);Serial.write("\r\n");}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 if(Num_1 > 0.0)power = 0.5;
 else power = 3.0;
 
@@ -136,7 +160,7 @@ return tens_expt;}
 
 
 /***********************************************************************************************************************/
-long Get_fpn_from_KBD(char digits[], char *twos_expnt, char *tens_expnt, long *twos_denominator ){   //Defines FPN in terms of significant, denominate and exponent
+long Get_fpn_from_KBD(char digits[], unsigned char *twos_expnt, char *tens_expnt, long *twos_denominator ){   //Defines FPN in terms of significant, denominate and exponent
 
 long num_1=0, num_2 = 0;
  char sign = '+';
@@ -153,3 +177,16 @@ while(num_2){(*twos_expnt)++; *twos_denominator *=2; num_2 /= 2; }
 
 if (sign == '-') num_1 = num_1 * (-1);
 return num_1;}
+
+
+/***********************************************************************************************************************/
+void Print_long_as_binary(long L_num){
+
+Serial.write('\t');
+for(int m = 0; m <=31; m++){if (!(m%4))Serial.write(' ');if ((!(m)) || (m==1))continue;
+if (L_num  &  ((unsigned long)0x80000000 >> m))Serial.write('1'); else Serial.write('0');
+}
+
+}
+
+/***********************************************************************************************************************************/
