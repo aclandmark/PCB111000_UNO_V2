@@ -20,6 +20,7 @@ long zero_pt_one_denominator = 1717986918;
 long Tens_denominator = 1342177280;
 char zero_pt_one_twos_exponent = 1;
 char Tens_twos_exponent  = 4;
+float FPN;
 
 setup_HW_Arduino_IO;
 
@@ -31,22 +32,14 @@ Serial.print (twos_denominator);Serial.write('\t');
 Serial.print ((int)twos_expnt);Serial.write('\t');
 Serial.print(Significand);Serial.write('\t');
 Serial.print ((int)tens_expnt); Serial.write("\r\n");
-//////////////////////Num_1 = Significand_to_FPN((float)Significand, twos_denominator, twos_expnt);
 
-RHS_of_BP = Fraction_to_Binary_Signed(Significand, twos_denominator);
-Serial.print(RHS_of_BP);Print_long_as_binary(RHS_of_BP);Serial.write("\r\n");
-RHS_of_BP = RHS_of_BP >> 7; 
-RHS_of_BP += 1;
-RHS_of_BP = RHS_of_BP >> 1;
-RHS_of_BP = RHS_of_BP << 1; twos_expnt -= 1;
-twos_expnt += 127;
-RHS_of_BP = RHS_of_BP  &  (~((unsigned long)0x80000000 >> 8));
-RHS_of_BP = RHS_of_BP | ((long)twos_expnt << 23);
-Serial.print(RHS_of_BP);Print_long_as_binary(RHS_of_BP);Serial.write('\t');
-Serial.print((int)twos_expnt);
+FPN =  significant_to_FPN(Significand, twos_denominator, &twos_expnt);
+Serial.write("\r\n"); Print_long_as_binary((long) FPN);Serial.write("\r\n");
 
+FPN_to_PC((long)FPN);
+FPN = Significand_plus_tens_expt_to_FPN((long)FPN, tens_expnt );
 Serial.write("\r\n");
-FPN_to_PC(RHS_of_BP);
+//FPN_to_PC((long)FPN);
 
 
 while(1);
