@@ -169,6 +169,7 @@ asm("jmp 0x6C00");}                                     /*Go to Text_Verificatio
 #include "UNO_proj_resources\Subroutines\HW_timers.c"
 #include "UNO_proj_resources\PC_comms\KBD_to_display.c"
 #include "UNO_proj_resources\Subroutines\FPN_subs_plus_extras.c"
+#include "UNO_proj_resources\Subroutines\FPN_subs_dev_routines.c"
 #include "UNO_proj_resources\PC_comms\Arduino_Rx_Tx_UNO_pcb.c"
 
 
