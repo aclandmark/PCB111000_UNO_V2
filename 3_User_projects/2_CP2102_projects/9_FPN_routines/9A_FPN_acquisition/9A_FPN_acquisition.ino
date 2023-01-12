@@ -16,81 +16,50 @@ char counter = 0;
 long FPN_as_long;
 
 long RHS_of_BP;
-long zero_pt_one_denominator = 1717986918;
-long Tens_denominator = 1342177280;
+long zero_pt_one_denominator = 1717986918;      //0x6666 6666     //multiplies by 10
+long Tens_denominator = 1342177280;       //0x5000 0000   //divides by 10
 char zero_pt_one_twos_exponent = 1;
 char Tens_twos_exponent  = 4;
+
 float FPN;
 
 setup_HW_Arduino_IO;
 
 Serial.write("\r\nEnter scientific number \
 & terminate with Return key.\r\n");
-Significand = Get_fpn_from_KBD(digits, &twos_expnt, &tens_expnt, &twos_denominator);
 
+//FPN_as_long = Fraction_to_Binary_Signed(1, 10);
+//Serial.write("\r\nA");Print_long_as_binary(FPN_as_long); Serial.write("\r\n");
+
+Significand = Get_fpn_from_KBD(digits, &twos_expnt, &tens_expnt, &twos_denominator);
 Serial.print (twos_denominator);Serial.write('\t');
 Serial.print ((int)twos_expnt);Serial.write('\t');
 Serial.print(Significand);Serial.write('\t');
 Serial.print ((int)tens_expnt); Serial.write("\r\n");
 
-FPN =  significant_to_FPN(Significand, twos_denominator, &twos_expnt);
-Serial.write("\r\n"); Print_long_as_binary((long) FPN);Serial.write("\r\n");
+FPN_as_long = Fraction_to_Binary_Signed(Significand, twos_denominator);
+FPN_as_long = Assemble_FPN(FPN_as_long, twos_expnt);
+Print_long_as_binary(FPN_as_long); Serial.write('\t');
+/********Covert FPN_as_long to floating point format and print as FPN****/
+FPN = *(float*)&FPN_as_long;  
+Serial.print(FPN);
 
-FPN_to_PC((long)FPN);
-FPN = Significand_plus_tens_expt_to_FPN((long)FPN, tens_expnt );
+
+/**************************************************************************/
 Serial.write("\r\n");
-//FPN_to_PC((long)FPN);
-
+FPN_as_long = Scientifc_num_to_FPN(FPN_as_long, tens_expnt);
+Serial.write("\r\n");
 
 while(1);
 
-
-
+/*
+RHS_of_BP = Fraction_to_Binary_Signed(Significand, twos_denominator);
+Serial.print(RHS_of_BP);Print_long_as_binary(RHS_of_BP), Serial.write('\t');    Serial.write("\r\n");
 for(int m = 0; m <=4; m++){
 while (RHS_of_BP > zero_pt_one_denominator){RHS_of_BP /= 2; twos_expnt += 1;}
 RHS_of_BP = Fraction_to_Binary_Signed(RHS_of_BP, zero_pt_one_denominator);twos_expnt += 1;
-
-
-twos_expnt += 127;
-FPN_as_long = RHS_of_BP >> 8;
-FPN_as_long = FPN_as_long  &  (~((unsigned long)0x80000000 >> 8));
-Serial.print(~((unsigned long)0x80000000 >> 8));Serial.write('\t');
-//FPN_as_long  = FPN_as_long | ((long)twos_expnt << 23);
-Serial.print(FPN_as_long);Serial.write("\r\n");}
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-if(Num_1 > 0.0)power = 0.5;
-else power = 3.0;
-
-while (1){
-  Int_Num_to_PC(counter,num_as_string, '\t');  
-Sc_Num_to_PC(Num_1,1,6 ,'\r'); 
-
-if (power == 0.5)
-{if (!(counter%5)){I2C_FPN_to_display(Num_1);
-while(switch_1_down);}
-
-if ((Num_1 < (1 + 5.0e-3)) && (Num_1 > (1 - 5.0e-3)))break;}
-
-if (power == 3.0)
-{if ((Num_1 < -1.0E20) || (Num_1 > -1.0e-20)){counter = 15; Num_1 *= -1.0; break;}
-  I2C_FPN_to_display(Num_1);
-while(switch_1_down);}
-
-Num_1 = pow(Num_1, power);  counter += 1;}
-
-power = 1.0/power;
-do{
-Int_Num_to_PC(counter,num_as_string, '\t'); 
-Sc_Num_to_PC(Num_1,1,6 ,'\r');                                            //Send number to PC
-
-if (!(counter%5)){I2C_FPN_to_display(Num_1);
-while(switch_1_down);}
-
-Num_1 = pow(Num_1, power);  counter -= 1; }                               //Do some arithmetic
-while(counter+1);
-
+Serial.print(RHS_of_BP);Print_long_as_binary(RHS_of_BP), Serial.write('\t');Serial.write("\r\n");}
+while(1);*/
 
 SW_reset;}
 
@@ -189,6 +158,8 @@ num_1 = atol(digits);
 num_2 = num_1;
 while(num_2){(*twos_expnt)++; *twos_denominator *=2; num_2 /= 2;}
 
+
+
 if (sign == '-') num_1 = num_1 * (-1);
 return num_1;}                                      
 
@@ -197,10 +168,15 @@ return num_1;}
 void Print_long_as_binary(long L_num){
 
 Serial.write('\t');
-for(int m = 0; m <=31; m++){if (!(m%4))Serial.write(' ');//if ((!(m)) || (m==1))continue;
+for(int m = 0; m <=31; m++){if((m == 1) || (m== 9))Serial.write(' ');
 if (L_num  &  ((unsigned long)0x80000000 >> m))Serial.write('1'); else Serial.write('0');
+}}
+
+
+void Print_char_as_binary(unsigned char *num){
+  for (int m = 0; m <=7; m++){
+  if (*num & ((unsigned char) 0x80 >> m))Serial.write('1'); else Serial.write('0');}Serial.write(' ');
 }
 
-}
 
 /***********************************************************************************************************************************/
