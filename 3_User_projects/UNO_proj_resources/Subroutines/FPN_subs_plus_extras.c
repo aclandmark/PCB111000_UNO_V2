@@ -70,9 +70,9 @@ long FPN_part;
 FPN_part = unpack_FPN(FPN_as_Long, &twos_expnt, tens_expnt);
 
 if (tens_expnt > 0 ){
-for(int m = 0; m < tens_expnt; m++){									//Fails for 10,100,1000 etc
+for(int m = 0; m < tens_expnt; m++){
 
-while (FPN_part >= 0x66666666)								//Tens denominator is 0x50000000 with a tws_exponent of 3
+while (FPN_part >= 0x66666666)								//Multiply by 10: (Divide by 0.1) Use denominator of 0x50000000 with a tws_exponent of 3
 {FPN_part /= 2; twos_expnt += 1;}
 
 FPN_part = 
@@ -81,9 +81,9 @@ twos_expnt += 3;}}
 
 
 if (tens_expnt < 0 ){
-for(int m = 0; m < tens_expnt * -1; m++){									//Fails for 10,100,1000 etc
+for(int m = 0; m < tens_expnt * -1; m++){
 
-while (FPN_part >= 0x50000000)								//Tens denominator is 0x50000000 with a tws_exponent of 3
+while (FPN_part >= 0x50000000)								//Divide by 10 Use denominator of 0x50000000 with a tws_exponent of 4
 {FPN_part /= 2; twos_expnt += 1;}
 
 FPN_part = 
