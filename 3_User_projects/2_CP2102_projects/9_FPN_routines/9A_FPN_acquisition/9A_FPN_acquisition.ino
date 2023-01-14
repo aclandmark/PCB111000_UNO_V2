@@ -3,8 +3,7 @@
 #include "9A_header.h"
 
 int main (void){
-float Num_1;
-float power;
+
 char digits[15];
 
 long Significand;
@@ -14,13 +13,6 @@ unsigned char twos_expnt;
 char counter = 0;
 
 long FPN_as_long;
-
-long RHS_of_BP;
-long zero_pt_one_denominator = 1717986918;      //0x6666 6666     //multiplies by 10
-long Tens_denominator = 1342177280;       //0x5000 0000   //divides by 10
-char zero_pt_one_twos_exponent = 1;
-char Tens_twos_exponent  = 4;
-
 float FPN;
 
 setup_HW_Arduino_IO;
@@ -29,27 +21,18 @@ Serial.write("\r\nEnter scientific number \
 & terminate with Return key.\r\n");
 
 Significand = Get_fpn_from_KBD(digits, &twos_expnt, &tens_expnt, &twos_denominator);
-Serial.print (twos_denominator);Serial.write('\t');
-Serial.print ((int)twos_expnt);Serial.write('\t');
-Serial.print(Significand);Serial.write('\t');
-Serial.print ((int)tens_expnt); Serial.write("\r\n");
-
 FPN_as_long = Fraction_to_Binary_Signed(Significand, twos_denominator);
 FPN_as_long = Assemble_FPN(FPN_as_long, twos_expnt);
-
-Serial.write("\r\nA");Print_long_as_binary(FPN_as_long); Serial.write("\r\n");
-/**************************************************************************/
-Serial.write("\r\n");
 FPN = Scientifc_num_to_FPN(FPN_as_long, tens_expnt);
 Serial.write("\r\n");
-Sc_Num_to_PC
-(FPN, 1, 6, '\r');
+Sc_Num_to_PC(FPN, 1, 6, '\r');
+I2C_FPN_to_display(FPN);
 
 SW_reset;}
 
 
 
-
+/***********************************************************************************************************************/
 char Get_Float_num_string_from_KBD(char display_buffer[]){            //Operation is similar to that of Int_KBD_to_display()
 char keypress;
 char decimal_place_counter = 0;
@@ -121,11 +104,12 @@ display_buffer[p] = display_buffer[p+1];}}
 return tens_expt;}
 
 
+
 /***********************************************************************************************************************/
 long Get_fpn_from_KBD(char digits[], unsigned char *twos_expnt, char *tens_expnt, long *twos_denominator ){   
 
 /*Defines real number in terms of significant, denominator and twos exponent
-For example 125 is converted to the form (125/128) * 2^7 = 0.97... * 10^7
+For example 125 is converted to the form (125/128) * 2^7 = 0.97... * 2^7
 */
 
 long num_1=0, num_2 = 0;
@@ -145,19 +129,21 @@ if (sign == '-') num_1 = num_1 * (-1);
 return num_1;}                                      
 
 
+
 /***********************************************************************************************************************/
 void Print_long_as_binary(long L_num){
 
 Serial.write('\t');
 for(int m = 0; m <=31; m++){if((m == 1) || (m== 9))Serial.write(' ');
-if (L_num  &  ((unsigned long)0x80000000 >> m))Serial.write('1'); else Serial.write('0');
-}}
+if (L_num  &  ((unsigned long)0x80000000 >> m))Serial.write('1'); else Serial.write('0');}}
 
 
+
+/***********************************************************************************************************************/
 void Print_char_as_binary(unsigned char *num){
   for (int m = 0; m <=7; m++){
-  if (*num & ((unsigned char) 0x80 >> m))Serial.write('1'); else Serial.write('0');}Serial.write(' ');
-}
+  if (*num & ((unsigned char) 0x80 >> m))Serial.write('1'); else Serial.write('0');}Serial.write(' ');}
+
 
 
 /***********************************************************************************************************************************/
