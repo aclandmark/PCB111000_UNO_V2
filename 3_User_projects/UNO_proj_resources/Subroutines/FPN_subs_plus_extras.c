@@ -1,9 +1,10 @@
 
 long FPN_to_Significand(float, long *, char *);
 long Fraction_to_Binary_Signed(long, long);
+long Assemble_FPN(long, unsigned char);
+long unpack_FPN(long, unsigned char *, char);
 
 char PCMSK0_backup, PCMSK2_backup, float_display_mode;
-
 
 
 
@@ -35,11 +36,6 @@ PCMSK2 = PCMSK2_backup;}
 
 
 
-
-
-
-
-
 /******************************************************************************/
 long Fraction_to_Binary_Signed(long rem, long Den){
 long Result = 0; 						
@@ -66,6 +62,40 @@ return Result;}
 
 
 
+/******************************************************************************/
+float Scientifc_num_to_FPN(long FPN_as_Long, char tens_expnt )
+{unsigned char twos_expnt;
+long FPN_part;
+
+FPN_part = unpack_FPN(FPN_as_Long, &twos_expnt, tens_expnt);
+
+if (tens_expnt > 0 ){
+for(int m = 0; m < tens_expnt; m++){									//Fails for 10,100,1000 etc
+
+while (FPN_part >= 0x66666666)								//Tens denominator is 0x50000000 with a tws_exponent of 3
+{FPN_part /= 2; twos_expnt += 1;}
+
+FPN_part = 
+Fraction_to_Binary_Signed(FPN_part, 0x66666666);
+twos_expnt += 3;}}
+
+
+if (tens_expnt < 0 ){
+for(int m = 0; m < tens_expnt * -1; m++){									//Fails for 10,100,1000 etc
+
+while (FPN_part >= 0x50000000)								//Tens denominator is 0x50000000 with a tws_exponent of 3
+{FPN_part /= 2; twos_expnt += 1;}
+
+FPN_part = 
+Fraction_to_Binary_Signed(FPN_part, 0x50000000);
+twos_expnt -= 4;}}
+
+
+FPN_as_Long = Assemble_FPN(FPN_part, twos_expnt);
+return *(float*)&FPN_as_Long;}
+
+
+
 /*********************************************************************/
 void I2C_Tx_float_num(long L_number, char expnt){
 char s[5];
@@ -88,4 +118,40 @@ I2C_Tx_float_num(Significand, expnt);
 I2C_Tx_float_display_control;}
 
 
+
 /************************************************************************/
+long Assemble_FPN(long FPN, unsigned char twos_expnt)
+{
+FPN = FPN >> 7; 
+FPN += 1;
+FPN = FPN >> 1;
+FPN = FPN << 1; 
+twos_expnt -= 1;
+twos_expnt += 127;
+FPN = FPN  &  (~((unsigned long)0x80000000 >> 8));
+FPN = FPN | ((long)twos_expnt << 23);
+return FPN;}
+
+
+
+/*********************************************************************/
+long unpack_FPN(long FPN, unsigned char *twos_expnt, char tens_expnt)
+{long FPN_part;
+*twos_expnt = (FPN >> 23) - 127;
+Serial.print ((int)*twos_expnt);
+FPN_part = (FPN & 0x7FFFFF);								//Isolate the binary points
+
+FPN_part |= ((unsigned long)0x80000000 >> 8);				//Add in the missing 1
+FPN_part = FPN_part << 7;									//Fill entire long number space, leaving sign bit empty
+
+*twos_expnt += 1;
+
+return FPN_part;}
+
+
+
+/*********************************************************************/
+
+
+
+
