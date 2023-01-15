@@ -139,7 +139,7 @@ if(expt) {Serial.write ('E'); Serial.print((int)expt);}
 Serial.write(next_char);}
 
 
-long FPN_to_FPN_digits(float FPN,  long *Denominator){}
+//long FPN_to_FPN_digits(float FPN,  long *Denominator){}
 
 
 
