@@ -1,4 +1,4 @@
-
+/**********************SIGN bit not implemented yet*********************/
 
 #include "9A_header.h"
 
@@ -9,8 +9,9 @@ char digits[15];
 long Significand;
 long  twos_denominator;
 char   tens_expnt;
-unsigned char twos_expnt;
+int twos_expnt;
 char counter = 0;
+char sign = '+';
 
 long FPN_as_long;
 float FPN;
@@ -20,14 +21,25 @@ setup_HW_Arduino_IO;
 Serial.write("\r\nEnter scientific number \
 & terminate with Return key.\r\n");
 
+while(1){
+tens_expnt = 0;
 Significand = Get_fpn_from_KBD(digits, &twos_expnt, &tens_expnt, &twos_denominator);
+if (Significand < 0) {Significand *= -1; sign = '-';}
 FPN_as_long = Fraction_to_Binary_Signed(Significand, twos_denominator);
 FPN_as_long = Assemble_FPN(FPN_as_long, twos_expnt);
-FPN = Scientifc_num_to_FPN(FPN_as_long, tens_expnt);
-Serial.write("\r\n");
-Sc_Num_to_PC(FPN, 1, 6, '\r');
-I2C_FPN_to_display(FPN);
+Serial.write("\r\n");Serial.print(*(float*)&FPN_as_long);
 
+FPN = Scientifc_num_to_FPN(FPN_as_long, tens_expnt);
+
+Serial.write("\r\nF");Print_long_as_binary(*(long*)&FPN);
+
+if (sign == '-'){FPN_as_long = *(long*)&FPN | 0x80000000;
+FPN = *(float*)&FPN_as_long;}
+
+Serial.write("\t\t");
+Sc_Num_to_PC(FPN, 1, 6, '\r');
+//I2C_FPN_to_display(FPN);
+sign = '+';}
 SW_reset;}
 
 
@@ -106,7 +118,7 @@ return tens_expt;}
 
 
 /***********************************************************************************************************************/
-long Get_fpn_from_KBD(char digits[], unsigned char *twos_expnt, char *tens_expnt, long *twos_denominator ){   
+long Get_fpn_from_KBD(char digits[], int *twos_expnt, char *tens_expnt, long *twos_denominator ){   
 
 /*Defines real number in terms of significant, denominator and twos exponent
 For example 125 is converted to the form (125/128) * 2^7 = 0.97... * 2^7
@@ -133,7 +145,6 @@ return num_1;}
 /***********************************************************************************************************************/
 void Print_long_as_binary(long L_num){
 
-Serial.write('\t');
 for(int m = 0; m <=31; m++){if((m == 1) || (m== 9))Serial.write(' ');
 if (L_num  &  ((unsigned long)0x80000000 >> m))Serial.write('1'); else Serial.write('0');}}
 
