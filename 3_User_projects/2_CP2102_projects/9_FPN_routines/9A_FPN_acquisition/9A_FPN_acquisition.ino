@@ -27,18 +27,17 @@ Significand = Get_fpn_from_KBD(digits, &twos_expnt, &tens_expnt, &twos_denominat
 if (Significand < 0) {Significand *= -1; sign = '-';}
 FPN_as_long = Fraction_to_Binary_Signed(Significand, twos_denominator);
 FPN_as_long = Assemble_FPN(FPN_as_long, twos_expnt);
-Serial.write("\r\n");Serial.print(*(float*)&FPN_as_long);
 
 FPN = Scientifc_num_to_FPN(FPN_as_long, tens_expnt);
-
-Serial.write("\r\nF");Print_long_as_binary(*(long*)&FPN);
 
 if (sign == '-'){FPN_as_long = *(long*)&FPN | 0x80000000;
 FPN = *(float*)&FPN_as_long;}
 
+Serial.write("\r\n");Print_long_as_binary(*(long*)&FPN);
+
 Serial.write("\t\t");
 Sc_Num_to_PC(FPN, 1, 6, '\r');
-//I2C_FPN_to_display(FPN);
+I2C_FPN_to_display(FPN);
 sign = '+';}
 SW_reset;}
 
