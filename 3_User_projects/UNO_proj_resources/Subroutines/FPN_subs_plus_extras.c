@@ -36,11 +36,6 @@ PCMSK0 = PCMSK0_backup;\
 PCMSK2 = PCMSK2_backup;}
 
 
-#define overflow	FPN_as_Long = 0x7F800000; Serial.write('A'); return *(float*)&FPN_as_Long;
-#define underflow	FPN_as_Long = 0x0;  Serial.write('B'); return *(float*)&FPN_as_Long;
-
-
-
 
 /******************************************************************************/
 long Fraction_to_Binary_Signed(long rem, long Den){			//Converts rem/Den to 0.1xxxxxxxxxx... where x is either 0 or 1
@@ -93,14 +88,11 @@ Fraction_to_Binary_Signed(FPN_part, 0x66666666);
 
 for(int m = 0; m <= 2; m++){
 if (twos_expnt < 128)twos_expnt += 1;
-else {twos_expnt = 129;FPN_part = 0;}}}
-Serial.print(twos_expnt);Serial.write("\r\n");}
+else {twos_expnt = 129;FPN_part = 0;}}}}
 
 
 if (tens_expnt < 0 ){
 for(int m = 0; m < tens_expnt * -1; m++){
-
-
 
 while (FPN_part >= 0x50000000)								//Divide by 10 Use denominator of 0x50000000 with a twos_exponent of 4
 {FPN_part /= 2; twos_expnt += 1; }
@@ -111,14 +103,10 @@ Fraction_to_Binary_Signed((long)FPN_part, 0x50000000 );
 for(int m = 0; m <= 3; m++){
 if (twos_expnt > -160){twos_expnt -= 1;}}}
 
-Serial.print(twos_expnt);Serial.write("\r\n");
-
 if(twos_expnt <= -126){
 FPN_shift = twos_expnt * (-1) - 125;
 FPN_part = (unsigned long)FPN_part >> FPN_shift;
 twos_expnt = -126;}}
-
-//Serial.print(twos_expnt); Serial.write('\t'); Print_long_as_binary(FPN_part);Serial.write("\r\n");
 
 FPN_as_Long = Assemble_FPN((unsigned long)FPN_part, twos_expnt);
 return *(float*)&FPN_as_Long;}
