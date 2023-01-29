@@ -4,24 +4,70 @@
 
 int main (void){
 
+float FPN_1, FPN_2;
+int twos_expnt_1, twos_expnt_2, twos_expnt_3;
+long FPN_part_1, FPN_part_2, FPN_part_3,Result_as_long;
+
+setup_HW_Arduino_IO;
+
+twos_expnt_1 = 0;
+twos_expnt_2 = 0;
+
+Serial.write("\r\nEnter scientific number \
+& terminate with Return key.\r\n");
+
+while(1){FPN_1 = KBD_string_to_float();
+Sc_Num_to_PC(FPN_1, 1, 6, ' '); Serial.write("+ ");
+FPN_part_1 = unpack_FPN(*(long*)&FPN_1, &twos_expnt_1);
+
+FPN_2 = KBD_string_to_float();
+Sc_Num_to_PC(FPN_2, 1, 6, ' '); Serial.write("= ");
+FPN_part_2 = unpack_FPN(*(long*)&FPN_2, &twos_expnt_2);
+
+Serial.write("\r\nC");Serial.print(twos_expnt_1);Serial.write("\tD");Serial.print(twos_expnt_2);
+
+
+
+twos_expnt_3 = twos_expnt_1;
+
+if (twos_expnt_1 > twos_expnt_2){
+  while(twos_expnt_1 > twos_expnt_2){twos_expnt_2 += 1; FPN_part_2 = FPN_part_2 >> 1;}twos_expnt_3 = twos_expnt_2;
+  Serial.write("\r\n");Print_long_as_binary(FPN_part_2);Serial.write('\t');Serial.print(twos_expnt_3);}
+
+if (twos_expnt_1 < twos_expnt_2){
+  while(twos_expnt_1 < twos_expnt_2){twos_expnt_1 += 1; FPN_part_1 = FPN_part_1 >> 1;}twos_expnt_3 = twos_expnt_1;
+  Serial.write("\r\n");Print_long_as_binary(FPN_part_1);Serial.write('\t');Serial.print(twos_expnt_3);}
+
+
+
+FPN_part_3 = FPN_part_1 + FPN_part_2;
+if (FPN_part_3 & (unsigned long) 0x80000000){FPN_part_3 = (unsigned long)FPN_part_3  >> 1; twos_expnt_3 += 1;}
+Serial.write("\r\n");Print_long_as_binary(FPN_part_1);Serial.write('\t');Print_long_as_binary(FPN_part_2);Serial.write('\t');Print_long_as_binary(FPN_part_3);Serial.write("\r\n");
+Serial.write("\r\n");Print_long_as_binary(FPN_part_3);Serial.write('\t');Serial.print(twos_expnt_3);
+
+Result_as_long = Assemble_FPN((unsigned long) FPN_part_3, twos_expnt_3);
+Serial.write('\t');Serial.print (*(float*)&Result_as_long);
+Serial.write("\r\n");
+
+}
+SW_reset;}
+
+
+
+float KBD_string_to_float(void){
+
 char digits[15];
 
 long Significand;
 long  twos_denominator;
 char   tens_expnt;
 int twos_expnt;
-char counter = 0;
+//char counter = 0;
 char sign = '+';
 
 long FPN_as_long;
 float FPN;
 
-setup_HW_Arduino_IO;
-
-Serial.write("\r\nEnter scientific number \
-& terminate with Return key.\r\n");
-
-while(1){
 tens_expnt = 0;
 Significand = Get_fpn_from_KBD(digits, &twos_expnt, &tens_expnt, &twos_denominator);
 if (Significand < 0) {Significand *= -1; sign = '-';}
@@ -32,14 +78,10 @@ FPN = Scientifc_num_to_FPN(FPN_as_long, tens_expnt);
 
 if (sign == '-'){FPN_as_long = *(long*)&FPN | 0x80000000;
 FPN = *(float*)&FPN_as_long;}
+return FPN;}
 
-Serial.write("\r\n");Print_long_as_binary(*(long*)&FPN);
 
-Serial.write("\t\t");
-Sc_Num_to_PC(FPN, 1, 6, '\r');
-I2C_FPN_to_display(FPN);
-sign = '+';}
-SW_reset;}
+
 
 
 
