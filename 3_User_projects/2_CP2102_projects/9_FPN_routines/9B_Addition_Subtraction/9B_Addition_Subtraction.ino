@@ -4,28 +4,36 @@
 
 int main (void){
 
-float FPN_1, FPN_2;
-int twos_expnt_1, twos_expnt_2, twos_expnt_3;
-long FPN_part_1, FPN_part_2, FPN_part_3,Result_as_long;
+float FPN_1, FPN_2, Result;
 
 setup_HW_Arduino_IO;
-
-twos_expnt_1 = 0;
-twos_expnt_2 = 0;
 
 Serial.write("\r\nEnter scientific number \
 & terminate with Return key.\r\n");
 
 while(1){FPN_1 = KBD_string_to_float();
 Sc_Num_to_PC(FPN_1, 1, 6, ' '); Serial.write("+ ");
-FPN_part_1 = unpack_FPN(*(long*)&FPN_1, &twos_expnt_1);
-
 FPN_2 = KBD_string_to_float();
 Sc_Num_to_PC(FPN_2, 1, 6, ' '); Serial.write("= ");
+
+Result = Foating_point_subtraction(FPN_1, FPN_2);
+Serial.write('\t');Sc_Num_to_PC(Result,2,6, ' ');
+Serial.write("\r\n");}
+
+SW_reset;}
+
+
+float Foating_point_subtraction (float FPN_1, float FPN_2){
+
+int twos_expnt_1, twos_expnt_2, twos_expnt_3;
+long FPN_part_1, FPN_part_2, FPN_part_3,Result_as_long;
+
+twos_expnt_1 = 0;
+twos_expnt_2 = 0;
+
+FPN_part_1 = unpack_FPN(*(long*)&FPN_1, &twos_expnt_1);
 FPN_part_2 = unpack_FPN(*(long*)&FPN_2, &twos_expnt_2);
-
-Serial.write("\r\nC");Serial.print(twos_expnt_1);Serial.write("\tD");Serial.print(twos_expnt_2);
-
+FPN_part_2 = FPN_part_2 * -1;
 
 
 twos_expnt_3 = twos_expnt_1;
@@ -38,7 +46,48 @@ if (twos_expnt_1 < twos_expnt_2){
   while(twos_expnt_1 < twos_expnt_2){twos_expnt_1 += 1; FPN_part_1 = FPN_part_1 >> 1;}twos_expnt_3 = twos_expnt_1;
   Serial.write("\r\n");Print_long_as_binary(FPN_part_1);Serial.write('\t');Serial.print(twos_expnt_3);}
 
+FPN_part_3 = FPN_part_1 + FPN_part_2;
+if (FPN_part_3 & (unsigned long) 0x80000000){FPN_part_3 = (unsigned long)FPN_part_3  >> 1; twos_expnt_3 += 1;}
 
+//FPN_part_3 = FPN_part_3 << 2; twos_expnt_3 -= 2;
+while (!(FPN_part_3 & (0x40000000))){FPN_part_3 = FPN_part_3 << 1; twos_expnt_3 -= 1;}
+
+
+Serial.write("\r\n");Print_long_as_binary(FPN_part_1);Serial.write('\t');Print_long_as_binary(FPN_part_2);Serial.write('\t');Print_long_as_binary(FPN_part_3);Serial.write("\r\n");
+Serial.write("\r\n");Print_long_as_binary(FPN_part_3);Serial.write('\t');Serial.print(twos_expnt_3);
+
+Result_as_long = Assemble_FPN((unsigned long) FPN_part_3, twos_expnt_3);
+Serial.write("\r\nA");Print_long_as_binary(FPN_part_3);Serial.write('\t');Serial.print(twos_expnt_3);
+
+ return (*(float*)&Result_as_long); 
+}
+
+
+
+
+
+
+
+float Foating_point_addition (float FPN_1, float FPN_2){
+
+int twos_expnt_1, twos_expnt_2, twos_expnt_3;
+long FPN_part_1, FPN_part_2, FPN_part_3,Result_as_long;
+
+twos_expnt_1 = 0;
+twos_expnt_2 = 0;
+
+FPN_part_1 = unpack_FPN(*(long*)&FPN_1, &twos_expnt_1);
+FPN_part_2 = unpack_FPN(*(long*)&FPN_2, &twos_expnt_2);
+
+twos_expnt_3 = twos_expnt_1;
+
+if (twos_expnt_1 > twos_expnt_2){
+  while(twos_expnt_1 > twos_expnt_2){twos_expnt_2 += 1; FPN_part_2 = FPN_part_2 >> 1;}twos_expnt_3 = twos_expnt_2;
+  Serial.write("\r\n");Print_long_as_binary(FPN_part_2);Serial.write('\t');Serial.print(twos_expnt_3);}
+
+if (twos_expnt_1 < twos_expnt_2){
+  while(twos_expnt_1 < twos_expnt_2){twos_expnt_1 += 1; FPN_part_1 = FPN_part_1 >> 1;}twos_expnt_3 = twos_expnt_1;
+  Serial.write("\r\n");Print_long_as_binary(FPN_part_1);Serial.write('\t');Serial.print(twos_expnt_3);}
 
 FPN_part_3 = FPN_part_1 + FPN_part_2;
 if (FPN_part_3 & (unsigned long) 0x80000000){FPN_part_3 = (unsigned long)FPN_part_3  >> 1; twos_expnt_3 += 1;}
@@ -46,11 +95,8 @@ Serial.write("\r\n");Print_long_as_binary(FPN_part_1);Serial.write('\t');Print_l
 Serial.write("\r\n");Print_long_as_binary(FPN_part_3);Serial.write('\t');Serial.print(twos_expnt_3);
 
 Result_as_long = Assemble_FPN((unsigned long) FPN_part_3, twos_expnt_3);
-Serial.write('\t');Serial.print (*(float*)&Result_as_long);
-Serial.write("\r\n");
-
+ return (*(float*)&Result_as_long); 
 }
-SW_reset;}
 
 
 
