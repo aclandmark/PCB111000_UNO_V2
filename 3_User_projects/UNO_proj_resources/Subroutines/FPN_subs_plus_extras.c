@@ -155,6 +155,7 @@ long unpack_FPN(long FPN, int *twos_expnt)
 {long FPN_part;
 
 *twos_expnt = (FPN >> 23) - 127;
+//Serial.write("\r\nE");Print_long_as_binary(FPN >> 23);Serial.write("\t");Serial.print(*twos_expnt);Serial.write("\r\n");
 FPN_part = (FPN & 0x7FFFFF);									//Isolate the binary points 23 bits
 FPN_part |= ((unsigned long)0x80000000 >> 8);					//Add in the missing 1 to make 24
 FPN_part = FPN_part << 7;	//7									//Fill entire long number space, BUT leaving sign bit empty
