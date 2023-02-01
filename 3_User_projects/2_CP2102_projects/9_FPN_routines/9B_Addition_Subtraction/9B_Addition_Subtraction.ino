@@ -56,14 +56,14 @@ while (!(FPN_part_3 & (0x40000000))){FPN_part_3 = FPN_part_3 << 1; twos_expnt_3 
 if(sign_1 == sign_2){
 
 switch(sign_1){
-case '+': if (FPN_part_3 & (unsigned long) 0x80000000)
-{FPN_part_3 = (unsigned long)FPN_part_3  >> 1; twos_expnt_3 += 1;}break;
+case '+': break;
 
-case '-': //FPN_part_1 = FPN_part_1 * -1; FPN_part_2 = FPN_part_2 * -1;
+case '-': 
 FPN_part_3 = (FPN_part_1 * -1) + (FPN_part_2 * -1);
+sign_3 = '-';break;}
+
 if (FPN_part_3 & (unsigned long) 0x80000000)
-{FPN_part_3 = (unsigned long)FPN_part_3  >> 1; twos_expnt_3 += 1;}
-sign_3 = '-';break;}}
+{FPN_part_3 = (unsigned long)FPN_part_3  >> 1; twos_expnt_3 += 1;}}
 
 Result_as_long = Assemble_FPN((unsigned long) FPN_part_3, twos_expnt_3);
 if (sign_3 == '-')Result_as_long |= (unsigned long)0x80000000; 
