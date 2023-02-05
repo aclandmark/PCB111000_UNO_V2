@@ -1,8 +1,8 @@
 
 long FPN_to_Significand(float, long *, char *);
 long Fraction_to_Binary_Signed(long, long);
-long Assemble_FPN(unsigned long, int);
-long unpack_FPN(long, int *);
+float Assemble_FPN(unsigned long, int);
+long unpack_FPN(float, int *, char*);
 void Print_long_as_binary(long);
 
 char PCMSK0_backup, PCMSK2_backup, float_display_mode;
@@ -58,7 +58,7 @@ for(int n = 0; n <= 15; n++){
 if ((2*(rem))/Den)(res_LB) |= (1 << (15-n));
 rem = (2*(rem))%Den;}
 Result += res_LB;											//Result is not affected by the signs of rem and Den
-if(sign == '-')Result = ~Result;							//Inverting the sign bit is equivalent to adding -1
+if(sign == '-')Result = Result * (-1);		//Result = ~Result;							//Inverting the sign bit is equivalent to adding -1
 return Result;}
 
 
@@ -69,47 +69,52 @@ return Result;}
 0.1 is (8/10) / 2^3 = 0.110 0110 0110 0110 0110 0110 0110 0110 = 0x66666666 / 2^3 in a form suitable for arithmetic
 */
 
-float Scientifc_num_to_FPN(long FPN_as_Long, char tens_expnt )
+float Scientifc_num_to_FPN(float FPN, char tens_expnt )
 {int twos_expnt, twos_expnt_old;
 
-long FPN_part;
-int FPN_shift;
 
-FPN_part = unpack_FPN(FPN_as_Long, &twos_expnt);
+long FPN_digits;
+int FPN_shift;
+char sign = '+';
+
+
+FPN_digits = unpack_FPN(FPN, &twos_expnt, &sign);				//Returns positive number with sign
 
 if (tens_expnt > 0 ){
 for(int m = 0; m < tens_expnt; m++){
 
-while (FPN_part >= 0x66666666)								//Multiply by 10: (Divide by 0.1) Use denominator of 0x50000000 with a tws_exponent of 3
-{FPN_part /= 2; twos_expnt += 1;}
+while (FPN_digits >= 0x66666666)										//Multiply by 10: (Divide by 0.1) Use denominator of 0x50000000 with a tws_exponent of 3
+{FPN_digits /= 2; twos_expnt += 1;}
 
-FPN_part = 
-Fraction_to_Binary_Signed(FPN_part, 0x66666666);
+FPN_digits = 
+Fraction_to_Binary_Signed(FPN_digits, 0x66666666);
 
 for(int m = 0; m <= 2; m++){
 if (twos_expnt < 128)twos_expnt += 1;
-else {twos_expnt = 129;FPN_part = 0;}}}}
+else {twos_expnt = 129;FPN_digits = 0;}}}}
 
 
 if (tens_expnt < 0 ){
 for(int m = 0; m < tens_expnt * -1; m++){
 
-while (FPN_part >= 0x50000000)								//Divide by 10 Use denominator of 0x50000000 with a twos_exponent of 4
-{FPN_part /= 2; twos_expnt += 1; }
+while (FPN_digits >= 0x50000000)										//Divide by 10 Use denominator of 0x50000000 with a twos_exponent of 4
+{FPN_digits /= 2; twos_expnt += 1; }
 
-FPN_part = 
-Fraction_to_Binary_Signed((long)FPN_part, 0x50000000 );
+FPN_digits = 
+Fraction_to_Binary_Signed((long)FPN_digits, 0x50000000 );
 
 for(int m = 0; m <= 3; m++){
 if (twos_expnt > -160){twos_expnt -= 1;}}}
 
 if(twos_expnt <= -126){
 FPN_shift = twos_expnt * (-1) - 125;
-FPN_part = (unsigned long)FPN_part >> FPN_shift;
+FPN_digits = (unsigned long)FPN_digits >> FPN_shift;
 twos_expnt = -126;}}
 
-FPN_as_Long = Assemble_FPN((unsigned long)FPN_part, twos_expnt);
-return *(float*)&FPN_as_Long;}
+FPN = Assemble_FPN((unsigned long)FPN_digits, twos_expnt);
+if (sign == '-')
+*(long*)&FPN = *(long*)&FPN | (unsigned long)0x80000000;				//Set the sign bit
+return FPN;}
 
 
 
@@ -137,31 +142,40 @@ I2C_Tx_float_display_control;}
 
 
 /************************************************************************/
-long Assemble_FPN(unsigned long FPN, int twos_expnt)
-{
-FPN = FPN >> 6;													//(Sign bit (bit 31) is zero. MSB (bit 30) is always 1. FPN has 31-6 = 25 bits.
-FPN += 1;														//Round LSB. 						
-FPN = FPN >> 1;													//Remove rounded bit. FPN now has 25-1 = 24 bits
-twos_expnt -= 1;												//Number converted from 0.11010101 (used for arithmetic) to 1.1010101 (Standard FPN format)
+float Assemble_FPN(unsigned long FPN_digits, int twos_expnt)
+{char sign = '+';
+
+if (FPN_digits & (unsigned long)0x80000000)
+{FPN_digits = (long)FPN_digits * (-1); sign = '-';}								//If negative convert to positive and set sign.
+
+FPN_digits = FPN_digits >> 6;													//(Sign bit (bit 31) is zero. MSB (bit 30) is always 1. FPN has 31-6 = 25 bits.
+FPN_digits += 1;																//Round LSB. 						
+FPN_digits = FPN_digits >> 1;													//Remove rounded bit. FPN now has 25-1 = 24 bits
+twos_expnt -= 1;																//Number converted from 0.11010101 (used for arithmetic) to 1.1010101 (Standard FPN format)
 twos_expnt += 127;										
-FPN = FPN  &  (~((unsigned long)0x80000000 >> 8));				//Clear bit 23 (which is always 1)
-FPN = FPN | ((long)twos_expnt << 23);							//Exponent occupies bits 23 to 30 (bit 31 reserved for sign)
-return FPN;}
+FPN_digits = FPN_digits  &  (~((unsigned long)0x80000000 >> 8));				//Clear bit 23 (which is always 1)
+FPN_digits = FPN_digits | ((long)twos_expnt << 23);								//Exponent occupies bits 23 to 30 (bit 31 reserved for sign)
+if (sign == '-')FPN_digits = FPN_digits | (unsigned long)0x80000000;			//Rienstate sign bit
+return *(float*)&FPN_digits;}
 
 
 
 /*********************************************************************/
-long unpack_FPN(long FPN, int *twos_expnt)
-{long FPN_part;
+long unpack_FPN(float FPN, int *twos_expnt, char * sign)
+{long FPN_digits, FPN_as_long;
 
-*twos_expnt = (FPN >> 23) - 127;
-//Serial.write("\r\nE");Print_long_as_binary(FPN >> 23);Serial.write("\t");Serial.print(*twos_expnt);Serial.write("\r\n");
-FPN_part = (FPN & 0x7FFFFF);									//Isolate the binary points 23 bits
-FPN_part |= ((unsigned long)0x80000000 >> 8);					//Add in the missing 1 to make 24
-FPN_part = FPN_part << 7;	//7									//Fill entire long number space, BUT leaving sign bit empty
-*twos_expnt += 1;												//Convert from 1.1010101 to 0.11010101
+FPN_as_long = (*(long*)&FPN);
+if( FPN_as_long & (((unsigned long)0x80000000)))
+{ FPN_as_long = FPN_as_long & (~((unsigned long)0x80000000));					//If negative remove sign bit
+*sign = '-';}else *sign = '+';
 
-return FPN_part;}
+*twos_expnt = (FPN_as_long >> 23) - 127;
+FPN_digits = (FPN_as_long & 0x7FFFFF);											//Isolate the binary points 23 bits
+FPN_digits |= ((unsigned long)0x80000000 >> 8);									//Add in the missing 1 to make 24
+FPN_digits = FPN_digits << 7;													//Fill entire long number space, BUT leaving sign bit empty
+*twos_expnt += 1;																//Convert from 1.1010101 to 0.11010101
+
+return FPN_digits;}
 
 
 
