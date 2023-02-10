@@ -19,7 +19,7 @@ void Check_num_for_to_big_or_small(float);						//Prototype required by Sc_Num_t
 
 
 /******************************************************************************************/
-unsigned long Unsigned_Int_from_PC
+unsigned long Unsigned_Int_from_PC_A
 	(char * num_as_string,char next_char)						//Location for numerical string entered at the PC keyboard 
 {char strln;													//Holds the length of the numerical string 
 int num;
@@ -40,7 +40,7 @@ return (unsigned int )num;}
 
 
 /******************************************************************************************/
-long Int_Num_from_PC(char * num_as_string,char next_char)		//Same as Unsigned_Int_from_PC()
+long Int_Num_from_PC_A(char * num_as_string,char next_char)		//Same as Unsigned_Int_from_PC()
 {char strln;
 
 //pause_WDT;
@@ -58,7 +58,7 @@ return atol(num_as_string);}
 
 
 /******************************************************************************************/
-void Unsigned_Int_to_PC
+void Unsigned_Int_to_PC_A
 (unsigned long Int_num, char * num_as_string, char next_char)
 {
 ultoa(Int_num, num_as_string, 10);								//Unsigned long to askii							
@@ -69,7 +69,7 @@ Serial.print(next_char);
 
 
 /******************************************************************************************/
-void Int_Num_to_PC
+void Int_Num_to_PC_A
 (long Int_num, char * num_as_string, char next_char)			//Same as Unsigned_Int_to_PC()
 {
 ltoa(Int_num, num_as_string, 10);								//Long to askii
@@ -117,7 +117,7 @@ return (long)FPN; }
 
 
 /*****************************************************************************************/
-void Sc_Num_to_PC
+void Sc_Num_to_PC_A
 (float num, char pre_dp, char post_dp, char next_char)
 
 {int A = 1;
@@ -146,7 +146,7 @@ Serial.write(next_char);}
 
 
 /******************************************************************************************/
-float Sc_Num_from_PC
+float Sc_Num_from_PC_A
 (char * num_as_string,char next_char)							//Same as Int_Num_from_PC()
 {char strln;
 
