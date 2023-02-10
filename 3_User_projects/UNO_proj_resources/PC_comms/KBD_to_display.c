@@ -12,7 +12,7 @@ char Get_Float_num_string_from_KBD(char *);
 
 
 /******************************************************************************************************************************************/
-long Int_KBD_to_display(char display_buffer[]){              	//Acquires an integer string from the keyboard and returns the binary equivalent
+long Int_KBD_to_display_A(char display_buffer[]){              	//Acquires an integer string from the keyboard and returns the binary equivalent
 char keypress;
 long Long_Num_from_mini_OS;
 
@@ -54,12 +54,12 @@ return Long_Num_from_mini_OS;}
 
 
 /***********************************************************************************************************************/
-float FPN_KBD_to_display(char digits[]){			
+float FPN_KBD_to_display_A(char digits[]){			
 
 float num_1 = 0;
  char sign = '+';
 
-FPN_string_KBD_to_display(digits); 
+FPN_string_KBD_to_display_A(digits); 
 
 if (digits[0]== '-'){for (int m = 0; m <= 13; m++)digits[m] =  digits[m + 1];
 sign = '-';}
@@ -71,7 +71,7 @@ return num_1;}
 
 
 /********************************************************************************************************************************************/
-void FPN_string_KBD_to_display(char display_buffer[]){              //Operation is similar to that of Int_KBD_to_display()
+void FPN_string_KBD_to_display_A(char display_buffer[]){              //Operation is similar to that of Int_KBD_to_display()
 char keypress;
 
 for(int n = 0; n<=14; n++) display_buffer[n] = 0;                   //Clear the buffer used to the string
