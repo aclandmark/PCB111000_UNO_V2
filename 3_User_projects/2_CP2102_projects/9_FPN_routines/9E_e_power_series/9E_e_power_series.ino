@@ -89,7 +89,7 @@ float ans, ans_old;
 long term_counter;
 char sign = 0;
 
-if ((FPN_GT (Num, 85.0)) || (FPN_LT (Num, -85.0))){Serial.write("Result exceeds bounds."); SW_reset;}
+if ((FPN_GT (Num, 85.0)) || (FPN_LT (Num, -85.0))){Serial.write("Result exceeds bounds_B."); SW_reset;}
 if (FPN_LT(Num, 0)){sign = 1; Num = FPN_mult (Num, (-1));}
 
 term = 1.0;
