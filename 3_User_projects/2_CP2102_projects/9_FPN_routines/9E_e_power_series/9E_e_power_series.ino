@@ -1,5 +1,8 @@
 
-
+/*
+ * 0.99^0.05 and 0.99^-0.05 OK
+ * Reducing the exponent causes a failure
+ */
 
  
 #include "e_power_series_header.h"
@@ -87,7 +90,6 @@ long term_counter;
 char sign = 0;
 
 if ((FPN_GT (Num, 85.0)) || (FPN_LT (Num, -85.0))){Serial.write("Result exceeds bounds."); SW_reset;}
-//if (FPN_GT (Num, -0.0044)) && ; else {Serial.write("Result exceeds bounds."); SW_reset;}
 if (FPN_LT(Num, 0)){sign = 1; Num = FPN_mult (Num, (-1));}
 
 term = 1.0;
