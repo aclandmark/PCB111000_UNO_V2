@@ -2,6 +2,8 @@
 /*
  * 0.99^0.05 and 0.99^-0.05 OK
  * Reducing the exponent causes a failure
+ * Do notinput data thatexceed FPN bounds
+ * Use of del key when entering data does not function
  */
 
  
@@ -58,14 +60,7 @@ Pow = Sc_Num_from_PC(Num_string, '\t');           //User enters the power.
 
 Log_result = FPN_mult (logN, Pow);                          //The Log of the result
 
-Serial.write('\t');Serial.print(Log_result, 5);Serial.write("\r\n");
-
-/*
-if(twos_exp == -1){
-if (FPN_LT (Log_result, 0.0005)){Serial.write("Result exceeds bounds_A."); SW_reset;}
-if (FPN_GT (Log_result, -0.0005)){Serial.write("Result exceeds bounds_B."); SW_reset;}}
-*/
-if((FPN_LT (Log_result, 0.0005)) && (FPN_GT (Log_result, -0.0005))){Serial.write("Result exceeds bounds_A."); SW_reset;}
+if((FPN_LT (Log_result, 0.0005)) && (FPN_GT (Log_result, -0.0005))){Serial.write("Unity."); SW_reset;}
 
 
 
@@ -89,7 +84,7 @@ float ans, ans_old;
 long term_counter;
 char sign = 0;
 
-if ((FPN_GT (Num, 85.0)) || (FPN_LT (Num, -85.0))){Serial.write("Result exceeds bounds_B."); SW_reset;}
+if ((FPN_GT (Num, 85.0)) || (FPN_LT (Num, -85.0))){Serial.write("~Exceeds FPN bounds."); SW_reset;}
 if (FPN_LT(Num, 0)){sign = 1; Num = FPN_mult (Num, (-1));}
 
 term = 1.0;
@@ -124,7 +119,7 @@ float term;                                           //Power series terms
 float difference;                                     //difference berween consequtive terms
 
 if (FPN_GT(Num, 1.99))return 0.693;
-Num = FPN_sub (Num, 1.0);Serial.print(Num);
+Num = FPN_sub (Num, 1.0);
 if (Num < 0.00001){logE = 1E-5;}
 else                                                  //Use power series to calculate the natural logarithm
 {
