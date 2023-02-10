@@ -7,35 +7,35 @@ float FPN_div (float, float);
 float FPN_add (float FPN_1, float FPN_2){
 
 int twos_expnt_1, twos_expnt_2, twos_expnt_3;
-long FPN_part_1, FPN_part_2, FPN_part_3;
+long FPN_digits_1, FPN_digits_2, FPN_digits_3;
 char sign_1, sign_2, sign_3 = '+';
 float Result_as_long;
 
 sign_1 = '+';
 sign_2 = '+';
 
-FPN_part_1 = unpack_FPN(FPN_1 , &twos_expnt_1, &sign_1);
-FPN_part_2 = unpack_FPN(FPN_2 , &twos_expnt_2, &sign_2);
+FPN_digits_1 = unpack_FPN(FPN_1 , &twos_expnt_1, &sign_1);
+FPN_digits_2 = unpack_FPN(FPN_2 , &twos_expnt_2, &sign_2);
 
-if (sign_1 == '-')FPN_part_1 = -FPN_part_1;
-if (sign_2 == '-')FPN_part_2 = -FPN_part_2;
+if (sign_1 == '-')FPN_digits_1 = -FPN_digits_1;
+if (sign_2 == '-')FPN_digits_2 = -FPN_digits_2;
 
 twos_expnt_3 = twos_expnt_1;
 
 if (twos_expnt_1 > twos_expnt_2){
-  while(twos_expnt_1 > twos_expnt_2){twos_expnt_2 += 1; FPN_part_2 = FPN_part_2 >> 1;}twos_expnt_3 = twos_expnt_2;}
+  while(twos_expnt_1 > twos_expnt_2){twos_expnt_2 += 1; FPN_digits_2 = FPN_digits_2 >> 1;}twos_expnt_3 = twos_expnt_2;}
 
 if (twos_expnt_1 < twos_expnt_2){
-  while(twos_expnt_1 < twos_expnt_2){twos_expnt_1 += 1; FPN_part_1 = FPN_part_1 >> 1;}twos_expnt_3 = twos_expnt_1;}
+  while(twos_expnt_1 < twos_expnt_2){twos_expnt_1 += 1; FPN_digits_1 = FPN_digits_1 >> 1;}twos_expnt_3 = twos_expnt_1;}
 
-FPN_part_3 = FPN_part_1 + FPN_part_2;
+FPN_digits_3 = FPN_digits_1 + FPN_digits_2;
 
 if (sign_1 != sign_2)
 {
-    if (!(FPN_part_3))return 0;
+    if (!(FPN_digits_3))return 0;
   
- if (FPN_part_3 & (unsigned long) 0x80000000){FPN_part_3 *= -1; sign_3 = '-';}
-while (!(FPN_part_3 & (0x40000000))){FPN_part_3 = FPN_part_3 << 1; twos_expnt_3 -= 1;}}
+ if (FPN_digits_3 & (unsigned long) 0x80000000){FPN_digits_3 *= -1; sign_3 = '-';}
+while (!(FPN_digits_3 & (0x40000000))){FPN_digits_3 = FPN_digits_3 << 1; twos_expnt_3 -= 1;}}
 
 if(sign_1 == sign_2){
 
@@ -45,13 +45,13 @@ switch(sign_1){
 case '+': break;
 
 case '-': 
-FPN_part_3 =    FPN_part_1 * -1 + FPN_part_2 * -1; ; 
+FPN_digits_3 =    FPN_digits_1 * -1 + FPN_digits_2 * -1; ; 
 sign_3 = '-';break;}
 
-if (FPN_part_3 & (unsigned long) 0x80000000)
-{FPN_part_3 = (unsigned long)FPN_part_3  >> 1; twos_expnt_3 += 1;}}
+if (FPN_digits_3 & (unsigned long) 0x80000000)
+{FPN_digits_3 = (unsigned long)FPN_digits_3  >> 1; twos_expnt_3 += 1;}}
 
-Result_as_long = Assemble_FPN((unsigned long) FPN_part_3, twos_expnt_3);
+Result_as_long = Assemble_FPN((unsigned long) FPN_digits_3, twos_expnt_3);
 if (sign_3 == '-')
 *(long*)&Result_as_long = *(long*)&Result_as_long | (unsigned long)0x80000000; 
 return Result_as_long;}
@@ -97,20 +97,20 @@ else return 0;}
 float FPN_div (float FPN_1, float FPN_2){
 
 int twos_expnt_1, twos_expnt_2, twos_expnt_3;
-long FPN_part_1, FPN_part_2, FPN_part_3;
+long FPN_digits_1, FPN_digits_2, FPN_digits_3;
 char sign_1, sign_2, sign_3 = '+';
 float Result_as_long;
 
 sign_1 = '+';
 sign_2 = '+';
 
-FPN_part_1 = unpack_FPN(FPN_1 , &twos_expnt_1, &sign_1);
-FPN_part_2 = unpack_FPN(FPN_2 , &twos_expnt_2, &sign_2);
+FPN_digits_1 = unpack_FPN(FPN_1 , &twos_expnt_1, &sign_1);
+FPN_digits_2 = unpack_FPN(FPN_2 , &twos_expnt_2, &sign_2);
 
-while (FPN_part_1 >= FPN_part_2){FPN_part_1 >>= 1; twos_expnt_1 += 1;}
-FPN_part_3 = Fraction_to_Binary_Signed(FPN_part_1, FPN_part_2);
+while (FPN_digits_1 >= FPN_digits_2){FPN_digits_1 >>= 1; twos_expnt_1 += 1;}
+FPN_digits_3 = Fraction_to_Binary_Signed(FPN_digits_1, FPN_digits_2);
 
-Result_as_long = Assemble_FPN((unsigned long) FPN_part_3, twos_expnt_1 - twos_expnt_2);
+Result_as_long = Assemble_FPN((unsigned long) FPN_digits_3, twos_expnt_1 - twos_expnt_2);
 if (sign_1 == sign_2);
 else
 *(long*)&Result_as_long = *(long*)&Result_as_long | (unsigned long)0x80000000; 
