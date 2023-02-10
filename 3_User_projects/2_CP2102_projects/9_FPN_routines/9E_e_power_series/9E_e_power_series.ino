@@ -55,8 +55,16 @@ Pow = Sc_Num_from_PC(Num_string, '\t');           //User enters the power.
 
 Log_result = FPN_mult (logN, Pow);                          //The Log of the result
 
-if ((FPN_LT (Log_result, -0.0044)) && (twos_exp == -1)) 
-{Serial.write("Result exceeds bounds."); SW_reset;}
+Serial.write('\t');Serial.print(Log_result, 5);Serial.write("\r\n");
+
+/*
+if(twos_exp == -1){
+if (FPN_LT (Log_result, 0.0005)){Serial.write("Result exceeds bounds_A."); SW_reset;}
+if (FPN_GT (Log_result, -0.0005)){Serial.write("Result exceeds bounds_B."); SW_reset;}}
+*/
+if((FPN_LT (Log_result, 0.0005)) && (FPN_GT (Log_result, -0.0005))){Serial.write("Result exceeds bounds_A."); SW_reset;}
+
+
 
 Result = expE_power_series(Log_result);           //Returns the antilog
 Sc_Num_to_PC(Result,1,5,'\r');
