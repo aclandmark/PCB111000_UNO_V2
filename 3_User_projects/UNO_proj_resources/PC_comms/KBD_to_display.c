@@ -7,7 +7,7 @@ Tests have shown that they are generally OK but there is probably a bug some whe
 
 int strLength (char *);
 void reverse (char *);
-void FPN_string_KBD_to_display(char *);
+void FPN_string_KBD_to_display_A(char *);
 char Get_Float_num_string_from_KBD(char *);
 
 
@@ -134,14 +134,15 @@ return i;}
 
 
 /**************************************************************************************************************************************************/
-long Get_fpn_from_KBD(char digits[], int *twos_expnt, char *tens_expnt, long *twos_denominator ){   
+long Get_fpn_from_KBD(char digits[], int *twos_expnt, char *tens_expnt, long *twos_denominator , char *sign){   
 
 /*Defines real number in terms of significant, denominator and twos exponent
 For example 125 is converted to the form (125/128) * 2^7 = 0.97... * 2^7
 */
 
 long num_1=0, num_2 = 0;											//Operation is similar to that of FPN_KBD_to_display();
- char sign = '+';													//but does not use the standard floating point library
+  
+ *sign = '+';													//but does not use the standard floating point library
 
 *tens_expnt = 0;
 *twos_denominator = 1;
@@ -149,12 +150,12 @@ long num_1=0, num_2 = 0;											//Operation is similar to that of FPN_KBD_to_
 
 *tens_expnt =  Get_Float_num_string_from_KBD(digits); 
 if (digits[0]== '-'){for (int m = 0; m <= 13; m++)digits[m] =  digits[m + 1];
-sign = '-';}
+*sign = '-';}
 num_1 = atol(digits);
 num_2 = num_1;
 while(num_2){(*twos_expnt)++; *twos_denominator *=2; num_2 /= 2;}
 
-if (sign == '-') num_1 = num_1 * (-1);
+if (*sign == '-') num_1 = num_1 * (-1);
 return num_1;}                                      
 
 
