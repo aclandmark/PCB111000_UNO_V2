@@ -4,90 +4,171 @@
 
 int main (void){
 
-float FPN;
-char tens_expnt;
+float FPN, FPN_bkp;
+char sign;
+char Digits_before_dp, Digits_after_dp;
+/*char tens_expnt, print_expnt;
 int twos_expnt;
 char sign;
 char numerical_string[3];
 long FPN_as_long, FPN_as_long_bkp;
-//float base_num;
-//int Digits_before_dp, Digits_after_dp;
-
+long Denominator;
+long int_part_max;
+char Digits_before_dp, Digits_after_dp;
+int Num_digits;
+float round_denom;*/
+char print_string[15];
 
 setup_HW_Arduino_IO;
 
 Serial.write("\r\nEnter scientific numbers \
 & terminate with Return key.\r\n");
-FPN = Scientific_number_from_KBD();
+FPN = Scientific_number_from_KBD(&sign);
 
 
 
- 
+Serial.write("Number of digits before the decimal point (0-9)?\t");
+Digits_before_dp = waitforkeypress_A() - '0'; Serial.write(Digits_before_dp + '0');
+Serial.write("\r\nNumber of digits after the decimal point (0-9)?\t");
+Digits_after_dp = waitforkeypress_A() - '0' ; Serial.write(Digits_after_dp + '0');Serial.write("\r\n");
+//Num_digits = Digits_before_dp + Digits_after_dp;
+
+
+FPN_to_String(FPN, Digits_before_dp, Digits_after_dp, '\r', print_string);
+
+
+/********************************Determine value pofexponent to print out********************************************/
+
+
 /*
-Serial.write("Number of digits before the decimal point?");
-Digits_before_dp = Int_Num_from_PC_A(numerical_string, '\r');
-Serial.write("Number of digits after the decimal point?\r\n");
-Digits_after_dp = Int_Num_from_PC_A(numerical_string, '\r');
-*/
-
+if (*(long*)&FPN & (unsigned long) 0x80000000){(*(long*)&FPN &= 0x7FFFFFFF);sign = '-';} else sign = '+';
 tens_expnt = 0;
-while (FPN >= 1.0){FPN /= 10.0; tens_expnt += 1;}
-//Sc_Num_to_PC_A(FPN,1,7,'E');Serial.print((int)FPN_expnt);
+int_part_max = 1;
+for(int m = 0; m < Digits_before_dp; m++) int_part_max *= 10.0;
+
+FPN_bkp = FPN;
+
+if(FPN_bkp >= (float)int_part_max){
+while  (FPN >= (float)int_part_max){FPN /= 10.0; tens_expnt += 1;}
+print_expnt = tens_expnt;}
+
+if(FPN_bkp < (float)int_part_max){
+while  (FPN < (float)int_part_max){FPN *= 10.0; tens_expnt -= 1;}
+print_expnt = tens_expnt+1;}
+
+while (FPN >= 1.0){FPN /= 10.0; tens_expnt += 1;}*/
+
+
+
+/*****************************************Build the number 0.000000005 used for rounding*********************************/  
+/*round_denom = 1.0;
+for(int m = 0; m <= Num_digits; m++)round_denom *= 10.0; 
+FPN = FPN + (5.0/round_denom);*/
+
+/*****************************************Obtain the number 12345678 in binary form***************************************/
+/*if (sign == '-')  *(long*)& FPN |= (unsigned long) 0x80000000;
 FPN_as_long = unpack_FPN(FPN, &twos_expnt, &sign);
-Serial.write('A');Serial.write(-twos_expnt + '0');
-FPN_as_long = FPN_as_long >> (7 + (-twos_expnt));   /////////////////Shift 0x1000000 instead
-Print_long_as_binary(FPN_as_long);Serial.write("\r\n");
+FPN_as_long = FPN_as_long >> 4 ; 
+Denominator = 0x8000000 << (-twos_expnt);*/
 
-for (int m = 0; m < 8; m++){
-FPN_as_long *= 10;
-FPN_as_long_bkp = FPN_as_long/0x1000000;
+/****************************************Convert 12345678 to string form***************************************************/
+/*{int p = 0;
+for(int m = 0; m < 15; m++)print_string[m] = 0;
+Denominator /= 10.0; 
 
-if(FPN_as_long_bkp){Serial.write (FPN_as_long_bkp + '0');FPN_as_long = FPN_as_long%0x1000000;} else Serial.write('0');
+if(sign == '-')
+{print_string[0] = '-'; p += 1;}
+if (!(Digits_before_dp))print_string[p++] = '0'; 
+for (int m = 0; m < Num_digits; m++){
+FPN_as_long_bkp = FPN_as_long/Denominator;
+
+if(m == Digits_before_dp)print_string[p++] = '.'; 
+if(FPN_as_long_bkp){print_string[p] = (FPN_as_long_bkp + '0'); 
+FPN_as_long = FPN_as_long%Denominator;} 
+else print_string[p] = '0'; 
+p += 1;
+FPN_as_long *= 10;}
+print_string[p++] = 'E'; 
+itoa(print_expnt, print_string+p, 10);*/
 
 
-  
-//FPN_as_long = FPN_as_long%0x1000000;
-}
-/*
-base_num = 1;
-for(int m = 0; m < Digits_before_dp; m++) base_num *= 10.0;
-FPN_expnt = 0;
-if(FPN >= base_num){
-  while  (FPN >= base_num){FPN /= 10.0; FPN_expnt += 1;}
-Sc_Num_to_PC_A(FPN, Digits_before_dp, Digits_after_dp, ' '); Serial.print ((int)FPN_expnt);}*/
-
+Serial.write (print_string);
 SW_reset;}
 
 
-/********************************************************************************************************************************/
-float Foating_point_division (float FPN_1, float FPN_2){
 
-int twos_expnt_1, twos_expnt_2, twos_expnt_3;
-long FPN_part_1, FPN_part_2, FPN_part_3;
-char sign_1, sign_2, sign_3 = '+';
-float Result_as_long;
 
-sign_1 = '+';
-sign_2 = '+';
+void FPN_to_String(float FPN, char pre_dp, char post_dp, char next_char, char * print_string){
 
-FPN_part_1 = unpack_FPN(FPN_1 , &twos_expnt_1, &sign_1);
-FPN_part_2 = unpack_FPN(FPN_2 , &twos_expnt_2, &sign_2);
+char tens_expnt, print_expnt;
+int twos_expnt;
+char sign;
+//char numerical_string[3];
+long FPN_as_long, FPN_as_long_bkp;
+long Denominator;
+long int_part_max;
+//char Digits_before_dp, Digits_after_dp;
+int Num_digits;
+float round_denom;
+float FPN_bkp;
 
-while (FPN_part_1 >= FPN_part_2){FPN_part_1 >>= 1; twos_expnt_1 += 1;}
-FPN_part_3 = Fraction_to_Binary_Signed(FPN_part_1, FPN_part_2);
-Result_as_long = Assemble_FPN((unsigned long) FPN_part_3, twos_expnt_1 - twos_expnt_2);
-if (sign_1 == sign_2);
-else
-*(long*)&Result_as_long = *(long*)&Result_as_long | (unsigned long)0x80000000; 
-return Result_as_long;}
-/********************************************************************************************************************************/
 
-float Foating_point_multiplication(float FPN_1, float FPN_2){
-float Reciprocal;
-float Result;
-  Reciprocal = Foating_point_division(1.0, FPN_2);
- Result = Foating_point_division(FPN_1, Reciprocal);
-return Result;}
+ Num_digits = pre_dp + post_dp; 
+
+if (*(long*)&FPN & (unsigned long) 0x80000000){(*(long*)&FPN &= 0x7FFFFFFF);sign = '-';} else sign = '+';
+tens_expnt = 0;
+int_part_max = 1;
+for(int m = 0; m < pre_dp; m++) int_part_max *= 10.0;
+
+FPN_bkp = FPN;
+
+if(FPN_bkp >= (float)int_part_max){
+while  (FPN >= (float)int_part_max){FPN /= 10.0; tens_expnt += 1;}
+print_expnt = tens_expnt;}
+
+if(FPN_bkp < (float)int_part_max){
+while  (FPN < (float)int_part_max){FPN *= 10.0; tens_expnt -= 1;}
+print_expnt = tens_expnt+1;}
+
+while (FPN >= 1.0){FPN /= 10.0; tens_expnt += 1;}
+
+
+
+/*****************************************Build the number 0.000000005 used for rounding*********************************/  
+round_denom = 1.0;
+for(int m = 0; m <= Num_digits; m++)round_denom *= 10.0; 
+FPN = FPN + (5.0/round_denom);
+
+/*****************************************Obtain the number 12345678 in binary form***************************************/
+if (sign == '-')  *(long*)& FPN |= (unsigned long) 0x80000000;
+FPN_as_long = unpack_FPN(FPN, &twos_expnt, &sign);
+FPN_as_long = FPN_as_long >> 4 ; 
+Denominator = 0x8000000 << (-twos_expnt);
+
+/****************************************Convert 12345678 to string form***************************************************/
+{int p = 0;
+for(int m = 0; m < 15; m++)print_string[m] = 0;
+Denominator /= 10.0; 
+
+if(sign == '-')
+{print_string[0] = '-'; p += 1;}
+if (!(pre_dp))print_string[p++] = '0'; 
+for (int m = 0; m < Num_digits; m++){
+FPN_as_long_bkp = FPN_as_long/Denominator;
+
+if(m == pre_dp)print_string[p++] = '.'; 
+if(FPN_as_long_bkp){print_string[p] = (FPN_as_long_bkp + '0'); 
+FPN_as_long = FPN_as_long%Denominator;} 
+else print_string[p] = '0'; 
+p += 1;
+FPN_as_long *= 10;}
+print_string[p++] = 'E'; 
+itoa(print_expnt, print_string+p, 10);
+
+  
+}}
+
+
 
 
 
@@ -96,7 +177,7 @@ return Result;}
 
 
 /*********************************************************************************************************************************/
-float Scientific_number_from_KBD(void){
+float Scientific_number_from_KBD(char *sign){
 
 char digits[15];
 long Significand;
@@ -105,11 +186,15 @@ char   tens_expnt;
 int twos_expnt;
 long FPN_digits;
 float FPN;
+char sign_local;
 
-Significand = Get_fpn_from_KBD(digits, &twos_expnt, &tens_expnt, &twos_denominator);              //Can be positive or negative
+
+Significand = Get_fpn_from_KBD(digits, &twos_expnt, &tens_expnt, &twos_denominator, &sign_local);              //Can be positive or negative
 FPN_digits = Fraction_to_Binary_Signed(Significand, twos_denominator);                            //0.1011000011.... for example
 FPN = Assemble_FPN(FPN_digits, twos_expnt);
 FPN = Scientifc_num_to_FPN(FPN, tens_expnt);
+if (sign_local == '-'){*(long*)&FPN |= (unsigned long) 0x80000000; }
+*sign = sign_local;
 return FPN;}
 
 
@@ -123,14 +208,3 @@ if (L_num  &  ((unsigned long)0x80000000 >> m))Serial.write('1'); else Serial.wr
 
 
 /**************************************************************************************************************************************/
-/*
- *   Serial.write("\r\nC");Print_long_as_binary(FPN_part_1);Serial.write('\t');Serial.print(twos_expnt_1);
-Serial.write("\r\nD");Print_long_as_binary(FPN_part_2);Serial.write('\t');Serial.print(twos_expnt_2);
-Serial.write("\r\nE");Print_long_as_binary(FPN_part_3);Serial.write('\t');Serial.print(twos_expnt_3);
- * 
-Serial.write("\r\nA");Print_long_as_binary(*(long*)&FPN_1);
-Serial.write("\r\nB");Print_long_as_binary(*(long*)&FPN_2);
-Serial.write("\r\nC");Print_long_as_binary(FPN_part_1);Serial.write('\t');Serial.print(twos_expnt_1);
-Serial.write("\r\nD");Print_long_as_binary(FPN_part_2);Serial.write('\t');Serial.print(twos_expnt_2);
-Serial.write("\r\nE");Print_long_as_binary(FPN_part_1 + FPN_part_2);
-*/
