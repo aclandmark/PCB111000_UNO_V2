@@ -6,22 +6,19 @@ int main (void){
 
 
 float FPN;
+char sign;
 
 setup_HW_Arduino_IO;
 
 Serial.write("\r\nEnter scientific number \
 & terminate with Return key.\r\n");
 
-while(1){FPN = Scientific_number_from_KBD();
-/*Significand = Get_fpn_from_KBD(digits, &twos_expnt, &tens_expnt, &twos_denominator);              //Can be positive or negative
-FPN_digits = Fraction_to_Binary_Signed(Significand, twos_denominator);                            //0.1011000011.... for example
-FPN = Assemble_FPN(FPN_digits, twos_expnt);
-FPN = Scientifc_num_to_FPN(FPN, tens_expnt);*/
+while(1){FPN = Scientific_number_from_KBD(&sign);
 
 Serial.write("\r\n");Print_long_as_binary(*(long*)&FPN);
 
 Serial.write("\t\t");
-Sc_Num_to_PC(FPN, 1, 6, '\r');
+Sc_Num_to_PC_A(FPN, 1, 6, '\r');
 //I2C_FPN_to_display(FPN);
 }
 SW_reset;}
@@ -31,7 +28,7 @@ SW_reset;}
 
 
 /**********************************************************************************************************************/
-float Scientific_number_from_KBD(void){
+float Scientific_number_from_KBD_local(char * sign){
 
 char digits[15];
 long Significand;
@@ -40,13 +37,16 @@ char   tens_expnt;
 int twos_expnt;
 long FPN_digits;
 float FPN;
+char sign_local;
 
-Significand = Get_fpn_from_KBD(digits, &twos_expnt, &tens_expnt, &twos_denominator);              //Can be positive or negative
+
+Significand = Get_fpn_from_KBD(digits, &twos_expnt, &tens_expnt, &twos_denominator, &sign_local);              //Can be positive or negative
 FPN_digits = Fraction_to_Binary_Signed(Significand, twos_denominator);                            //0.1011000011.... for example
 FPN = Assemble_FPN(FPN_digits, twos_expnt);
 FPN = Scientifc_num_to_FPN(FPN, tens_expnt);
+if (sign_local == '-'){*(long*)&FPN |= (unsigned long) 0x80000000; }
+*sign = sign_local;
 return FPN;}
-
 
 
 /***********************************************************************************************************************/
