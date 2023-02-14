@@ -28,7 +28,7 @@ SW_reset;}
 
 
 
-void FPN_to_String(float FPN, char pre_dp, char post_dp, char next_char, char * print_string){
+void FPN_to_String_local(float FPN, char pre_dp, char post_dp, char next_char, char * print_string){
 
 char tens_expnt, print_expnt;
 int twos_expnt;
