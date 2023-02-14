@@ -15,8 +15,6 @@ Serial.write("\r\nEnter scientific numbers \
 & terminate with Return key.\r\n");
 FPN = Scientific_number_from_KBD(&sign);
 
-
-
 Serial.write("Number of digits before the decimal point (0-9)?\t");
 Digits_before_dp = waitforkeypress_A() - '0'; Serial.write(Digits_before_dp + '0');
 Serial.write("\r\nNumber of digits after the decimal point (0-9)?\t");
