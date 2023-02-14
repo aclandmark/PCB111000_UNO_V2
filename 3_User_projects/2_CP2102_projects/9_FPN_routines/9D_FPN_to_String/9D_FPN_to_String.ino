@@ -102,27 +102,6 @@ itoa(print_expnt, print_string+p, 10);}}
 
 
 /*********************************************************************************************************************************/
-float Scientific_number_from_KBD(char *sign){
-
-char digits[15];
-long Significand;
-long  twos_denominator;
-char   tens_expnt;
-int twos_expnt;
-long FPN_digits;
-float FPN;
-char sign_local;
-
-
-Significand = Get_fpn_from_KBD(digits, &twos_expnt, &tens_expnt, &twos_denominator, &sign_local);              //Can be positive or negative
-FPN_digits = Fraction_to_Binary_Signed(Significand, twos_denominator);                            //0.1011000011.... for example
-FPN = Assemble_FPN(FPN_digits, twos_expnt);
-FPN = Scientifc_num_to_FPN(FPN, tens_expnt);
-if (sign_local == '-'){*(long*)&FPN |= (unsigned long) 0x80000000; }
-*sign = sign_local;
-return FPN;}
-
-
 
 /*********************************************************************************************************************************/
 void Print_long_as_binary(long L_num){
