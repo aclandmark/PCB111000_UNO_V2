@@ -6,6 +6,8 @@ long unpack_FPN(float, int *, char*);
 void Print_long_as_binary(long);
 float Scientifc_num_to_FPN(float, char);
 
+long Get_fpn_from_KBD(char *, int *, char *, long * , char *);
+int strLength (char*);
 
 char PCMSK0_backup, PCMSK2_backup, float_display_mode;
 
@@ -218,7 +220,7 @@ long int_part_max;
 int Num_digits;
 float round_denom;
 float FPN_bkp;
-
+char * next_char_ptr;
 
  Num_digits = pre_dp + post_dp; 
 
@@ -254,7 +256,6 @@ Denominator = 0x8000000 << (-twos_expnt);
 
 /****************************************Convert 12345678 to string form***************************************************/
 {int p = 0;
-for(int m = 0; m < 15; m++)print_string[m] = 0;
 Denominator /= 10.0; 
 
 if(sign == '-')
@@ -269,8 +270,17 @@ FPN_as_long = FPN_as_long%Denominator;}
 else print_string[p] = '0'; 
 p += 1;
 FPN_as_long *= 10;}
-print_string[p++] = 'E'; 
-itoa(print_expnt, print_string+p, 10);}}
+
+if(print_expnt) {print_string[p++] = 'E'; 
+itoa(print_expnt, print_string+p, 10);}
+else print_string[p++] = '\0';
+
+p = 0;
+while (print_string[p++]); p -= 1;
+print_string[p++] = next_char;
+print_string[p] = '\0';}}
+
+
 
 
 
