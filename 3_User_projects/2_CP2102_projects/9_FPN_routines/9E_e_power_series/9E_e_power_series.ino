@@ -16,7 +16,7 @@
 int main (void) 
 {
 
-char Num_string[12];
+char Num_string[15];
 float Num, Num_bkp;                               //Scientfic number pus its backup
 float Pow;                                        //Power to which the number is to be raised
 int twos_exp;                                     //Power to which 2 is raised 
@@ -32,7 +32,7 @@ if(watch_dog_reset){watch_dog_reset = 0; Serial.write(message_2);}
 
 while(1){
 Serial.write("?\r\n");
-Num = Sc_Num_from_PC(Num_string, '\t');                     //User enters the scientific number (back space is not cattered for)
+Num = Sc_Num_from_PC_A(Num_string, '\t');                     //User enters the scientific number (back space is not cattered for)
 Num_bkp = Num;
 
 if(FPN_GT_or_EQ(Num, 1.0))                                  //Multiply or divide number by 2 untill it
@@ -43,18 +43,21 @@ if (FPN_LT(Num, 1.0))
 {twos_exp = 0; while (FPN_LT(Num, 1.0))
 {Num = FPN_mult(Num, 2.0); twos_exp -= 1;}}
 
-Sc_Num_to_PC(Num, 1, 6, '\t'); 
-Int_Num_to_PC(twos_exp, Num_string, '\r');                  //Echo data to screen
+FPN_to_String(Num, 1, 6, '\t',Num_string);
+Serial.write (Num_string);
+Int_Num_to_PC_A(twos_exp, Num_string, '\r');                  //Echo data to screen
 
 logN = logE_power_series(Num); 
 if(twos_exp) logN 
 += FPN_mult((float)twos_exp, 0.6931472);                     //Log to base e of the scientific number
 
 Serial.write("Natural log is  "); 
-Sc_Num_to_PC(logN,1,5,'\r');
+FPN_to_String(logN, 1, 5, '\r',Num_string);
+Serial.write (Num_string);
+
 
 Serial.write("Enter power  ");
-Pow = Sc_Num_from_PC(Num_string, '\t');                     //User enters the power.
+Pow = Sc_Num_from_PC_A(Num_string, '\t');                     //User enters the power.
 
 Log_result = FPN_mult (logN, Pow);                          //The Log of the result
 
@@ -62,12 +65,12 @@ if((FPN_LT (Log_result, 0.0005))
 && (FPN_GT (Log_result, -0.0005)))
 {Serial.write("Unity."); SW_reset;}                         //Result very close to one.
 
-
-
 Result = expE_power_series(Log_result);                     //Returns the antilog
-Sc_Num_to_PC(Result,1,5,'\r');
+FPN_to_String(Result, 1, 5, '\r',Num_string);
+Serial.write (Num_string);
+
 Serial.write("Library result\t");                           
-Sc_Num_to_PC((pow(Num_bkp,Pow)),1,5,'\r');      
+Sc_Num_to_PC_A((pow(Num_bkp,Pow)),1,5,'\r');      
 
 I2C_FPN_to_display(Result);}
 
