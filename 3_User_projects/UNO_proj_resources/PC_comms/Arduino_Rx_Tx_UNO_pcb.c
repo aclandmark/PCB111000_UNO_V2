@@ -47,7 +47,7 @@ Serial.flush();
 strln = Serial.readBytesUntil('\r',num_as_string, bufferlen);
 for(int m = 0; m < strln; m++){
    while(num_as_string[0] == '\b')
-  {Serial.write('B');for(int p = 0; p < strln-1; p++){num_as_string[p] = num_as_string[p+1];num_as_string[p+1] = 0;m = 0;}}
+  {for(int p = 0; p < strln-1; p++){num_as_string[p] = num_as_string[p+1];num_as_string[p+1] = 0;m = 0;}}
  if(num_as_string[m] != '\b');
   else for(int p = m; p < strln-1; p++){num_as_string[p-1] = num_as_string[p+1]; num_as_string[p+1] = '\0';m = 0;} }
 
