@@ -30,7 +30,7 @@ for by 32 bit FP numbers.
 
 int main (void)  
   { 
-    char num_string[12];
+    char num_string[32];
     float  num;
     float index;
  
@@ -40,7 +40,7 @@ int main (void)
   else {Serial.write("\r\n\r\nUsing Arduino functions to receive and print scientific numbers.\r\n");}
    Serial.write("\r\nScientific number? Then press AK.\r\n");
    
-num = Sc_Num_from_PC(num_string, '\r');
+num = Sc_Num_from_PC_A(num_string, '\r', 30);
 
 if (num < 1.0) index = 3;                                   //Raise small numbers and negative ones to the power of 3
 else index = 1.5;                                           //Raise remaining numbers to the power of 1.5
@@ -49,7 +49,7 @@ while(1){
   while(!(Serial.available()))wdr();
 Serial.read();                                            //The equivalent of waitforkeypress()
 num = pow (num,index);                                    //-C- library function
-Sc_Num_to_PC(num, 2, 4, '\r');
+Sc_Num_to_PC_A(num, 2, 4, '\r');
 }
 
  SW_reset;
