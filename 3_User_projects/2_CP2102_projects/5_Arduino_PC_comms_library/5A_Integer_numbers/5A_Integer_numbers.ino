@@ -32,7 +32,7 @@
 
 int main (void)  
   { 
-    char num_string[12];
+    char num_string[20];
     long  num;
     int m = 1;
  
@@ -41,7 +41,10 @@ int main (void)
   User_prompt;
  
    Serial.write("\r\nInteger number\t");
-num = Int_Num_from_PC_local(num_string, '\r');
+num = Int_Num_from_PC_local(num_string, '\r',20);
+
+
+Serial.write("\r\n");Serial.print(num);Serial.write("\t");
 
 do{
 if(!(num%m)){Int_Num_to_PC_local(m, num_string, '\t');}
@@ -56,11 +59,18 @@ return 1;
 
 
 /******************************************************************************************/
-long Int_Num_from_PC_local(char * num_as_string,char next_char)
+long Int_Num_from_PC_local(char * num_as_string,char next_char, char bufferlen)
 {char strln;
 
 Serial.flush();   
-strln = Serial.readBytesUntil('\r',num_as_string, 20);
+strln = Serial.readBytesUntil('\r',num_as_string, bufferlen);
+for(int m = 0; m < strln; m++){
+   while(num_as_string[0] == '\b')
+  {for(int p = 0; p < strln-1; p++){num_as_string[p] = num_as_string[p+1];num_as_string[p+1] = 0;m = 0;}}
+ if(num_as_string[m] != '\b');
+  else for(int p = m; p < strln-1; p++){num_as_string[p-1] = num_as_string[p+1]; num_as_string[p+1] = '\0';m = 0;} }
+
+
 num_as_string[strln] = 0;
 Serial.write(num_as_string);
 Serial.write(next_char);
@@ -79,7 +89,30 @@ Serial.print(num_as_string);
 Serial.print(next_char);}
 
 
+/*
+long Int_Num_from_PC_dev(char * num_as_string,char next_char)
+{char strln;
+
+Serial.flush();   
+strln = Serial.readBytesUntil('\r',num_as_string, 20);
+
+Serial.write("\r\nB\t");Serial.print ((int)strln);Serial.write("\t");
+waitforkeypress_A();
+Serial.write("\r\n");{for(int m = 0; m < strln; m++){Serial.write(num_as_string[m]);}}
+waitforkeypress_A();
+for(int m = 0; m < strln; m++){
+  if(num_as_string[m] != '\b');
+  else for(int p = m; p < strln-1; p++){num_as_string[p-1] = num_as_string[p+1]; num_as_string[p+1] = '\0';m = 0;} }
+Serial.write("\r\n");{for(int m = 0; m < strln; m++){Serial.write(num_as_string[m]);}}
+waitforkeypress_A();
 
 
+
+num_as_string[strln] = 0;
+Serial.write(num_as_string);
+Serial.write(next_char);
+if(atol(num_as_string) > 0x7FFFF)
+{Serial.write("\r\nNumber is too large\r\n"); SW_reset;}
+return atol(num_as_string);}*/
 
 /******************************************************************************************/
