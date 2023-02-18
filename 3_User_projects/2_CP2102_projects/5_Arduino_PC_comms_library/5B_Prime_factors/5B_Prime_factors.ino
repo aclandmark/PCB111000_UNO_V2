@@ -13,7 +13,7 @@
 /************************************************************************************************************/
 int main (void)  
   { 
-    char num_string[12];
+    char num_string[22];
     long  number;
     long factor;
     char factor_counter;
