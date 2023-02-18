@@ -20,13 +20,13 @@ int main (void)
  
  setup_HW_Arduino_IO;
    Serial.write("\r\nInteger number\t");
-   number = Int_Num_from_PC(num_string, '\r');
+   number = Int_Num_from_PC_A(num_string, '\r', 20);
   
   factor_counter = 0;
   do{
   factor = Product_search(number);                                 //Get lowest factor
   number = number/factor;                                          //Next number to factorise
-  Int_Num_to_PC(factor,num_string, '\t' );
+  Int_Num_to_PC_A(factor,num_string, '\t' );
   factor_counter += 1;} 
   while (number != 1);  
 
