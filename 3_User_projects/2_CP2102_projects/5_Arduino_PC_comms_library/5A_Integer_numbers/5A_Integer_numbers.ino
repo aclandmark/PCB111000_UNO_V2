@@ -32,7 +32,7 @@
 
 int main (void)  
   { 
-    char num_string[20];
+    char num_string[22];
     long  num;
     int m = 1;
  
