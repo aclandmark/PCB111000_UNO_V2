@@ -155,13 +155,18 @@ Serial.write(next_char);}
 
 /******************************************************************************************/
 float Sc_Num_from_PC_A
-(char * num_as_string,char next_char)							//Same as Int_Num_from_PC()
+(char * num_as_string,char next_char, int bufferlen )							//Same as Int_Num_from_PC()
 {char strln;
 
-//pause_WDT;
 Serial.flush();   
-strln = Serial.readBytesUntil('\r',num_as_string, 20);
-//resume_WDT;
+strln = Serial.readBytesUntil('\r',num_as_string, bufferlen);
+for(int m = 0; m < strln; m++){
+   while(num_as_string[0] == '\b')
+  {for(int p = 0; p < strln-1; p++){num_as_string[p] = num_as_string[p+1];num_as_string[p+1] = 0;m = 0;}}
+ if(num_as_string[m] != '\b');
+  else for(int p = m; p < strln-1; p++){num_as_string[p-1] = num_as_string[p+1]; num_as_string[p+1] = '\0';m = 0;} }
+
+
 num_as_string[strln] = 0;
 Serial.write(num_as_string);
 Serial.write(next_char);
