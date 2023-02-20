@@ -48,6 +48,8 @@ while(1){
 Serial.write("?\r\n");
 Num = Sc_Num_from_PC_A(Num_string, '\t', 30);           //User enters the scientific number
 
+//Sc_Num_to_PC_A(Num, 1,5, '\r');                 //Used to confirm operation of del key
+
 Num_bkp = Num;
 
 if (Num >= 1.0)                                   //Multiply or divide number by 2 untill it
