@@ -71,6 +71,7 @@ return atol(num_as_string);}
 float Sc_Num_from_PC_A
 (char * num_as_string,char next_char, int bufferlen )	
 {char strln;
+int trailing_bs_counter = 0;
 
 Serial.flush();   
 strln = Serial.readBytesUntil('\r',num_as_string, bufferlen);  
