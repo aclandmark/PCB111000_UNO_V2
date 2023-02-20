@@ -11,7 +11,7 @@
 
 int main (void) 
 
-{char Num_string[12];
+{char Num_string[32];
 float Num;                               //Scientfic number pus its backup
 float Pie = 3.1415926;
 float Sine, Cos;                                       //The log of Num
