@@ -29,7 +29,7 @@ for the power series deffinitions
 int main (void) 
 
 {
-char Num_string[22];
+char Num_string[32];
 
 float Num, Num_bkp;                               //Scientfic number pus its backup
 float Pow;                                        //Power to which the number is to be raised
@@ -46,7 +46,7 @@ if(watch_dog_reset){watch_dog_reset = 0; Serial.write(message_2);}
 
 while(1){
 Serial.write("?\r\n");
-Num = Sc_Num_from_PC_A(Num_string, '\t', 20);           //User enters the scientific number
+Num = Sc_Num_from_PC_A(Num_string, '\t', 30);           //User enters the scientific number
 
 Num_bkp = Num;
 
@@ -68,7 +68,7 @@ Serial.write("Natural log is  ");
 Sc_Num_to_PC_A(logN,1,5,'\r');
 
 Serial.write("Enter power  ");
-Pow = Sc_Num_from_PC_A(Num_string, '\t', 20);           //User enters the power.
+Pow = Sc_Num_from_PC_A(Num_string, '\t', 30);           //User enters the power.
 
 Log_result = logN * Pow;                          //The Log of the result
 
