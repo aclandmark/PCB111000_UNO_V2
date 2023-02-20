@@ -34,8 +34,8 @@ Push and hold SW1 to repeat. SW3 to pause display.\r\n\t");
 
 
 
-R = Unsigned_Int_from_PC(Num_string, 0);                              //DIY subroutine uses Arduino functions
-Unsigned_Int_to_PC(R, Num_string, '\t');                             //DIY subroutine uses Arduino functions
+R = Unsigned_Int_from_PC_A(Num_string, 0);                              //DIY subroutine uses Arduino functions
+Unsigned_Int_to_PC_A(R, Num_string, '\t');                             //DIY subroutine uses Arduino functions
 Y = 1;
 Area = 0;
 
