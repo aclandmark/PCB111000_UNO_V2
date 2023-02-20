@@ -22,11 +22,11 @@ setup_HW_Arduino_IO;
 
 if(!(watch_dog_reset))Serial.write(message_1);
 else {watch_dog_reset = 0; Serial.write ("?\r\n");}
-Num = Sc_Num_from_PC(Num_string, '\t');           //User enters the scientific number
+Num = Sc_Num_from_PC_A(Num_string, '\t', 30);           //User enters the scientific number
 if(!(Num))Num = 0.0001;
 else{
 Num = Num *2.0 * Pie /360.0;}
-Sc_Num_to_PC (Num, 1,5,'\r');
+Sc_Num_to_PC_A(Num, 1,5,'\r');
 
 Serial.write("Keypress c, s or t?\r\n");
 Fn = waitforkeypress_A();
@@ -36,7 +36,7 @@ case 'c': Result = Cos_power_series(Num); Serial.write("Cos x =");break;
 case 's': Result = Sine_power_series(Num);Serial.write("Sin x =");break;
 case 't': Result = Sine_power_series(Num)/Cos_power_series(Num);Serial.write("Tan x =");break;}
 
-Sc_Num_to_PC(Result,1,8,'\r');
+Sc_Num_to_PC_A(Result,1,8,'\r');
 
 I2C_FPN_to_display(Result);
 
