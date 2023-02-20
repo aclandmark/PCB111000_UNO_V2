@@ -41,7 +41,7 @@ int main (void)
   User_prompt;
  
    Serial.write("\r\nInteger number\t");
-num = Int_Num_from_PC_local(num_string, '\r',20);
+num = Int_Num_from_PC_A(num_string, '\r',20);
 
 
 Serial.write("\r\n");Serial.print(num);Serial.write("\t");
