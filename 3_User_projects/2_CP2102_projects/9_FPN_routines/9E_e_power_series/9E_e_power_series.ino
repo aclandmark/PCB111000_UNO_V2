@@ -16,7 +16,7 @@
 int main (void) 
 {
 
-char Num_string[15];
+char Num_string[32];
 float Num, Num_bkp;                               //Scientfic number pus its backup
 float Pow;                                        //Power to which the number is to be raised
 int twos_exp;                                     //Power to which 2 is raised 
@@ -32,7 +32,7 @@ if(watch_dog_reset){watch_dog_reset = 0; Serial.write(message_2);}
 
 while(1){
 Serial.write("?\r\n");
-Num = Sc_Num_from_PC_A(Num_string, '\t');                     //User enters the scientific number (back space is not cattered for)
+Num = Sc_Num_from_PC_A(Num_string, '\t', 30);                     //User enters the scientific number (back space is not cattered for)
 Num_bkp = Num;
 
 if(FPN_GT_or_EQ(Num, 1.0))                                  //Multiply or divide number by 2 untill it
@@ -57,7 +57,7 @@ Serial.write (Num_string);
 
 
 Serial.write("Enter power  ");
-Pow = Sc_Num_from_PC_A(Num_string, '\t');                     //User enters the power.
+Pow = Sc_Num_from_PC_A(Num_string, '\t', 30);                     //User enters the power.
 
 Log_result = FPN_mult (logN, Pow);                          //The Log of the result
 
