@@ -14,7 +14,8 @@ See https://en.wikipedia.org/wiki/Pulse_wave for details of the pulse train
 */
 
 
-#include "Pulse_train_generator_header.h"
+#include "8B_header_file_1.h"
+#include "8B_header_file_2.h"
 
 float Num_1, Num_2;
 char digits[12];
@@ -34,15 +35,15 @@ int num_time_slots;                                                    //45
 int num_harmonics;                                                     //30
 int counter;                                                           //Counts the number of periods printed out
 
-setup_328_HW_Arduino_IO;
+setup_HW_with_reset_analysis;
 
 set_up_PCI;
 
 switch (reset_status)                                                    //Check each time a reset occurs
-{case 1: User_prompt_Arduino;                                            //POR
+{case 1: User_prompt_A;                                                  //POR
 SW_reset;break;
 case 4: Timer_T1_sub_with_interrupt(T1_delay_250ms);                    //Flagged WDTout. Restart with new waveform
-for(int p = 0; p <10; p++)newline; break;
+for(int p = 0; p <10; p++)newline_A; break;
 
 case 5:Serial.write
 ("\r\n\r\nNumerical result too large for a 32 bit number.\r\n");         //WDTout with interrupt
@@ -57,14 +58,14 @@ case 3:                                                                  //Post 
 Serial.write("\r\nEnter scientific number \
 & terminate with Return key.\r\n");
 
-Num_1 = Float_KBD_to_display(digits); 
+Num_1 = FPN_KBD_to_display_A(digits); 
 float_to_EEPROM(Num_1, 0x5);
 
 Serial.write("Press SW2 or 3 to start\r\n");
 
 while(1)
 {if((switch_2_down) || (switch_3_down))break; else wdr();}              //Press switch 2 or 3 to start
-enable_PCI_on_sw1;break;}                                               
+enable_pci_on_sw1;break;}                                               
 
 duty_cycle = (float)(eeprom_read_byte((uint8_t*)(0x0)))/10.0;           //Read EEPROM for waveform parameters
 num_time_slots = (eeprom_read_byte((uint8_t*)(0x2)) << 8) +
@@ -74,7 +75,7 @@ eeprom_read_byte((uint8_t*)(0x3));
 
 for(int n = 0; n <= 100; n++){if (n<40)Serial.write (' ');              //Print plot axis
 else Serial.write('_');}
-newline;
+newline_A;
 
 
 counter = 0;
@@ -96,7 +97,7 @@ print_spaces = print_offset +
 (int)(pulse_amplitude * duty_cycle)  + (int)(amplitude);                //Add in DC term + arbitrary offset to center waveform on screen
 for (int n = 0; n < print_spaces; n++){Serial.write(' ');}
 Serial.write('|');_delay_ms(20);
-newline;wdr();
+newline_A; wdr();
 
 wdr();}
 counter += 1;}
@@ -112,7 +113,7 @@ ISR(PCINT2_vect){
   int data;
   if (switch_1_up)return;
   sei();
-  disable_PCI_on_sw1;
+  disable_pci_on_sw1;
 
 
 
@@ -121,7 +122,7 @@ Num_1 = float_from_EEPROM(0x5);
 Num_2 = pow(Num_1, 1.2);
 if(Num_2 == Num_1)while(1);                                             //Zero or infinity: Force timeout
 
-float_num_to_display_WDT(Num_2);
+I2C_FPN_to_display(Num_2);
 float_to_EEPROM (Num_2, 0x5);
 
 Timer_T1_sub_with_interrupt(T1_delay_250ms);
@@ -151,7 +152,7 @@ setup_watchdog; SW_reset;}
 
 
 /*******************************************************************************************************************/
-ISR(TIMER1_OVF_vect) {TIMSK1 &= (~(1 << TOIE1)); enable_PCI_on_sw1;}
+ISR(TIMER1_OVF_vect) {TIMSK1 &= (~(1 << TOIE1)); enable_pci_on_sw1;}
 
 
 
@@ -160,7 +161,37 @@ ISR (WDT_vect){
 
 
 
+/*******************************************************************************************************************/
+void float_to_EEPROM(float num, int address){
+char * Char_ptr_local;
+
+Char_ptr_local = (char*)&num;
+for (int m = 0; m <= 3; m++){
+eeprom_write_byte((uint8_t*)(address++), *(Char_ptr_local++));}}
 
 
 
+/*******************************************************************************************************************/
+float float_from_EEPROM(int address){
+float num;
+float * Flt_ptr_local;
+char * Char_ptr_local;
+
+Flt_ptr_local = &num;
+Char_ptr_local = (char*)&num;
+ 
+for (int m = 0; m <= 3; m++){
+*(Char_ptr_local++) = eeprom_read_byte((uint8_t*)(address++));}
+num =  * Flt_ptr_local;
+return num;}
+
+
+
+/*******************************************************************************************************************/
+int PCI_triggers_data_from_PC(char * num_as_string)  
+{int m= 0;
+for(int m = 0; m <= 7; m++)num_as_string[m] = 0;
+while(1){if (Serial.available()) num_as_string[m++] = Serial.read(); else break;}
+if (!(m))return 0;
+return atoi(num_as_string);}
 /*******************************************************************************************************************/
