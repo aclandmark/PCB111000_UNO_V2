@@ -54,7 +54,6 @@ while(switch_1_up);
 while(1){
 op = 0;
 cli();
-//while(switch_1_up);
 I2C_Tx_any_segment_clear_all();
 while(switch_1_down)
 {op = op%8;
@@ -62,29 +61,29 @@ I2C_Tx_any_segment('d', 7- op);
 op += 1;
 Timer_T0_10mS_delay_x_m(40);
 I2C_Tx_any_segment_clear_all();}
-if (op == 8){Serial.write("\t?\r"); SW_reset;}
 
-if(op != 7){
+if(op <= 5){
 x2 = fpn_from_IO();}
 
+sei();
 switch(op){
-case 1:result = x1+x2; printf(" + %g",x2); break;
-case 2:result = x1-x2; printf(" - %g",x2); break;
-case 3:result = x1*x2; Serial.write (" x "); Sc_Num_to_PC_A(x2,1,6 ,' '); break;
-case 4:result = x1/x2; printf(" / %g",x2); break;
-case 5:result = pow(x1,x2); printf(" ^ %g",x2); break;
-case 6:result = pow(x1,(1/x2)); printf(" ^ 1/%g",x2); break; 
-case 7:result = 1/x1; printf("   1/%g",x1); break;
-case 8:break;}
+case 1:result = x1+x2; Serial.write (" + ");  break;
+case 2:result = x1-x2; Serial.write (" - ");  break;
+case 3:result = x1*x2; Serial.write (" x "); break;
+case 4:result = x1/x2; Serial.write (" / ");  break;
+case 5:result = pow(x1,x2); Serial.write (" ^ ");  break;
+case 6:result = sin(x1 / 57.296); x2 = x1; Serial.write (" Sin ");  break; 
+case 7:result = cos(x1 / 57.296); x2 = x1; Serial.write (" Cos "); break;                                               //
+case 8:result = tan(x1 / 57.296); x2 = x1; Serial.write (" Tan "); break;}
+
+Sc_Num_to_PC_A(x2,1,6 ,' '); 
 
 Serial.write (" = "); Sc_Num_to_PC_A(result,1,6 ,' ');
 Serial.write ("\r\n");
 I2C_FPN_to_display(result);
 x1 = result;
 
-while(switch_1_up);
-//while(switch_1_down);
- }                                //Do some arithmetic
+while(switch_1_up);}
 
 while(switch_1_up);
 SW_reset;}
