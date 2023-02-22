@@ -1,5 +1,5 @@
 
-#include "8A_header_file_2.h"
+#include "8B_header_file_2.h"
 
 
 char watch_dog_reset = 0;
@@ -13,7 +13,7 @@ char reset_status;
 /*****************************************************************************/
 #include <avr/wdt.h>
 
-
+#define newline_A   Serial.write("\r\n");
 
 /*****************************************************************************/
 #define setup_HW_with_reset_analysis \
@@ -91,7 +91,7 @@ PORTD |= ((1 << PD3)|(1 << PD4)|(1 << PD5)|(1 << PD6));
 
 
 /*****************************************************************************/
-#define User_prompt \
+#define User_prompt_A \
 while(1){\
 do{Serial.write("R?    ");}  while((isCharavailable_A(50) == 0));\
 User_response = Serial.read();\
@@ -113,9 +113,10 @@ TWCR = (1 << TWINT);
 #include "UNO_proj_resources/Chip2chip_comms/I2C_slave_Rx_Tx.c"
 #include "UNO_proj_resources/Chip2chip_comms/I2C_subroutines_1.c"
 #include "UNO_proj_resources/Subroutines/HW_timers.c"
+#include "UNO_proj_resources/Subroutines/FPN_DIY_IO.c"
 #include "UNO_proj_resources/PC_comms/Basic_Rx_Tx_Arduino.c"
 #include "UNO_proj_resources/PC_comms/Arduino_Rx_Tx_UNO_pcb.c"
-
+#include "UNO_proj_resources/PC_comms/KBD_to_display.c"
 
 
 /******************************************************************************/
