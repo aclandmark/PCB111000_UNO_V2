@@ -18,16 +18,17 @@ See https://en.wikipedia.org/wiki/Pulse_wave for details of the pulse train
 #include "8B_header_file_2.h"
 
 float Num_1, Num_2;
-char digits[12];
+char digits[15];
 
 int main (void){
 
+float FPN;
 float pi = 3.14159;
 int print_spaces;
 float Time;                                                            //< 0 Time >= 1 (Assumes a waveformperion T of unit
 float amplitude;                                                       //Synthesized amplitude at and any time
 float duty_cycle;
-
+char num_as_string[22];
 float pulse_amplitude = 100.0;                                         //Arbitrary values chosen 
 int print_offset = 25;                                                 //to fill screen
 
@@ -58,8 +59,13 @@ case 3:                                                                  //Post 
 Serial.write("\r\nEnter scientific number \
 & terminate with Return key.\r\n");
 
-Num_1 = FPN_KBD_to_display_A(digits); 
-float_to_EEPROM(Num_1, 0x5);
+setup_watchdog;
+FPN = Sc_Num_from_PC_A( num_as_string, '\r', 20 );
+One_25ms_WDT_with_interrupt;
+
+Sc_Num_to_PC_A(FPN, 1, 3, '\r');
+
+float_to_EEPROM(FPN, 0x5);
 
 Serial.write("Press SW2 or 3 to start\r\n");
 
@@ -77,12 +83,12 @@ for(int n = 0; n <= 100; n++){if (n<40)Serial.write (' ');              //Print 
 else Serial.write('_');}
 newline_A;
 
-
 counter = 0;
 while(counter < 25) {                                                   //Reset after printing out 25 identical pulse waveforms
 
 for (int n = 0; n < num_time_slots ; n++)                               //Calculate amplitude for each time slot
-{Time = (float)n/(float)num_time_slots;                                 //0.0 allowed because cos 0 equals unity
+{
+    Time = (float)n/(float)num_time_slots;                                 //0.0 allowed because cos 0 equals unity
 
 amplitude = 0.0;                                                        //Zero allowed for addition (but not multiplication)
 for (int p = 1; p <= num_harmonics; p += 1){                            //Sum amplitude of each harmonic
@@ -97,6 +103,8 @@ print_spaces = print_offset +
 (int)(pulse_amplitude * duty_cycle)  + (int)(amplitude);                //Add in DC term + arbitrary offset to center waveform on screen
 for (int n = 0; n < print_spaces; n++){Serial.write(' ');}
 Serial.write('|');_delay_ms(20);
+
+if(n == 0){Serial.write("\t\t");Sc_Num_to_PC_A(FPN, 1, 3, ' ');}
 newline_A; wdr();
 
 wdr();}
@@ -122,7 +130,10 @@ Num_1 = float_from_EEPROM(0x5);
 Num_2 = pow(Num_1, 1.2);
 if(Num_2 == Num_1)while(1);                                             //Zero or infinity: Force timeout
 
-I2C_FPN_to_display(Num_2);
+//I2C_FPN_to_display(Num_2);
+//Sc_Num_to_PC_A(Num_1, 1, 6, ' ');
+
+
 float_to_EEPROM (Num_2, 0x5);
 
 Timer_T1_sub_with_interrupt(T1_delay_250ms);
