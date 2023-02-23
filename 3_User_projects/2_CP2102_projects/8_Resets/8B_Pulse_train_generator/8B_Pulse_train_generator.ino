@@ -18,7 +18,7 @@ See https://en.wikipedia.org/wiki/Pulse_wave for details of the pulse train
 #include "8B_header_file_2.h"
 
 float Num_1, Num_2;
-char digits[15];
+char digits[12];                                                       //Array used to drive the display
 
 int main (void){
 
@@ -28,7 +28,7 @@ int print_spaces;
 float Time;                                                            //< 0 Time >= 1 (Assumes a waveformperion T of unit
 float amplitude;                                                       //Synthesized amplitude at and any time
 float duty_cycle;
-char num_as_string[22];
+char num_as_string[22];                                                //Array used to data entry
 float pulse_amplitude = 100.0;                                         //Arbitrary values chosen 
 int print_offset = 25;                                                 //to fill screen
 
@@ -47,7 +47,7 @@ case 4: Timer_T1_sub_with_interrupt(T1_delay_250ms);                    //Flagge
 for(int p = 0; p <10; p++)newline_A; break;
 
 case 5:Serial.write
-("\r\n\r\nNumerical result too large for a 32 bit number.\r\n");         //WDTout with interrupt
+("\r\n\r\nNumerical result out of bounds.\r\n");                          //WDTout with interrupt
 case 2:                                                                  //SW_reset
 case 3:                                                                  //Post prtD
  eeprom_write_byte((uint8_t*)(0x0),1);                                   //1 to 9 gives mark space ratio
@@ -56,16 +56,21 @@ case 3:                                                                  //Post 
  eeprom_write_byte((uint8_t*)(0x3),30);                                  //Number of harmonics
  eeprom_write_byte((uint8_t*)(0x4),0);  
  
-Serial.write("\r\nEnter scientific number \
+Serial.write("\r\nEnter positive scientific number \
 & terminate with Return key.\r\n");
 
 setup_watchdog;
-FPN = Sc_Num_from_PC_A( num_as_string, '\r', 20 );
+
+Num_1 = Sc_Num_from_PC_A( num_as_string, '\r', 20 );
 One_25ms_WDT_with_interrupt;
 
-Sc_Num_to_PC_A(FPN, 1, 3, '\r');
+FPN_to_String(Num_1, 1, 3, ' ', digits);
+reverse(digits);
+for(int m = 0; m < 11; m++)digits[m] = digits[m+1];
+I2C_Tx_8_byte_array(digits);
 
-float_to_EEPROM(FPN, 0x5);
+float_to_EEPROM(Num_1, 0x5);
+
 
 Serial.write("Press SW2 or 3 to start\r\n");
 
@@ -93,18 +98,21 @@ for (int n = 0; n < num_time_slots ; n++)                               //Calcul
 amplitude = 0.0;                                                        //Zero allowed for addition (but not multiplication)
 for (int p = 1; p <= num_harmonics; p += 1){                            //Sum amplitude of each harmonic
 
-
+wdr();
 amplitude += sin(duty_cycle * pi * (float) p) *
 cos(2.0 * pi * Time * (float) p) / (float) p; }                         //Formula given in Wikipedia
 
 amplitude *= 2.0 * pulse_amplitude / pi;                                //Scale result as in Wikipedia
+
+//if(n == 0){test_1 = Sc_Num_to_PC_A(float_from_EEPROM(0x5), 1, 2, ' ');
+//print_offset -= (test_1*2 + test_1/4);}
+//else print_offset = 25;
 
 print_spaces = print_offset + 
 (int)(pulse_amplitude * duty_cycle)  + (int)(amplitude);                //Add in DC term + arbitrary offset to center waveform on screen
 for (int n = 0; n < print_spaces; n++){Serial.write(' ');}
 Serial.write('|');_delay_ms(20);
 
-if(n == 0){Serial.write("\t\t");Sc_Num_to_PC_A(FPN, 1, 3, ' ');}
 newline_A; wdr();
 
 wdr();}
@@ -130,8 +138,11 @@ Num_1 = float_from_EEPROM(0x5);
 Num_2 = pow(Num_1, 1.2);
 if(Num_2 == Num_1)while(1);                                             //Zero or infinity: Force timeout
 
-//I2C_FPN_to_display(Num_2);
-//Sc_Num_to_PC_A(Num_1, 1, 6, ' ');
+
+FPN_to_String(Num_2, 1, 2, ' ', digits);
+reverse(digits);
+for(int m = 0; m < 11; m++)digits[m] = digits[m+1];
+I2C_Tx_8_byte_array(digits);
 
 
 float_to_EEPROM (Num_2, 0x5);
