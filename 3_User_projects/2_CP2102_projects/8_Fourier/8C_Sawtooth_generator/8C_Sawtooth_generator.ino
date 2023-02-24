@@ -30,11 +30,14 @@ float amplitude;                                                       //Synthes
 float duty_cycle;
 char num_as_string[22];                                                //Array used to data entry
 float pulse_amplitude = 100.0;                                         //Arbitrary values chosen 
-int print_offset = 50;                                                 //to fill screen
+int print_offset = 100;                                                 //to fill screen
 
 int num_time_slots;                                                    //45
 int num_harmonics;                                                     //30
 int counter;                                                           //Counts the number of periods printed out
+
+float Harmon_1, Harmon_2, Harmon_3, Harmon_4, Harmon_5;
+
 
 setup_HW_with_reset_analysis;
 
@@ -46,11 +49,7 @@ eeprom_write_byte((uint8_t*)(0x0),1);                                   //1 to 9
  eeprom_write_byte((uint8_t*)(0x1),45);                                  //Waveform period
  eeprom_write_byte((uint8_t*)(0x2),0); 
  eeprom_write_byte((uint8_t*)(0x3),30);                                  //Number of harmonics
- eeprom_write_byte((uint8_t*)(0x4),0);
- Serial.write("Press SW2 or 3 to start\r\n");
- while(1)
-{if((switch_2_down) || (switch_3_down))break; else wdr();}              //Press switch 2 or 3 to start
- }
+ eeprom_write_byte((uint8_t*)(0x4),0);}
 
 enable_pci_on_sw1;
  
@@ -67,38 +66,40 @@ newline_A;
 counter = 0;
 while(counter < 25) {                                                   //Reset after printing out 25 identical pulse waveforms
 
-for (int n = 0; n < num_time_slots ; n++)                               //Calculate amplitude for each time slot
-{
-    Time = (float)n/(float)num_time_slots;                                 //0.0 allowed because cos 0 equals unity
-
+for (int n = 0; n < num_time_slots*2 ; n++)                               //Calculate amplitude for each time slot
+{Time = (float)n/(float)num_time_slots;                                 //0.0 allowed because cos 0 equals unity
 amplitude = 0.0;                                                        //Zero allowed for addition (but not multiplication)
+
 for (int p = 1; p <= num_harmonics; p += 1){                            //Sum amplitude of each harmonic
 wdr();
-/*
-amplitude += sin(duty_cycle * pi * (float) p) *
-cos(2.0 * pi * Time * (float) p) / (float) p; }                         //Formula given in Wikipedia
-amplitude *= 2.0 * pulse_amplitude / pi;                                //Scale result as in Wikipedia
-*/
+if (p==1)Harmon_1 = print_offset + (int)(sin(pi * Time) * 40.0); 
+if (p==2)Harmon_2 = print_offset - (int)(sin(pi * Time * 2.0)/2.0 * 40.0); 
+if (p==3)Harmon_3 = print_offset + (int)(sin(pi * Time * 3.0) / 3.0 * 40);
+if (p==4)Harmon_4 = print_offset - (int)(sin(pi * Time * 4.0)/4.0 * 40.0);
 
 if(p%2)amplitude += sin(pi * Time * (float) p) / (float) p;
-if(!(p%2))amplitude -= sin(pi * Time * (float) p) / (float) p;}
+if(!(p%2))amplitude -= sin(pi * Time * (float) p) / (float) p; }
+amplitude = (int)(amplitude * 40.0) + print_offset;
 
-print_spaces = print_offset + amplitude * 100.0;
-for (int n = 0; n < print_spaces; n++){Serial.write(' ');}
-Serial.write('|');_delay_ms(20);
+for(int m = 0; m < 150; m++){
+if (m==amplitude)  Serial.write('|');
+else if (m==Harmon_1)Serial.write('*');
+else if (m==Harmon_2)Serial.write('!');
+else if (m==Harmon_3)Serial.write('^');
+else if (m==Harmon_4)Serial.write('#');
+else if (m == print_offset) {Serial.write('|');}
+
+else  Serial.write(' ');}
+
+_delay_ms(20);
 
 newline_A; wdr();
 
 wdr();}
 counter += 1;}
 
-Serial.write("\r\nTimed out: Reset initiated\r\n");
 setup_watchdog; SW_reset;}
 
-
-                                                       
-
-/*******************************************************************************************************************/
 
 /*******************************************************************************************************************/
 ISR(PCINT2_vect){
@@ -122,26 +123,8 @@ if((switch_3_down) && (switch_2_up))                                    //Set nu
 { eeprom_write_byte((uint8_t*)(0x3),data); 
  eeprom_write_byte((uint8_t*)(0x4), (data >> 8));}
 
-
-//Signal_flagged_WDTout;                                                  //Return after requesting new waveform
-//setup_watchdog; 
-SW_reset;
-}
+SW_reset;}
   
-
-
-
-/*******************************************************************************************************************/
-ISR(TIMER1_OVF_vect) {TIMSK1 &= (~(1 << TOIE1)); enable_pci_on_sw1;}
-
-
-
-ISR (WDT_vect){
-  Signal_WDTout_with_interrupt;}
-
-
-
-/*******************************************************************************************************************/
 
 
 /*******************************************************************************************************************/
@@ -151,6 +134,8 @@ for(int m = 0; m <= 7; m++)num_as_string[m] = 0;
 while(1){if (Serial.available()) num_as_string[m++] = Serial.read(); else break;}
 if (!(m))return 0;
 return atoi(num_as_string);}
-/*******************************************************************************************************************/
+
+
+
 
 /*******************************************************************************************************************/
