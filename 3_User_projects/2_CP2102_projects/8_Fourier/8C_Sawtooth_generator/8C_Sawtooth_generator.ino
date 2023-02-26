@@ -76,9 +76,6 @@ if(!(p%2))amplitude -= int(sin(2.0 * pi * Time * (float) p) / (float) p * 80.0);
 
 amplitude += print_offset;
 
-
-
-
 switch (eeprom_read_byte((uint8_t*)(0x0))){
   case 0: Display_1(amplitude, print_offset );break;
   case 1: Display_2(amplitude, Harmon_2, print_offset );break;
@@ -91,17 +88,6 @@ switch (eeprom_read_byte((uint8_t*)(0x0))){
   
   }
 
-
-/*print_control= 0;
-for(int m = 0; m < 175; m++){
-if (m==Harmon_2){Serial.write('!');print_control += 1;}
-if (m==Harmon_4){Serial.write('i');print_control += 1;}
-if (m==Harmon_6){Serial.write('*');print_control += 1;}
-if (m==amplitude){Serial.write('|');print_control += 1;}
-
-if ((m == print_offset) && (!(print_control))){Serial.write(':');print_control += 1;}
-if(print_control)print_control= 0; else  Serial.write(' '); }
-*/
 _delay_ms(20);
 
 newline_A; wdr();
