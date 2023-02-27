@@ -22,7 +22,7 @@ char isCharavailable_A (int);
 /*****************************************************************************/
 #define SW_reset {wdt_enable(WDTO_30MS);while(1);}
 
-//#define switch_2_up   (PIND & 0x80)
+
 
 /*****************************************************************************/
 #define setup_HW_Arduino_IO \
