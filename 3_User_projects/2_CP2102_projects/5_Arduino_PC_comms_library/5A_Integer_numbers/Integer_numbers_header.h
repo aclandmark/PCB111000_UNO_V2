@@ -53,7 +53,7 @@ I2C_Tx_LED_dimmer_UNO();\
 \
 if(((PIND & 0x04)^0x04) && \
 ((PIND & 0x80)^0x80))                         /*Press SW1 and SW2 to trigger recalibration*/\
-Cal_UNO_pcb_A_Arduino();
+Cal_UNO_pcb_A_Arduino();                      /*See \PC_comms\Basic_Rx_Tx_Arduino.c*/
 
 
 
