@@ -19,7 +19,7 @@
  giving an integer result.
   
 
-Subroutines Int_Num_to_PC_A and Int_Num_from_PC_A() can be found in  UNO_proj_resources\PC_comms\Arduino_Rx_Tx_UNO_pcb
+Subroutines Int_Num_to_PC_A and Int_Num_from_PC_A() can be found in  UNO_proj_resources\PC_comms\Arduino_Rx_Tx_UNO_pcb.c
 Int_Num_from_PC_A() implements the backspace key press
 */
 
