@@ -21,6 +21,9 @@ int main (void)
  setup_HW_Arduino_IO;
    Serial.write("\r\nInteger number\t");
    number = Int_Num_from_PC_A(num_string, BL);
+
+   newline_A;
+  Serial.print(number);
   Serial.write('\t');
   factor_counter = 0;
   do{
