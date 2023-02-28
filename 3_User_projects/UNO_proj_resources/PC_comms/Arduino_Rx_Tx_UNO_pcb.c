@@ -66,7 +66,7 @@ return atol(num_as_string);}
 
 /******************************************************************************************/
 float Sc_Num_from_PC_A
-(char * num_as_string,char next_char, int bufferlen )	
+(char * num_as_string, int bufferlen )	
 {char strln;
 int trailing_bs_counter = 0;
 
@@ -87,8 +87,6 @@ for(int m = 0; m < strln; m++){
   else for(int p = m; p < strln-1; p++){num_as_string[p-1] = num_as_string[p+1]; num_as_string[p+1] = '\0';m = 0;} }
 
 num_as_string[strln] = 0;
-//Serial.write(num_as_string);
-//Serial.write(next_char);
 return atof(num_as_string);}												//Askii to float
 
 
