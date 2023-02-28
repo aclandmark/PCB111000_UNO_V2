@@ -20,6 +20,9 @@ In project 5C we enter numbers at the KBD. These are raised to a power and the r
 returned to the PC. A SW_reset is generated if a result exceeds the limits allowed 
 for by 32 bit FP numbers.
 
+
+Subroutines Sc_Num_from_PC_A() and Sc_Num_to_PC_A() can be found in  UNO_proj_resources\PC_comms\Arduino_Rx_Tx_UNO_pcb.c
+UNO_proj_resources\PC_comms\Basic_Rx_Tx_Arduino.c
 */
 
 
