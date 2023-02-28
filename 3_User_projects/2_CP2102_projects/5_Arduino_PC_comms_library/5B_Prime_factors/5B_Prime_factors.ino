@@ -1,6 +1,6 @@
 
 /*
- Accepts an integer number and converts it to its prime factors
+ AS 5A but Accepts an integer number and converts it to its prime factors
  */
 
 
@@ -8,19 +8,19 @@
 
 #include "Prime_factors_header.h"
 
-
+#define BL 30                     //Buffer length
 
 /************************************************************************************************************/
 int main (void)  
   { 
-    char num_string[22];
+    char num_string[BL + 2];
     long  number;
     long factor;
     char factor_counter;
  
  setup_HW_Arduino_IO;
    Serial.write("\r\nInteger number\t");
-   number = Int_Num_from_PC_A(num_string, '\r', 20);
+   number = Int_Num_from_PC_A(num_string, BL);
   Serial.write('\t');
   factor_counter = 0;
   do{
