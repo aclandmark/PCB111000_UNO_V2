@@ -18,29 +18,14 @@ char isCharavailable_A (int);
 
 #define newline_A         Serial.write("\r\n"); 
 
-/*****************************************************************************/
-#define switch_1_down  ((PIND & 0x04)^0x04)
-#define switch_1_up   (PIND & 0x04)
-#define switch_2_down ((PIND & 0x80)^0x80)
-#define switch_2_up   (PIND & 0x80)
-#define switch_3_down ((PINB & 0x04)^0x04)
-#define switch_3_up   (PINB & 0x04)
-
-
-#define set_up_PCI \
-PCICR |= ((1 << PCIE0) | (1 << PCIE2));
-
-#define enable_pci  PCMSK0 |= (1 << PCINT2);\
-PCMSK2 |= (1 << PCINT18) | (1 << PCINT23);
-
-
-
 
 
 /*****************************************************************************/
 #define SW_reset {wdt_enable(WDTO_30MS);while(1);}
 
 #define switch_2_up   (PIND & 0x80)
+
+
 
 /*****************************************************************************/
 #define setup_HW_Arduino_IO \
@@ -108,9 +93,6 @@ asm("jmp 0x6C00");}                                     /*Go to Text_Verificatio
 
 
 
-
-
-
 /*****************************************************************************/
 #define setup_watchdog \
 if (MCUSR_copy & (1 << WDRF))watch_dog_reset = 1;\
@@ -143,7 +125,6 @@ DDRD &= (~((1 << PD2)|(1 << PD7)));             /*Ports D2 and D7 configured for
 PORTD |= ((1 << PORTD2) | (1 << PORTD7));        /*Set Port data registers high */\
 DDRB &= (~(1 << PB2));                           /*Repeat for PORTB2*/\
 PORTB |= (1 << PB2);
-
 
 
 
@@ -183,18 +164,6 @@ This is OK because it is always connected to a defined logic level
 
 
 /*****************************************************************************/
-#define OSC_CAL_328                                /*User cal bytes if set are stored in EEPROM locations 0x3FF and 0x3FE*/\
-if ((eeprom_read_byte((uint8_t*)0x3FE) > 0x0F)\
-&&  (eeprom_read_byte((uint8_t*)0x3FE) < 0xF0)\
-&& (eeprom_read_byte((uint8_t*)0x3FE)\
-== eeprom_read_byte((uint8_t*)0x3FF)))\
-{OSCCAL = eeprom_read_byte((uint8_t*)0x3FE);}       //At reset the micro reads register OSCCAL to obtain the calibration byte
-
-
-//Note: Arduino reads the EEPROM as unsigned 8 bit chars
-
-
-/*****************************************************************************/
 #define User_prompt_A \
 while(1){\
 do{Serial.write("R?    ");}  while((isCharavailable_A (50) == 0));\
@@ -213,12 +182,14 @@ TWDR;
 TWCR = (1 << TWINT);
 
 
+
 /**********************************************************************************/
 #include "UNO_proj_resources\Chip2chip_comms\I2C_slave_Rx_Tx.c"
 #include "UNO_proj_resources\Chip2chip_comms\I2C_subroutines_1.c"
 #include "UNO_proj_resources\PC_comms\Basic_Rx_Tx_Arduino.c"
 #include "UNO_proj_resources\PC_comms\Arduino_Rx_Tx_UNO_pcb.c"
 #include "UNO_proj_resources\Subroutines\HW_timers.c"
+
 
 
 /**********************************************************************************/
