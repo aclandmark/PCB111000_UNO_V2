@@ -58,7 +58,7 @@ while(1){
   while(!(Serial.available()))wdr();
 Serial.read();                                            //The equivalent of waitforkeypress()
 num_2 = pow (num_1,index);                                    //-C- library function
-Sc_Num_to_PC_A_Local(num_2, 2, 4, '\r');
+Sc_Num_to_PC_A(num_2, 2, 4, '\r');
 
 if ((index < 0.0) || (index > 1.0));
 else 
