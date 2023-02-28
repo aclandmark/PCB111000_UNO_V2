@@ -4,14 +4,16 @@ Here a number such as 1.25 is considered to be a real number and 1.25E8 a scient
 In C the real number can have up to about 6 digits
 The exponent can be as any thing between +38 and -38 (at least).
 
-The Arduino library can accept the full range of scientific numbers in string format and
-the -C- library function "atof" (askii to float) can generate the required floating point number.
+The Arduino function "Serial.print" accepts scientific numbers within a limited range and prints 
+them out with the decimal point in the required position.
 
-The Arduino function "Serial.print" accepts a real number and prints it out with the 
-decimal point in the required position.
+Project subroutine Sc_Num_from_PC_A() uses the Arduino library to accept the full range scientific 
+numbers in string format. It also uses the -C- library function "atof" (askii to float) 
+to generate the required floating point number.
 
-Here when printing a scientific number greater than about 10^7 we first repetitively divide it by 10 
-while at the same time incrementing the exponent.  We then use "Serial.print" to print the resulting 
+
+Here when printing a scientific number greater than about 10^7 we must first repetitively divide it by 10 
+while at the same time incrementing the exponent.  We can then use "Serial.print" to print the resulting 
 real number followed by the exponent.  
 
 In project 5C we enter numbers at the KBD. These are raised to a power and the result is 
@@ -34,7 +36,7 @@ for by 32 bit FP numbers.
 int main (void)  
   { 
     char num_string[BL + 2];
-    float  num;
+    float  num_1, num_2, num_3;
     float index;
  
  setup_HW_Arduino_IO;
@@ -43,29 +45,35 @@ int main (void)
   else {Serial.write("\r\n\r\nUsing Arduino functions to receive and print scientific numbers.\r\n");}
    Serial.write("\r\nScientific number? Then press AK.\r\n");
    
-num = Sc_Num_from_PC_A(num_string, BL);
+num_1 = Sc_Num_from_PC_A(num_string, BL);
 newline_A;
-  Sc_Num_to_PC_A(num,2,6,'\r');
+  Sc_Num_to_PC_A(num_1,2,6,'\r');
 
-if (num < 1.0) index = 3;                                   //Raise small numbers and negative ones to the power of 3
-else index = 1.5;                                           //Raise remaining numbers to the power of 1.5
+if (num_1 < 0.0) index = 3;                                   //Raise negative numbers to the power of 3
+else {
+  if((num_1 > 1.0e-10) && (num_1 < 1.0e10))index = 1.5;
+  else index = 0.75;}
 
 while(1){
   while(!(Serial.available()))wdr();
 Serial.read();                                            //The equivalent of waitforkeypress()
-num = pow (num,index);                                    //-C- library function
-Sc_Num_to_PC_A(num, 2, 4, '\r');
-}
+num_2 = pow (num_1,index);                                    //-C- library function
+Sc_Num_to_PC_A_Local(num_2, 2, 4, '\r');
+
+if ((index < 0.0) || (index > 1.0));
+else 
+if (((num_2 > 1.0)&&(((num_1 - num_2) < 1.0))) ||
+((num_2 < 1.0)&&(((num_2 - num_1) > 1.0e-1))))break;
+num_1 = num_2;}
 
  SW_reset;
-  return 1;
-  }
+  return 1;}
 
 
 
 
 /*****************************************************************************************/
-void Sc_Num_to_PC_local(float num, char pre_dp, char post_dp, char next_char)
+void Sc_Num_to_PC_A_Local(float num, char pre_dp, char post_dp, char next_char)
 {int A = 1;
 char keypresses[12];
 char sign = '+';
