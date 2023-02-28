@@ -16,6 +16,8 @@ char num_as_string[12];
 unsigned char PRN_8bit_GEN(unsigned char, char *);
 char isCharavailable_A (int);
 
+#define newline_A         Serial.write("\r\n"); 
+
 /*****************************************************************************/
 #define switch_1_down  ((PIND & 0x04)^0x04)
 #define switch_1_up   (PIND & 0x04)
@@ -191,7 +193,7 @@ if ((eeprom_read_byte((uint8_t*)0x3FE) > 0x0F)\
 
 
 /*****************************************************************************/
-#define User_prompt \
+#define User_prompt_A \
 while(1){\
 do{Serial.write("R?    ");}  while((isCharavailable_A (50) == 0));\
 User_response = Serial.read();\
