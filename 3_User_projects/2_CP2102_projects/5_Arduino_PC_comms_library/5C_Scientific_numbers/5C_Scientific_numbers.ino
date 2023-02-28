@@ -24,23 +24,28 @@ for by 32 bit FP numbers.
 
 #include "Scientific_numbers_header.h"
 
+#define BL 30                     //Buffer length
+
+
 /************************************************************************************************************/
 
 
 
 int main (void)  
   { 
-    char num_string[32];
+    char num_string[BL + 2];
     float  num;
     float index;
  
  setup_HW_Arduino_IO;
     
-   if (watch_dog_reset == 1) {watch_dog_reset = 0; User_prompt;}
+   if (watch_dog_reset == 1) {watch_dog_reset = 0; User_prompt_A;}
   else {Serial.write("\r\n\r\nUsing Arduino functions to receive and print scientific numbers.\r\n");}
    Serial.write("\r\nScientific number? Then press AK.\r\n");
    
-num = Sc_Num_from_PC_A(num_string, '\r', 30);
+num = Sc_Num_from_PC_A(num_string, BL);
+newline_A;
+  Sc_Num_to_PC_A(num,2,6,'\r');
 
 if (num < 1.0) index = 3;                                   //Raise small numbers and negative ones to the power of 3
 else index = 1.5;                                           //Raise remaining numbers to the power of 1.5
