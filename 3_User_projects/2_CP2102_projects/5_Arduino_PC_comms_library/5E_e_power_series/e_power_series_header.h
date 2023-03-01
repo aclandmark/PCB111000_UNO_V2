@@ -23,13 +23,6 @@ char isCharavailable_A (int);
 #define switch_3_up   (PINB & 0x04)
 
 
-#define set_up_PCI \
-PCICR |= ((1 << PCIE0) | (1 << PCIE2));
-
-#define enable_pci  PCMSK0 |= (1 << PCINT2);\
-PCMSK2 |= (1 << PCINT18) | (1 << PCINT23);
-
-
 
 
 
