@@ -195,7 +195,7 @@ if ((eeprom_read_byte((uint8_t*)0x3FE) > 0x0F)\
 
 
 /*****************************************************************************/
-#define User_prompt \
+#define User_prompt_A \
 while(1){\
 do{Serial.write("R?    ");}  while((isCharavailable_A (50) == 0));\
 User_response = Serial.read();\
