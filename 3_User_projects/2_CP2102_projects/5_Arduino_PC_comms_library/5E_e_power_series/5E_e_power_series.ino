@@ -24,12 +24,13 @@ for the power series deffinitions
 #define message_1 "\r\nPower function: Enter +ve scientific number\r\n"
 #define message_2 "\r\n\r\nTime_out: Number too large or small. Try again!\r\n"
 
+#define BL 30                                     //Buffer length
 
 
 int main (void) 
 
 {
-char Num_string[32];
+char Num_string[BL + 2];
 
 float Num, Num_bkp;                               //Scientfic number pus its backup
 float Pow;                                        //Power to which the number is to be raised
@@ -46,9 +47,9 @@ if(watch_dog_reset){watch_dog_reset = 0; Serial.write(message_2);}
 
 while(1){
 Serial.write("?\r\n");
-Num = Sc_Num_from_PC_A(Num_string, '\t', 30);           //User enters the scientific number
+Num = Sc_Num_from_PC_A(Num_string, 30);           //User enters the scientific number
 
-//Sc_Num_to_PC_A(Num, 1,5, '\r');                 //Used to confirm operation of del key
+Sc_Num_to_PC_A(Num, 1,6, '\t');                 //Used to confirm operation of del key
 
 Num_bkp = Num;
 
@@ -66,17 +67,22 @@ Int_Num_to_PC_A(twos_exp, Num_string, '\r');
 logN = logE_power_series(Num) + 
 ((float)twos_exp * 0.6931472);                     //Log to base e of the scientific number
 
-Serial.write("Natural log is  "); 
+Serial.write("Natural log is\t"); 
 Sc_Num_to_PC_A(logN,1,5,'\r');
 
-Serial.write("Enter power  ");
-Pow = Sc_Num_from_PC_A(Num_string, '\t', 30);           //User enters the power.
+Serial.write("Enter power\t");
+Pow = Sc_Num_from_PC_A(Num_string, 30);           //User enters the power.
+Sc_Num_to_PC_A(Pow, 1,5, '\r');
+
 
 Log_result = logN * Pow;                          //The Log of the result
 
 Result = expE_power_series(Log_result);           //Returns the antilog
+
+Serial.write("Local result is\t");
+
 Sc_Num_to_PC_A(Result,1,5,'\r');
-Serial.write("Library result\t");                   //remove to save overwriting commentary
+Serial.write("C function gives\t");                   //remove to save overwriting commentary
 Sc_Num_to_PC_A((pow(Num_bkp,Pow)),1,5,'\r');          //remove to save overwriting commentary
 
 I2C_FPN_to_display(Result);}
