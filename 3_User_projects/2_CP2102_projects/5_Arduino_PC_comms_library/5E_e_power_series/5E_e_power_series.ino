@@ -47,7 +47,7 @@ if(watch_dog_reset){watch_dog_reset = 0; Serial.write(message_2);}
 
 while(1){
 Serial.write("?\r\n");
-Num = Sc_Num_from_PC_A(Num_string, 30);           //User enters the scientific number
+Num = Sc_Num_from_PC_A(Num_string, BL);           //User enters the scientific number
 
 Sc_Num_to_PC_A(Num, 1,6, '\t');                 //Used to confirm operation of del key
 
@@ -71,7 +71,7 @@ Serial.write("Natural log is\t");
 Sc_Num_to_PC_A(logN,1,5,'\r');
 
 Serial.write("Enter power\t");
-Pow = Sc_Num_from_PC_A(Num_string, 30);           //User enters the power.
+Pow = Sc_Num_from_PC_A(Num_string, BL);           //User enters the power.
 Sc_Num_to_PC_A(Pow, 1,5, '\r');
 
 
