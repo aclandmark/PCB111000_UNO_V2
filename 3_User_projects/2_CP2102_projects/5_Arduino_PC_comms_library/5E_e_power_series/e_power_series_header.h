@@ -11,8 +11,10 @@ char num_as_string[12];
 #include <avr/wdt.h>
 
 
-unsigned char PRN_8bit_GEN(unsigned char, char *);
-char isCharavailable_A (int);
+//unsigned char PRN_8bit_GEN(unsigned char, char *);
+//char isCharavailable_A (int);
+
+
 
 /*****************************************************************************/
 #define switch_1_down  ((PIND & 0x04)^0x04)
@@ -24,12 +26,12 @@ char isCharavailable_A (int);
 
 
 
-
-
 /*****************************************************************************/
 #define SW_reset {wdt_enable(WDTO_30MS);while(1);}
 
 #define switch_2_up   (PIND & 0x80)
+
+
 
 /*****************************************************************************/
 #define setup_HW_Arduino_IO \
@@ -97,9 +99,6 @@ asm("jmp 0x6C00");}                                     /*Go to Text_Verificatio
 
 
 
-
-
-
 /*****************************************************************************/
 #define setup_watchdog \
 if (MCUSR_copy & (1 << WDRF))watch_dog_reset = 1;\
@@ -123,6 +122,8 @@ wdr();\
 WDTCSR |= (1 <<WDCE) | (1<< WDE);\
 WDTCSR = (1<< WDE) | (1 << WDIE) |  (1 << WDP2)  |  (1 << WDP1);
 
+
+
 /*****************************************************************************/
 #define set_up_I2C \
 TWAR = 0x02;                                     /*Address of slave I2C*/
@@ -136,7 +137,6 @@ DDRD &= (~((1 << PD2)|(1 << PD7)));             /*Ports D2 and D7 configured for
 PORTD |= ((1 << PORTD2) | (1 << PORTD7));        /*Set Port data registers high */\
 DDRB &= (~(1 << PB2));                           /*Repeat for PORTB2*/\
 PORTB |= (1 << PB2);
-
 
 
 
@@ -166,16 +166,12 @@ DDRD &= (~((1 << PD3)|(1 << PD4)|(1 << PD5)));\
 PORTC |= ((1 << PC0)|(1 << PC1)|(1 << PC2));\
 PORTD |= ((1 << PD3)|(1 << PD4)|(1 << PD5));
 
-
 /*
 Note: The hex_text_bootloader reads PD6 to control the reset operation.
 It should really be weak pull up but has been left in its default condition (tri-state) 
 This is OK because it is always connected to a defined logic level
 */
 
-
-
-/*****************************************************************************/
 
 
 /*****************************************************************************/
@@ -205,6 +201,9 @@ TWCR = (1 << TWINT);
 #include "UNO_proj_resources\PC_comms\Arduino_Rx_Tx_UNO_pcb.c"
 #include "UNO_proj_resources\Subroutines\HW_timers.c"
 #include "UNO_proj_resources\Subroutines\FPN_DIY_IO.c"
+
+
+
 
 
 /**********************************************************************************/
