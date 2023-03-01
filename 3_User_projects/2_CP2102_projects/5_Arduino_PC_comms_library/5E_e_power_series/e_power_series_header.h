@@ -3,16 +3,11 @@
 char watch_dog_reset = 0;
 char MCUSR_copy;
 char User_response;
-char num_as_string[12];
 
    
 
 /*****************************************************************************/
 #include <avr/wdt.h>
-
-
-//unsigned char PRN_8bit_GEN(unsigned char, char *);
-//char isCharavailable_A (int);
 
 
 
@@ -24,11 +19,7 @@ char num_as_string[12];
 #define switch_3_down ((PINB & 0x04)^0x04)
 #define switch_3_up   (PINB & 0x04)
 
-
-
-/*****************************************************************************/
-#define SW_reset {wdt_enable(WDTO_30MS);while(1);}
-
+#define SW_reset      {wdt_enable(WDTO_30MS);while(1);}
 #define switch_2_up   (PIND & 0x80)
 
 
