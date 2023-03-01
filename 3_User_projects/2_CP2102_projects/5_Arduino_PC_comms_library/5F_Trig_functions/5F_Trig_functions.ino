@@ -8,10 +8,12 @@
 
 #define message_1 "\r\nTrig function: Enter angle in degrees\r\n"
 
+#define BL 30                                     //Buffer length
+
 
 int main (void) 
 
-{char Num_string[32];
+{char Num_string[BL + 2];
 float Num;                               //Scientfic number pus its backup
 float Pie = 3.1415926;
 float Sine, Cos;                                       //The log of Num
@@ -22,7 +24,7 @@ setup_HW_Arduino_IO;
 
 if(!(watch_dog_reset))Serial.write(message_1);
 else {watch_dog_reset = 0; Serial.write ("?\r\n");}
-Num = Sc_Num_from_PC_A(Num_string, '\t', 30);           //User enters the scientific number
+Num = Sc_Num_from_PC_A(Num_string, BL);           //User enters the scientific number
 if(!(Num))Num = 0.0001;
 else{
 Num = Num *2.0 * Pie /360.0;}
