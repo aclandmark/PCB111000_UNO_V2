@@ -52,6 +52,7 @@ if (*long_ptr == 0X80000000){Serial.write("-ve Num too small\r\n");SW_reset;}}
 void Cal_UNO_pcb_A_Arduino(void)
 {unsigned char OSCCAL_mini_OS;
 int error_mag;
+char cal_string[12];
 
 User_prompt_A;
 I2C_Tx_initiate_mode('R');
@@ -62,10 +63,10 @@ error_mag = receive_byte_with_Ack() << 8;
 error_mag += receive_byte_with_Nack();
 clear_I2C_interrupt;
 Serial.write("\r\nOSCCAL user value   "); 
-itoa(OSCCAL_mini_OS, num_as_string, 10);Serial.write(num_as_string);
+itoa(OSCCAL_mini_OS, cal_string, 10);Serial.write(cal_string);
 
 Serial.write("\r\ncalibration error  "); 
-itoa(error_mag, num_as_string, 10);Serial.write(num_as_string);
+itoa(error_mag, cal_string, 10);Serial.write(cal_string);
 if (error_mag < 750) Serial.write("  OK\r\n");}
 
 
