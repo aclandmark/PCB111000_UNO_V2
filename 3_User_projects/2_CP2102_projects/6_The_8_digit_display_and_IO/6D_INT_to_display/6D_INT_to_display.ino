@@ -35,7 +35,10 @@ long num_from_KBD;
 
 setup_HW_Arduino_IO;
 
-Serial.write("\r\nEnter positive numbers \r\n\
+if(watch_dog_reset == 1)Serial.write("\r\nAgain?\r\n");
+else
+Serial.write("\r\nRunning arithmetic & Geometric averages:\r\n\
+Enter positive numbers \r\n\
 & terminate with Return key.\r\n\
 To display interim reults press SW1 before -cr-.\r\n\
 Press sw1 twice to resume entering numbers.\r\n\
@@ -70,7 +73,8 @@ I2C_FPN_to_display(Arith_mean);
 while(switch_1_down);
 
 I2C_FPN_to_display(Geom_mean);
-while(switch_1_down);}
+while(switch_1_down);
+if (switch_3_down)break;}
 
 SW_reset;}
 
