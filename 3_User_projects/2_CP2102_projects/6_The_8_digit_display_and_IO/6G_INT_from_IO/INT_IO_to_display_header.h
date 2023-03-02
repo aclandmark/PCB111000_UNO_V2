@@ -9,7 +9,6 @@ volatile char Data_Entry_complete;
 char watch_dog_reset = 0;
 char MCUSR_copy;
 char User_response;
-char num_as_string[12];                           //Required by pcb_A calibration routine to print out cal results
 
 
 
@@ -157,7 +156,7 @@ This is OK because it is always connected to a defined logic level
 
 
 /*****************************************************************************/
-#define User_prompt \
+#define User_prompt_A \
 while(1){\
 do{Serial.write("R?    ");}  while((isCharavailable_A (50) == 0));\
 User_response = Serial.read();\
@@ -206,7 +205,7 @@ asm("jmp 0x6C00");}                                     /*Go to Text_Verificatio
 #include "UNO_proj_resources\Subroutines\HW_timers.c"
 #include "UNO_proj_resources\PC_comms\KBD_to_display.c"
 #include "UNO_proj_resources\PC_comms\Arduino_Rx_Tx_UNO_pcb.c"
-#include "UNO_proj_resources\Subroutines\FPN_subs_plus_extras.c"
+#include "UNO_proj_resources\Subroutines\FPN_DIY_IO.c"
 
 
 
