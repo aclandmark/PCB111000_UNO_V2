@@ -40,7 +40,8 @@ int main (void){
 
 if(!(watch_dog_reset))
 
-{Serial.write("Press: sw_1 to populate digit_0, sw2 to shift the display left\r\n\
+{Serial.write("\r\nFPN from IO\r\n\
+Press: sw_1 to populate digit_0, sw2 to shift the display left\r\n\
 sw_3 to enter the number and sw1 to do some arithmetic.\r\n\
 Note: display flashes to indicate number has been entered.\r\n");}
 
@@ -50,7 +51,7 @@ else {Serial.write("\r\nAgain\r\n"); watch_dog_reset = 0;}
  if(x1 > 0.0)power = 1.2; else power = 3.0;
  
 while(1){
-Sc_Num_to_PC(x1,1,6 ,'\r');
+Sc_Num_to_PC_A(x1,1,6 ,'\r');
 I2C_FPN_to_display(x1);
 
 while(switch_1_down);
