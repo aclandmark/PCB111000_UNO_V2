@@ -40,8 +40,8 @@ if(Num_1 > 0.0)power = 0.5;
 else power = 3.0;
 
 while (1){
-Int_Num_to_PC(counter,num_as_string, '\t');  
-Sc_Num_to_PC(Num_1,1,6 ,'\r'); 
+Int_Num_to_PC_A(counter,digits, '\t'); 
+Sc_Num_to_PC_A(Num_1,1,6 ,'\r'); 
 
 if (power == 0.5)
 {if (!(counter%5)){I2C_FPN_to_display(Num_1);
@@ -60,8 +60,8 @@ Num_1 = pow(Num_1, power);  counter += 1;}                                //Do s
 
 power = 1.0/power;
 do{
-Int_Num_to_PC(counter,num_as_string, '\t'); 
-Sc_Num_to_PC(Num_1,1,6 ,'\r');                                            //Send number to PC
+Int_Num_to_PC_A(counter,digits, '\t'); 
+Sc_Num_to_PC_A(Num_1,1,6 ,'\r');                                            //Send number to PC
 
 if (!(counter%5)){I2C_FPN_to_display(Num_1);
 while(switch_1_down);}
