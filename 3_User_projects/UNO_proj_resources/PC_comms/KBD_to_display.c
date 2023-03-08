@@ -8,7 +8,7 @@ Tests have shown that they are generally OK but there is probably a bug some whe
 int strLength (char *);
 void reverse (char *);
 void FPN_string_KBD_to_display_A(char *);
-char Get_Float_num_string_from_KBD(char *);
+char Get_Float_num_string_from_KBD(char *, int);
 
 
 /******************************************************************************************************************************************/
@@ -16,7 +16,7 @@ long Int_KBD_to_display_A(char display_buffer[]){              	//Acquires an in
 char keypress;
 long Long_Num_from_mini_OS;
 
-for(int n = 0; n<=8; n++) display_buffer[n] = 0;           		//Clear the buffer used for the string
+//for(int n = 0; n<=8; n++) display_buffer[n] = 0;           		//REMOVE LINE	Clear the buffer used for the string
 
 while(1){
 keypress = waitforkeypress_A();
@@ -54,14 +54,14 @@ return Long_Num_from_mini_OS;}
 
 
 /***********************************************************************************************************************/
-float FPN_KBD_to_display_A(char digits[]){			
+float FPN_KBD_to_display_A(char digits[], int BL){			
 
 float num_1 = 0;
  char sign = '+';
 
 FPN_string_KBD_to_display_A(digits); 
 
-if (digits[0]== '-'){for (int m = 0; m <= 13; m++)digits[m] =  digits[m + 1];
+if (digits[0]== '-'){for (int m = 0; m < BL - 1; m++)digits[m] =  digits[m + 1];
 sign = '-';}
 num_1 = atof(digits);
 
@@ -71,10 +71,10 @@ return num_1;}
 
 
 /********************************************************************************************************************************************/
-void FPN_string_KBD_to_display_A(char display_buffer[]){              //Operation is similar to that of Int_KBD_to_display()
+void FPN_string_KBD_to_display_A(char display_buffer[], int BL){    //Operation is similar to that of Int_KBD_to_display()
 char keypress;
 
-for(int n = 0; n<=14; n++) display_buffer[n] = 0;                   //Clear the buffer used to the string
+for(int n = 0; n < BL; n++) display_buffer[n] = 0;   
 
 while(1){                                                          	//Remain in loop until a valid character is received
 keypress = waitforkeypress_A();
@@ -95,12 +95,12 @@ if (!(decimal_digit_A(keypress)) && (keypress != '.')                 //Check fo
 
 switch (keypress){
 
-case '\b':  for (int n = 0; n <= 11; n++)                             //Backspace keypress
+case '\b':  for (int n = 0; n < BL - 1; n++)                             //Backspace keypress
 display_buffer[n] = display_buffer[n + 1];
 I2C_Tx_8_byte_array(display_buffer); break;
 
 default:
-for(int n = 14; n>=1; n--)                                            //Shift display for each new keypress except '.'
+for(int n = BL - 1; n>=1; n--)                                            //Shift display for each new keypress except '.'
 display_buffer[n] = display_buffer[n-1];
 display_buffer[0] = keypress;                                         //Add new keypress to display           
 I2C_Tx_8_byte_array(display_buffer); break;}}
@@ -134,43 +134,41 @@ return i;}
 
 
 /**************************************************************************************************************************************************/
-long Get_fpn_from_KBD(char digits[], int *twos_expnt, char *tens_expnt, long *twos_denominator , char *sign){   
+long Get_fpn_from_KBD(char digits[], int *twos_expnt, char *tens_expnt, long *twos_denominator , char *sign, int BL){   
 
 /*Defines real number in terms of significant, denominator and twos exponent
 For example 125 is converted to the form (125/128) * 2^7 = 0.97... * 2^7
 */
 
 long num_1=0, num_2 = 0;											//Operation is similar to that of FPN_KBD_to_display();
-  
- *sign = '+';													//but does not use the standard floating point library
+ *sign = '+';														//but does not use the standard floating point library
 
 *tens_expnt = 0;
 *twos_denominator = 1;
 *twos_expnt = 0;
 
-*tens_expnt =  Get_Float_num_string_from_KBD(digits); 
-if (digits[0]== '-'){for (int m = 0; m <= 13; m++)digits[m] =  digits[m + 1];
+*tens_expnt =  Get_Float_num_string_from_KBD(digits,  BL); 
+if (digits[0]== '-'){for (int m = 0; m < BL - 1; m++)digits[m] =  digits[m + 1];
 *sign = '-';}
 num_1 = atol(digits);
 num_2 = num_1;
 while(num_2){(*twos_expnt)++; *twos_denominator *=2; num_2 /= 2;}
 
-if (*sign == '-') num_1 = num_1 * (-1);
-return num_1;}                                      
+return num_1;} 														//Returns positive number plus sign                                     
 
 
 
 
 /*************************************************************************************************************************************************/
-char Get_Float_num_string_from_KBD(char display_buffer[]){           	//Operation is similar to that of FPN_string_KBD_to_display()
+char Get_Float_num_string_from_KBD(char display_buffer[], int BL){      //Operation is similar to that of FPN_string_KBD_to_display()
 char keypress;															//but does not use the standard floating point library
 char decimal_place_counter = 0;
 char keypress_E = 0;
 char tens_expt;
-char tens_exp_string[15];
+char tens_exp_string[5];
 
- for(int m = 0; m <=14; m++)tens_exp_string[m] = 0;
-for(int n = 0; n<=14; n++) display_buffer[n] = 0;                         //Clear buffer space
+ for(int m = 0; m < 5; m++) tens_exp_string[m] = 0;
+for(int n = 0; n < BL; n++) display_buffer[n] = 0;  
 
 while(1){                                                                 //Remain in loop until a valid character is received
 keypress = waitforkeypress_A();
@@ -192,13 +190,13 @@ if ((decimal_digit_A(keypress)) || (keypress == '.')                      //Chec
 {if(display_buffer[0] == '.')decimal_place_counter = 1;
 if((keypress == 'E') || (keypress == 'e'))keypress_E = 1;
   
-if(keypress == '\b'){for (int n = 0; n <= 11; n++)                        //Backspace keypress
+if(keypress == '\b'){for (int n = 0; n < BL-1; n++)                        //Backspace keypress
 display_buffer[n] = display_buffer[n + 1];
 I2C_Tx_8_byte_array(display_buffer);}
 
 else
 
-{{for(int n = 14; n>=1; n--)                                              //Shift display for each new keypress except '.'
+{{for(int n = BL-1; n>=1; n--)                                              //Shift display for each new keypress except '.'
 display_buffer[n] = display_buffer[n-1];
 display_buffer[0] = keypress;}                                            //Add new keypress           
 I2C_Tx_8_byte_array(display_buffer);}}                                    //Update display includes "cr_keypress"                                                 
@@ -215,20 +213,20 @@ if(tens_expt) (tens_expt) += 1;                                           //Valu
 
 reverse (display_buffer);
 
-{int m, n;
-for (m = 0; m <=14; m++)if(display_buffer[m] == 'e')break;                  //Find location of E
-if(display_buffer[m] == 'e'){
+
+for (int m = 0; m < BL; m++){if((display_buffer[m] != 'e')
+&& (display_buffer[m] != 'E'));											//Find location of E or e
+else {                						
   display_buffer[m] = 0;
- n = m+1; 
-for (int p = n; p <= 14; p++)
-{tens_exp_string[p - n] = display_buffer[++m];}}}
+for (int p = 0; p < 5; p++)
+tens_exp_string[p] = display_buffer[++m];}}
 
 tens_expt += atoi(tens_exp_string);                                       //Value of expnt adjusted to allow for value entered at KBD
 
 {int m,p;
-for (m = 0; m <=14; m++)if(display_buffer[m] == '.')break;                 //Remove decimal point
+for (m = 0; m < BL; m++)if(display_buffer[m] == '.')break;                 //Remove decimal point
 if(display_buffer[m] == '.')
-{for (int p = m; p <= 14; p++)
+{for (int p = m; p < BL-1; p++)
 display_buffer[p] = display_buffer[p+1];}}
 return tens_expt;}
 
@@ -246,7 +244,7 @@ char expt;
 char exp_string[15];
 
  for(int m = 0; m <=14; m++)exp_string[m] = 0;
-for(int n = 0; n<=14; n++) display_buffer[n] = 0;                         //Clear the buffer used to the string
+for(int n = 0; n<=14; n++) display_buffer[n] = 0;                         //REMOVE LINE	Clear the buffer used to the string
 
 while(1){                                                                 //Remain in loop until a valid character is received
 keypress = waitforkeypress_A();
