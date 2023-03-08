@@ -1,7 +1,7 @@
 
 long FPN_to_Significand(float, long *, char *);
 long Fraction_to_Binary_Signed(long, long);
-float Assemble_FPN(unsigned long, int);
+float Assemble_FPN(unsigned long, int, char);
 long unpack_FPN(float, int *, char*);
 void Print_long_as_binary(long);
 float Scientifc_num_to_FPN(float, char);
@@ -41,9 +41,8 @@ PCMSK2 = PCMSK2_backup;}
 
 
 
-float Scientific_number_from_KBD(char *sign){
+float Scientific_number_from_KBD(char * digits, char *sign, int BL){
 
-char digits[15];
 long Significand;
 long  twos_denominator;
 char   tens_expnt;
@@ -53,11 +52,11 @@ float FPN;
 char sign_local;
 
 
-Significand = Get_fpn_from_KBD(digits, &twos_expnt, &tens_expnt, &twos_denominator, &sign_local);              //Can be positive or negative
+Significand = Get_fpn_from_KBD(digits, &twos_expnt, &tens_expnt, &twos_denominator, &sign_local, BL);              //Can be positive or negative
 FPN_digits = Fraction_to_Binary_Signed(Significand, twos_denominator);                            //0.1011000011.... for example
-FPN = Assemble_FPN(FPN_digits, twos_expnt);
+FPN = Assemble_FPN(FPN_digits, twos_expnt, sign_local);
 FPN = Scientifc_num_to_FPN(FPN, tens_expnt);
-if (sign_local == '-'){*(long*)&FPN |= (unsigned long) 0x80000000; }
+//if (sign_local == '-'){*(long*)&FPN |= (unsigned long) 0x80000000; }
 *sign = sign_local;
 return FPN;}
 
@@ -85,7 +84,7 @@ for(int n = 0; n <= 15; n++){
 if ((2*(rem))/Den)(res_LB) |= (1 << (15-n));
 rem = (2*(rem))%Den;}
 Result += res_LB;											//Result is not affected by the signs of rem and Den
-if(sign == '-')Result = Result * (-1);		//Result = ~Result;							//Inverting the sign bit is equivalent to adding -1
+if(sign == '-')Result = Result * (-1);						//Inverting the sign bit is equivalent to adding -1
 return Result;}
 
 
@@ -102,10 +101,10 @@ float Scientifc_num_to_FPN(float FPN, char tens_expnt )
 
 long FPN_digits;
 int FPN_shift;
-char sign = '+';
+char sign;
 
 
-FPN_digits = unpack_FPN(FPN, &twos_expnt, &sign);				//Returns positive number with sign
+FPN_digits = unpack_FPN(FPN, &twos_expnt, &sign);						//Returns positive number with sign
 
 if (tens_expnt > 0 ){
 for(int m = 0; m < tens_expnt; m++){
@@ -133,14 +132,13 @@ Fraction_to_Binary_Signed((long)FPN_digits, 0x50000000 );
 for(int m = 0; m <= 3; m++){
 if (twos_expnt > -160){twos_expnt -= 1;}}}
 
-if(twos_expnt <= -126){
-FPN_shift = twos_expnt * (-1) - 125;
+if(twos_expnt <= -126){													//if(twos_expnt < -126){
+FPN_shift = twos_expnt * (-1) - 125;									//-126
 FPN_digits = (unsigned long)FPN_digits >> FPN_shift;
 twos_expnt = -126;}}
 
-FPN = Assemble_FPN((unsigned long)FPN_digits, twos_expnt);
-if (sign == '-')
-*(long*)&FPN = *(long*)&FPN | (unsigned long)0x80000000;				//Set the sign bit
+FPN = Assemble_FPN((unsigned long)FPN_digits, twos_expnt, sign);		//Returns signed number
+
 return FPN;}
 
 
@@ -169,16 +167,12 @@ I2C_Tx_float_display_control;}
 
 
 /************************************************************************/
-float Assemble_FPN(unsigned long FPN_digits, int twos_expnt)
-{char sign = '+';
-
-if (FPN_digits & (unsigned long)0x80000000)
-{FPN_digits = (long)FPN_digits * (-1); sign = '-';}								//If negative convert to positive and set sign.
-
-FPN_digits = FPN_digits >> 6;													//(Sign bit (bit 31) is zero. MSB (bit 30) is always 1. FPN has 31-6 = 25 bits.
+float Assemble_FPN(unsigned long FPN_digits, int twos_expnt, char sign)			//Requires positive number plus sign
+{
+FPN_digits = FPN_digits >> 6;													//(Sign bit (bit 31) is zero. MSB (bit 30) is 1 for all but very small numbers. FPN has 31-6 = 25 bits.
 FPN_digits += 1;																//Round LSB. 						
 FPN_digits = FPN_digits >> 1;													//Remove rounded bit. FPN now has 25-1 = 24 bits
-twos_expnt -= 1;																//Number converted from 0.11010101 (used for arithmetic) to 1.1010101 (Standard FPN format)
+if (twos_expnt != -127)twos_expnt -= 1;											//Number converted from 0.11010101 (used for arithmetic) to 1.1010101 (Standard FPN format)
 twos_expnt += 127;										
 FPN_digits = FPN_digits  &  (~((unsigned long)0x80000000 >> 8));				//Clear bit 23 (which is always 1)
 FPN_digits = FPN_digits | ((long)twos_expnt << 23);								//Exponent occupies bits 23 to 30 (bit 31 reserved for sign)
@@ -196,12 +190,16 @@ if( FPN_as_long & (((unsigned long)0x80000000)))
 { FPN_as_long = FPN_as_long & (~((unsigned long)0x80000000));					//If negative remove sign bit
 *sign = '-';}else *sign = '+';
 
-*twos_expnt = (FPN_as_long >> 23) - 127;
-FPN_digits = (FPN_as_long & 0x7FFFFF);											//Isolate the binary points 23 bits
-FPN_digits |= ((unsigned long)0x80000000 >> 8);									//Add in the missing 1 to make 24
-FPN_digits = FPN_digits << 7;													//Fill entire long number space, BUT leaving sign bit empty
-*twos_expnt += 1;																//Convert from 1.1010101 to 0.11010101
+*twos_expnt = (FPN_as_long >> 23);												//Expponent occupies bits 0 to 15
+FPN_digits = (FPN_as_long & 0x7FFFFF);											//Isolate the binary points 23 bits (bits zero to 22)
 
+if(!(*twos_expnt) && !(FPN_digits &				
+ ((unsigned long)0x80000000 >> 9)))*twos_expnt -= 127;							//Bit 22 (MSB) is zero: Unsaved one not required. Do not increment exponent
+ else																			//Cross over point s at 58.757e-40
+{*twos_expnt -= 126;															//Increment exponent and add unsaved one. 
+FPN_digits |= ((unsigned long)0x80000000 >> 8);	}
+
+FPN_digits = FPN_digits << 7;
 return FPN_digits;}
 
 
