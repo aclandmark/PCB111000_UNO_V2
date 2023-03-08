@@ -1,6 +1,6 @@
 /*******************************************/
 
-#include "9D_header.h"
+#include "9B_header.h"
 
 #define Buff_Length  20
 
@@ -81,7 +81,7 @@ if(FPN >= 1.0){FPN /= 10.0;tens_expnt += 1; print_expnt = tens_expnt;}
 if (sign == '-')  *(long*)& FPN |= (unsigned long) 0x80000000;
 FPN_as_long = unpack_FPN(FPN, &twos_expnt, &sign);
 
-Serial.write("ABC");Serial.print (twos_expnt);Serial.write(" \t ");
+//Serial.write("ABC");Serial.print (twos_expnt);Serial.write(" \t ");
 
 FPN_as_long = FPN_as_long >> 4 ; 
 Denominator = 0x8000000 << (-twos_expnt);
