@@ -45,7 +45,6 @@ SW_reset;}
 /**********************************************************************************************************************/
 float Scientific_number_from_KBD_Local(char * digits, char * sign, int BL){
 
-//char digits[15];
 long Significand;
 long  twos_denominator;
 char   tens_expnt;
