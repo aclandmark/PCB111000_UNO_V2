@@ -217,7 +217,7 @@ long int_part_max;
 int Num_digits;
 float round_denom;
 float FPN_bkp;
-char * next_char_ptr;
+//char * next_char_ptr;
 
  Num_digits = pre_dp + post_dp; 
 
@@ -244,6 +244,8 @@ while (FPN >= 1.0){FPN /= 10.0; tens_expnt += 1;}
 round_denom = 1.0;
 for(int m = 0; m <= Num_digits; m++)round_denom *= 10.0; 
 FPN = FPN + (5.0/round_denom);
+
+if(FPN >= 1.0){FPN /= 10.0;tens_expnt += 1; print_expnt = tens_expnt;}
 
 /*****************************************Obtain the number 12345678 in binary form***************************************/
 if (sign == '-')  *(long*)& FPN |= (unsigned long) 0x80000000;
