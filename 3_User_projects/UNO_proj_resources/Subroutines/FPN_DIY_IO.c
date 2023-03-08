@@ -56,7 +56,6 @@ Significand = Get_fpn_from_KBD(digits, &twos_expnt, &tens_expnt, &twos_denominat
 FPN_digits = Fraction_to_Binary_Signed(Significand, twos_denominator);                            //0.1011000011.... for example
 FPN = Assemble_FPN(FPN_digits, twos_expnt, sign_local);
 FPN = Scientifc_num_to_FPN(FPN, tens_expnt);
-//if (sign_local == '-'){*(long*)&FPN |= (unsigned long) 0x80000000; }
 *sign = sign_local;
 return FPN;}
 
