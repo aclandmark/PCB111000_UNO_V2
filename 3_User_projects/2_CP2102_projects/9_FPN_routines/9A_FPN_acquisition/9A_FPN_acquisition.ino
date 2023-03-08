@@ -22,7 +22,7 @@ Serial.write("\r\nEnter scientific number \
 & terminate with Return key.\r\n");
 
 while(1){
-  FPN = Scientific_number_from_KBD(digits, &sign, Buff_Length );  
+  FPN = Scientific_number_from_KBD_Local(digits, &sign, Buff_Length );  
   Sc_Num_to_PC_A(FPN, 1, 6, '\t');
   Print_long_as_binary(*(long*)&FPN);
  Serial.write("  \t");
@@ -31,12 +31,6 @@ RHS_of_binary_point = unpack_FPN(FPN, &twos_expnt, &sign);
 Serial.print(twos_expnt); Serial.write('\t');
 Print_RHS_of_binary_point(RHS_of_binary_point);
 FPN = Assemble_FPN((unsigned long) RHS_of_binary_point, twos_expnt, sign);
-
-/*
-Serial.write("\r\n");
-Print_long_as_binary(*(long*)&FPN);
-Serial.write("\r\n");
-*/
 
 Serial.write("  \t  ");
 Sc_Num_to_PC_A(FPN, 1, 6, '\r');
@@ -65,7 +59,6 @@ Significand = Get_fpn_from_KBD(digits, &twos_expnt, &tens_expnt, &twos_denominat
 FPN_digits = Fraction_to_Binary_Signed(Significand, twos_denominator);                            //0.1011000011.... for example
 FPN = Assemble_FPN(FPN_digits, twos_expnt, sign_local);
 FPN = Scientifc_num_to_FPN(FPN, tens_expnt);
-//if (sign_local == '-'){*(long*)&FPN |= (unsigned long) 0x80000000; }
 *sign = sign_local;
 return FPN;}
 
