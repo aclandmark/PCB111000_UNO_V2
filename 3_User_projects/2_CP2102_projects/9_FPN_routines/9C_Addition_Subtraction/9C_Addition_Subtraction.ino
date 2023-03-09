@@ -24,8 +24,9 @@ while(1){
 Sc_Num_to_PC_A(FPN_2, 1, 6, ' '); Serial.write("= "); 
 
 Result = Foating_point_addition(FPN_1, FPN_2);
-Serial.write('\t');Sc_Num_to_PC_A(Result,2,6, '\r');
-//I2C_FPN_to_display(Result);
+FPN_to_String(Result, 1, 5, '\r', num_as_string);
+Serial.write(num_as_string);
+I2C_FPN_to_display(Result);
 FPN_1 = Result;}
 
 SW_reset;}
