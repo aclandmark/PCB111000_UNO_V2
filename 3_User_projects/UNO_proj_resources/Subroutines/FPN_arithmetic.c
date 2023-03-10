@@ -51,7 +51,7 @@ sign_3 = '-';break;}
 if (FPN_digits_3 & (unsigned long) 0x80000000)
 {FPN_digits_3 = (unsigned long)FPN_digits_3  >> 1; twos_expnt_3 += 1;}}
 
-Result_as_long = Assemble_FPN((unsigned long) FPN_digits_3, twos_expnt_3);
+Result_as_long = Assemble_FPN((unsigned long) FPN_digits_3, twos_expnt_3, sign_3);
 if (sign_3 == '-')
 *(long*)&Result_as_long = *(long*)&Result_as_long | (unsigned long)0x80000000; 
 return Result_as_long;}
@@ -100,6 +100,7 @@ int twos_expnt_1, twos_expnt_2, twos_expnt_3;
 long FPN_digits_1, FPN_digits_2, FPN_digits_3;
 char sign_1, sign_2, sign_3 = '+';
 float Result_as_long;
+int FPN_shift;
 
 sign_1 = '+';
 sign_2 = '+';
@@ -110,7 +111,24 @@ FPN_digits_2 = unpack_FPN(FPN_2 , &twos_expnt_2, &sign_2);
 while (FPN_digits_1 >= FPN_digits_2){FPN_digits_1 >>= 1; twos_expnt_1 += 1;}
 FPN_digits_3 = Fraction_to_Binary_Signed(FPN_digits_1, FPN_digits_2);
 
-Result_as_long = Assemble_FPN((unsigned long) FPN_digits_3, twos_expnt_1 - twos_expnt_2);
+
+/*************/
+if (sign_1 == sign_2)sign_3 = '+'; else sign_3 = '-';
+twos_expnt_3 = twos_expnt_1 - twos_expnt_2;
+
+
+if(twos_expnt_3 >= 127){Serial.write("Infinity");SW_reset;}
+
+
+if(twos_expnt_3 <= -126){													//if(twos_expnt < -126){
+FPN_shift = twos_expnt_3 * (-1) - 125;									//-126
+FPN_digits_3 = (unsigned long)FPN_digits_3 >> FPN_shift;
+twos_expnt_3 = -126;}
+/***********/
+
+Result_as_long = Assemble_FPN((unsigned long) FPN_digits_3, twos_expnt_3,  sign_3);
+
+
 if (sign_1 == sign_2);
 else
 *(long*)&Result_as_long = *(long*)&Result_as_long | (unsigned long)0x80000000; 
