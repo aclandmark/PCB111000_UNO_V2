@@ -14,12 +14,10 @@ char num_as_string[Buff_Length + 2];
 
 setup_HW_Arduino_IO;
 
-Serial.write("\r\nEnter scientific numbers \
+/*Serial.write("\r\nEnter scientific numbers \
 & terminate with Return key.\r\n");
-
 FPN_1 = Scientific_number_from_KBD(num_as_string, &sign, Buff_Length);
 Sc_Num_to_PC_A(FPN_1, 1, 6, ' '); 
-
 while(1){
 Serial.write(" (x/?)\t");
 keypress = waitforkeypress_A();
@@ -32,6 +30,10 @@ if (keypress == 'x')Result = FPN_mult(FPN_1, FPN_2);
 Serial.write('\t');Sc_Num_to_PC_A(Result,2,6, '\r');
 //I2C_FPN_to_display(Result);
 FPN_1 = Result;}
+*/
+
+
+
 
 SW_reset;}
 
