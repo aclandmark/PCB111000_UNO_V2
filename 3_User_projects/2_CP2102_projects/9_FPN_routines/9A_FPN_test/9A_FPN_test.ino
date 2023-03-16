@@ -29,6 +29,8 @@ Serial.write("\r\nEnter scientific number \
 & terminate with Return key.\t");
 
   FPN = Scientific_number_from_KBD(digits, &sign, Buff_Length );  
+Sc_Num_to_PC_A(FPN, 2, 4, '\r');
+  
   while(1){
   
   FPN_to_String(FPN, 2, 4, '\r', num_as_string);
