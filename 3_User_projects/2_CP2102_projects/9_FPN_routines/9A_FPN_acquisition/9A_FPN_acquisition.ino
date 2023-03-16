@@ -16,25 +16,30 @@ int twos_expnt;
 long RHS_of_binary_point;
 char digits[Buff_Length + 2];
 
+float dividend;
+
+
 setup_HW_Arduino_IO;
 
+Serial.write("\r\nEnter divisor \
+& terminate with Return key.\t");
+dividend = Scientific_number_from_KBD(digits, &sign, Buff_Length );
+Sc_Num_to_PC_A(dividend, 2, 4, '\r');
 Serial.write("\r\nEnter scientific number \
-& terminate with Return key.\r\n");
+& terminate with Return key.\t");
 
-while(1){
-  FPN = Scientific_number_from_KBD_Local(digits, &sign, Buff_Length );  
-  Sc_Num_to_PC_A(FPN, 1, 6, '\t');
-  Print_long_as_binary(*(long*)&FPN);
- Serial.write("  \t");
+  FPN = Scientific_number_from_KBD(digits, &sign, Buff_Length );  
+Sc_Num_to_PC_A(FPN, 2, 4, '\r');
+  
+  while(1){
+  
+  FPN_to_String(FPN, 2, 4, '\r', num_as_string);
+  Serial.write(num_as_string);
+ 
+//FPN = FPN/dividend;
 
-RHS_of_binary_point = unpack_FPN(FPN, &twos_expnt, &sign);
-Serial.print(twos_expnt); Serial.write('\t');
-Print_RHS_of_binary_point(RHS_of_binary_point);
-FPN = Assemble_FPN((unsigned long) RHS_of_binary_point, twos_expnt, sign);
-
-Serial.write("  \t  ");
-Sc_Num_to_PC_A(FPN, 1, 6, '\r');
-I2C_FPN_to_display(FPN);
+FPN = FPN_div (FPN, dividend);
+waitforkeypress_A();
 }
 SW_reset;}
 
