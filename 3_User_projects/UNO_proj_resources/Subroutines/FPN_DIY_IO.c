@@ -95,9 +95,8 @@ return Result;}
 */
 
 float Scientifc_num_to_FPN(float FPN, char tens_expnt )
-{int twos_expnt, twos_expnt_old;
-
-
+{
+int twos_expnt, twos_expnt_old;
 long FPN_digits;
 int FPN_shift;
 char sign;
@@ -129,12 +128,7 @@ FPN_digits =
 Fraction_to_Binary_Signed((long)FPN_digits, 0x50000000 );
 
 for(int m = 0; m <= 3; m++){
-if (twos_expnt > -160){twos_expnt -= 1;}}}
-
-if(twos_expnt <= -126){													//if(twos_expnt < -126){
-FPN_shift = twos_expnt * (-1) - 125;									//-126
-FPN_digits = (unsigned long)FPN_digits >> FPN_shift;
-twos_expnt = -126;}}
+if (twos_expnt > -160)twos_expnt -= 1;}}}
 
 FPN = Assemble_FPN((unsigned long)FPN_digits, twos_expnt, sign);		//Returns signed number
 
@@ -167,14 +161,29 @@ I2C_Tx_float_display_control;}
 
 /************************************************************************/
 float Assemble_FPN(unsigned long FPN_digits, int twos_expnt, char sign)			//Requires positive number plus sign
-{
-FPN_digits = FPN_digits >> 6;													//(Sign bit (bit 31) is zero. MSB (bit 30) is 1 for all but very small numbers. FPN has 31-6 = 25 bits.
+{int shift = 0;
+int twos_expnt_BKP;
+
+twos_expnt_BKP = twos_expnt;
+
+if(twos_expnt_BKP >= -125)
+{FPN_digits = FPN_digits >> 6;													//(Sign bit (bit 31) is zero. MSB (bit 30) is 1 for all but very small numbers. FPN has 31-6 = 25 bits.
 FPN_digits += 1;																//Round LSB. 						
 FPN_digits = FPN_digits >> 1;													//Remove rounded bit. FPN now has 25-1 = 24 bits
-if (twos_expnt != -127)twos_expnt -= 1;											//Number converted from 0.11010101 (used for arithmetic) to 1.1010101 (Standard FPN format)
-twos_expnt += 127;										
+twos_expnt += 126;										
 FPN_digits = FPN_digits  &  (~((unsigned long)0x80000000 >> 8));				//Clear bit 23 (which is always 1)
-FPN_digits = FPN_digits | ((long)twos_expnt << 23);								//Exponent occupies bits 23 to 30 (bit 31 reserved for sign)
+FPN_digits = FPN_digits | ((long)twos_expnt << 23);}							//Exponent occupies bits 23 to 30 (bit 31 reserved for sign)
+
+if(twos_expnt_BKP <= -126){
+shift = -(118 + twos_expnt);
+
+if (twos_expnt_BKP >= -146)
+{FPN_digits = FPN_digits >> (shift -1);											//(Sign bit (bit 31) is zero. MSB (bit 30) is 1 for all but very small numbers. FPN has 31-6 = 25 bits.
+FPN_digits += 1;																//Round LSB. 						
+FPN_digits = FPN_digits >> 1;}													//Remove rounded bit. FPN now has 25-1 = 24 bits
+else FPN_digits = FPN_digits >> shift;
+twos_expnt = 0;}
+
 if (sign == '-')FPN_digits = FPN_digits | (unsigned long)0x80000000;			//Rienstate sign bit
 return *(float*)&FPN_digits;}
 
@@ -182,24 +191,28 @@ return *(float*)&FPN_digits;}
 
 /*********************************************************************/
 long unpack_FPN(float FPN, int *twos_expnt, char * sign)
-{long FPN_digits, FPN_as_long;
+{long FPN_digits;
+int shift;
 
-FPN_as_long = (*(long*)&FPN);
-if( FPN_as_long & (((unsigned long)0x80000000)))
-{ FPN_as_long = FPN_as_long & (~((unsigned long)0x80000000));					//If negative remove sign bit
+FPN_digits = (*(long*)&FPN);
+if( FPN_digits & (((unsigned long)0x80000000)))
+{ FPN_digits = FPN_digits & (~((unsigned long)0x80000000));					//If negative remove sign bit
 *sign = '-';}else *sign = '+';
 
-*twos_expnt = (FPN_as_long >> 23);												//Expponent occupies bits 0 to 15
-FPN_digits = (FPN_as_long & 0x7FFFFF);											//Isolate the binary points 23 bits (bits zero to 22)
+*twos_expnt = (FPN_digits >> 23) - 127;												//Expponent occupies bits 0 to 15
 
-if(!(*twos_expnt) && !(FPN_digits &				
- ((unsigned long)0x80000000 >> 9)))*twos_expnt -= 127;							//Bit 22 (MSB) is zero: Unsaved one not required. Do not increment exponent
- else																			//Cross over point s at 58.757e-40
-{*twos_expnt -= 126;															//Increment exponent and add unsaved one. 
-FPN_digits |= ((unsigned long)0x80000000 >> 8);	}
-
+if(*twos_expnt >=-126){
+FPN_digits = (FPN_digits & 0x7FFFFF);											//Isolate the binary points 23 bits (bits zero to 22)
+FPN_digits |= ((unsigned long)0x80000000 >> 8);	
+*twos_expnt += 1;
 FPN_digits = FPN_digits << 7;
 return FPN_digits;}
+
+if(*twos_expnt == -127){
+shift = 0;
+while (!(FPN_digits & 0x40000000)){FPN_digits <<= 1; shift += 1;}
+*twos_expnt = -(118 + shift);
+return FPN_digits;}}
 
 
 
