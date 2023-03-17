@@ -174,7 +174,8 @@ while(1){                                                                 //Rema
 keypress = waitforkeypress_A();
 if ((!(decimal_digit_A(keypress)))
 && (keypress != '-')
-&& (keypress != '.'))continue;                                            //Ignore keypress if it is not OK
+//&& (keypress != '.')
+)continue;                                            //Ignore keypress if it is not OK
 display_buffer[0] = keypress;
 break;}
 
