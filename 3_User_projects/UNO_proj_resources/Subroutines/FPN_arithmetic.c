@@ -99,7 +99,7 @@ float FPN_div (float FPN_1, float FPN_2){
 int twos_expnt_1, twos_expnt_2, twos_expnt_3;
 long FPN_digits_1, FPN_digits_2, FPN_digits_3;
 char sign_1, sign_2, sign_3 = '+';
-float Result_as_long;
+float Result;
 int FPN_shift;
 
 sign_1 = '+';
@@ -108,13 +108,6 @@ sign_2 = '+';
 FPN_digits_1 = unpack_FPN(FPN_1 , &twos_expnt_1, &sign_1);
 FPN_digits_2 = unpack_FPN(FPN_2 , &twos_expnt_2, &sign_2);
 
-/**/
-Serial.write("\r\nA");Print_long_as_binary(FPN_digits_1);Serial.write("\r\n");
-if(twos_expnt_1 <= -126){while (!(FPN_digits_1 & 0x40000000)) {FPN_digits_1 <<= 1; twos_expnt_1 -= 1;}}
-/**/
-
-
-
 while (FPN_digits_1 >= FPN_digits_2){FPN_digits_1 >>= 1; twos_expnt_1 += 1;}
 FPN_digits_3 = Fraction_to_Binary_Signed(FPN_digits_1, FPN_digits_2);
 
@@ -122,23 +115,20 @@ FPN_digits_3 = Fraction_to_Binary_Signed(FPN_digits_1, FPN_digits_2);
 /*************/
 if (sign_1 == sign_2)sign_3 = '+'; else sign_3 = '-';
 twos_expnt_3 = twos_expnt_1 - twos_expnt_2;
+//Serial.write("A");Serial.print(twos_expnt_3);Serial.write("\t");
 
 if(twos_expnt_3 >= 127){Serial.write("Infinity");SW_reset;}
 
-if(twos_expnt_3 <= -126){ Serial.print(twos_expnt_3);	
-FPN_shift = twos_expnt_3 * (-1) - 125;	
-FPN_digits_3 = (unsigned long)FPN_digits_3 >> FPN_shift;
-twos_expnt_3 = -126;}
 /***********/
 
-Result_as_long = Assemble_FPN((unsigned long) FPN_digits_3, twos_expnt_3,  sign_3);
+Result = Assemble_FPN((unsigned long) FPN_digits_3, twos_expnt_3,  sign_3);
+if((!(*(long*)&Result)) || (*(long*)&Result == 0x80000000)) { Serial.write("Zero"); SW_reset;}
 
-Serial.write("\r\nB");Print_long_as_binary(*(long*)&Result_as_long);Serial.write("\r\n");
+//if (sign_3 == '+');
+//else
+//*(long*)&Result_as_long = *(long*)&Result_as_long | (unsigned long)0x80000000; 
 
-if (sign_3 == '+');
-else
-*(long*)&Result_as_long = *(long*)&Result_as_long | (unsigned long)0x80000000; 
-return Result_as_long;}
+return Result;}
 
 
 
