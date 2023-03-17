@@ -21,25 +21,21 @@ float dividend;
 
 setup_HW_Arduino_IO;
 
-Serial.write("\r\nEnter divisor \
-& terminate with Return key.\t");
-dividend = Scientific_number_from_KBD(digits, &sign, Buff_Length );
-Sc_Num_to_PC_A(dividend, 2, 4, '\r');
 Serial.write("\r\nEnter scientific number \
-& terminate with Return key.\t");
+& terminate with Return key.\r\n");
 
-  FPN = Scientific_number_from_KBD(digits, &sign, Buff_Length );  
-Sc_Num_to_PC_A(FPN, 2, 4, '\r');
-  
-  while(1){
-  
-  FPN_to_String(FPN, 2, 4, '\r', num_as_string);
-  Serial.write(num_as_string);
- 
-//FPN = FPN/dividend;
+while(1){
+  FPN = Scientific_number_from_KBD(digits, &sign, Buff_Length);
+  RHS_of_binary_point = unpack_FPN(FPN, &twos_expnt, &sign);
 
-FPN = FPN_div (FPN, dividend);
-waitforkeypress_A();
+Serial.print(twos_expnt); Serial.write('\t');
+Print_RHS_of_binary_point(RHS_of_binary_point);
+
+Serial.write("  \t  ");Print_long_as_binary(*(long*)&FPN);
+
+Serial.write("\t\t");
+Sc_Num_to_PC_A(FPN, 1, 6, '\r');
+I2C_FPN_to_display(FPN);
 }
 SW_reset;}
 
