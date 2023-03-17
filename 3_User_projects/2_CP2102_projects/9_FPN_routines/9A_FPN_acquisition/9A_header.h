@@ -7,7 +7,6 @@
 char watch_dog_reset = 0;
 char MCUSR_copy;
 char User_response;
-char num_as_string[12];                           //Required by pcb_A calibration routine to print out cal results
 
 
 
