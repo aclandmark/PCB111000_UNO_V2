@@ -17,13 +17,25 @@ setup_HW_Arduino_IO;
 Serial.write("\r\nEnter scientific numbers \
 & terminate with Return key.\r\n");
 FPN_1 = Scientific_number_from_KBD(num_as_string, &sign, Buff_Length);
-Sc_Num_to_PC_A(FPN_1, 1, 6, ' '); 
+//Sc_Num_to_PC_A(FPN_1, 1, 6, ' '); 
+FPN_to_String(FPN_1, 1, 6, '\t', num_as_string);   // /r
+Serial.write(num_as_string);
+
+
+
 while(1){
 Serial.write(" (x/?)\t");
 keypress = waitforkeypress_A();
 Serial.write(keypress);
  FPN_2 = Scientific_number_from_KBD(num_as_string, &sign, Buff_Length);
-Sc_Num_to_PC_A(FPN_2, 1, 6, ' '); Serial.write("= "); 
+//Sc_Num_to_PC_A(FPN_2, 1, 6, ' '); 
+FPN_to_String(FPN_2, 1, 6, ' ', num_as_string);
+Serial.write(num_as_string);
+
+Serial.write("= "); 
+
+
+
 if (keypress == '/')Result = FPN_div(FPN_1, FPN_2);
 if (keypress == 'x')Result = FPN_mult(FPN_1, FPN_2);
 
