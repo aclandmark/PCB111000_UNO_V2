@@ -54,10 +54,12 @@ char sign_local;
 
 Significand = Get_fpn_from_KBD(digits, &twos_expnt, &tens_expnt, &twos_denominator, &sign_local, BL);              //Can be positive or negative
 FPN_digits = Fraction_to_Binary_Signed(Significand, twos_denominator);                            //0.1011000011.... for example
-FPN = Assemble_FPN(FPN_digits, twos_expnt, sign_local);
+if (!(FPN_digits)) return 0;
+else
+{FPN = Assemble_FPN(FPN_digits, twos_expnt, sign_local);
 FPN = Scientifc_num_to_FPN(FPN, tens_expnt);
 *sign = sign_local;
-return FPN;}
+return FPN;}}
 
 
 
@@ -209,10 +211,12 @@ FPN_digits = FPN_digits << 7;
 return FPN_digits;}
 
 if(*twos_expnt == -127){
-shift = 0;
+if(!(FPN_digits))return 0;
+else
+{shift = 0;
 while (!(FPN_digits & 0x40000000)){FPN_digits <<= 1; shift += 1;}
 *twos_expnt = -(118 + shift);
-return FPN_digits;}}
+return FPN_digits;}}}
 
 
 
