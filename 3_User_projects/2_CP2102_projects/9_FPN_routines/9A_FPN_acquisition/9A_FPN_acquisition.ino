@@ -21,19 +21,29 @@ float dividend;
 
 setup_HW_Arduino_IO;
 
-Serial.write("\r\nEnter scientific number \
-& terminate with Return key.\r\n");
+
+if(watch_dog_reset == 1)watch_dog_reset = 0;
+else 
+{Serial.write("\r\nEnter scientific number \
+& terminate with Return key.\r\n\r\n");
+Serial.write("Exponent and long number used for arithmetic\tResulting \
+floating point representation\t\tNumber restored\r\n");}
+
 
 while(1){
   FPN = Scientific_number_from_KBD(digits, &sign, Buff_Length);
   RHS_of_binary_point = unpack_FPN(FPN, &twos_expnt, &sign);
 
-Serial.print(twos_expnt); Serial.write('\t');
+Serial.print(twos_expnt); Serial.write("\t");
 Print_RHS_of_binary_point(RHS_of_binary_point);
 
-Serial.write("  \t  ");Print_long_as_binary(*(long*)&FPN);
+Serial.write("  \t ");Print_long_as_binary(*(long*)&FPN);
 
-Serial.write("\t\t");
+Serial.write("  \t");
+
+
+FPN = Assemble_FPN(RHS_of_binary_point, twos_expnt, sign);
+
 Sc_Num_to_PC_A(FPN, 1, 6, '\r');
 I2C_FPN_to_display(FPN);
 }
