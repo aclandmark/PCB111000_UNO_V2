@@ -13,9 +13,11 @@ char print_string[Buff_Length + 2];
 
 setup_HW_Arduino_IO;
 
-Serial.write("\r\nEnter scientific number \
+if(watch_dog_reset == 1)watch_dog_reset = 0;
+else
+{Serial.write("\r\nEnter scientific number \
 & terminate with Return key.\r\n\
-Then key in num digits before/after the decimal point.\r\n");
+Then key in num digits before/after the decimal point.\r\n");}
 
 while(1){
 
@@ -27,7 +29,7 @@ Serial.write(" \t ");
 Digits_before_dp = waitforkeypress_A() - '0'; 
 Digits_after_dp = waitforkeypress_A() - '0' ; 
 
-FPN_to_String_Local(FPN, Digits_before_dp, Digits_after_dp, '\r', print_string);
+FPN_to_String(FPN, Digits_before_dp, Digits_after_dp, '\r', print_string);
 
 Serial.write (print_string);}
 SW_reset;}
