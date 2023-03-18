@@ -23,7 +23,7 @@ while(1){
  FPN_2 = Scientific_number_from_KBD(num_as_string, &sign, Buff_Length);
 Sc_Num_to_PC_A(FPN_2, 1, 6, ' '); Serial.write("= "); 
 
-Result = Foating_point_addition(FPN_1, FPN_2);
+Result = FPN_add(FPN_1, FPN_2);
 FPN_to_String(Result, 1, 5, '\r', num_as_string);
 Serial.write(num_as_string);
 I2C_FPN_to_display(Result);
@@ -34,7 +34,7 @@ SW_reset;}
 
 
 /********************************************************************************************************************************/
-float Foating_point_addition (float FPN_1, float FPN_2){
+float Foating_point_addition_local (float FPN_1, float FPN_2){
 
 int twos_expnt_1, twos_expnt_2, twos_expnt_3;
 long FPN_part_1, FPN_part_2, FPN_part_3;
