@@ -9,7 +9,7 @@ float FPN_add (float FPN_1, float FPN_2){
 int twos_expnt_1, twos_expnt_2, twos_expnt_3;
 long FPN_digits_1, FPN_digits_2, FPN_digits_3;
 char sign_1, sign_2, sign_3 = '+';
-float Result_as_long;
+float Result;
 
 sign_1 = '+';
 sign_2 = '+';
@@ -32,7 +32,7 @@ FPN_digits_3 = FPN_digits_1 + FPN_digits_2;
 
 if (sign_1 != sign_2)
 {
-    if (!(FPN_digits_3))return 0;
+    if (!(FPN_digits_3)){*(long*)(&Result) = 0x0; return Result;}
   
  if (FPN_digits_3 & (unsigned long) 0x80000000){FPN_digits_3 *= -1; sign_3 = '-';}
 while (!(FPN_digits_3 & (0x40000000))){FPN_digits_3 = FPN_digits_3 << 1; twos_expnt_3 -= 1;}}
@@ -51,10 +51,10 @@ sign_3 = '-';break;}
 if (FPN_digits_3 & (unsigned long) 0x80000000)
 {FPN_digits_3 = (unsigned long)FPN_digits_3  >> 1; twos_expnt_3 += 1;}}
 
-Result_as_long = Assemble_FPN((unsigned long) FPN_digits_3, twos_expnt_3, sign_3);
+Result = Assemble_FPN((unsigned long) FPN_digits_3, twos_expnt_3, sign_3);
 if (sign_3 == '-')
-*(long*)&Result_as_long = *(long*)&Result_as_long | (unsigned long)0x80000000; 
-return Result_as_long;}
+*(long*)&Result = *(long*)&Result | (unsigned long)0x80000000; 
+return Result;}
 
 
 
