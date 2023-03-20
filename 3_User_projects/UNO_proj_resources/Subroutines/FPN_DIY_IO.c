@@ -234,9 +234,13 @@ long int_part_max;
 int Num_digits;
 float round_denom;
 float FPN_bkp;
-//char * next_char_ptr;
 
- Num_digits = pre_dp + post_dp; 
+
+if ((*(long*)(&FPN) == 0x80000000) || (*(long*)(&FPN) == 0))
+{print_string[0] = '0'; print_string[1] = '.';print_string[2] = '0';
+print_string[3] ='\r'; print_string[4] ='\n';print_string[5] = '\0';return;}
+
+Num_digits = pre_dp + post_dp; 
 
 if (*(long*)&FPN & (unsigned long) 0x80000000){(*(long*)&FPN &= 0x7FFFFFFF);sign = '-';} else sign = '+';
 tens_expnt = 0;
