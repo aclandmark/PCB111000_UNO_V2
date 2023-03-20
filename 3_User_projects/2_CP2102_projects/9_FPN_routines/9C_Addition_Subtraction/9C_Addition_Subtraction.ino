@@ -23,7 +23,7 @@ while(1){
  FPN_2 = Scientific_number_from_KBD(num_as_string, &sign, Buff_Length);
 Sc_Num_to_PC_A(FPN_2, 1, 6, ' '); Serial.write("= "); 
 
-Result = FPN_add_local(FPN_1, FPN_2);
+Result = FPN_add(FPN_1, FPN_2);
 FPN_to_String(Result, 1, 5, '\r', num_as_string);
 Serial.write(num_as_string);
 
