@@ -17,17 +17,20 @@ setup_HW_Arduino_IO;
 Serial.write("\r\nEnter scientific numbers \
 & terminate with Return key.\r\n");
 FPN_1 = Scientific_number_from_KBD(num_as_string, &sign, Buff_Length);
-//Sc_Num_to_PC_A(FPN_1, 1, 6, ' '); 
+//Sc_Num_to_PC_A(FPN_1, 1, 6, ' ');
+Check_num_for_to_big_or_small(FPN_1); 
 FPN_to_String(FPN_1, 1, 6, '\t', num_as_string);   // /r
 Serial.write(num_as_string);
 
 
 
-while(1){
+while(1){Check_num_for_to_big_or_small(FPN_1);
 Serial.write(" (x/?)\t");
 keypress = waitforkeypress_A();
 Serial.write(keypress);
  FPN_2 = Scientific_number_from_KBD(num_as_string, &sign, Buff_Length);
+
+  
 //Sc_Num_to_PC_A(FPN_2, 1, 6, ' '); 
 FPN_to_String(FPN_2, 1, 6, ' ', num_as_string);
 Serial.write(num_as_string);
@@ -36,8 +39,8 @@ Serial.write("= ");
 
 
 
-if (keypress == '/')Result = FPN_div(FPN_1, FPN_2);
-if (keypress == 'x')Result = FPN_mult(FPN_1, FPN_2);
+if (keypress == '/')Result = FPN_div_Local(FPN_1, FPN_2);
+if (keypress == 'x')Result = FPN_mult_Local(FPN_1, FPN_2);
 
 Serial.write('\t');//Sc_Num_to_PC_A(Result,2,6, '\r');
 
@@ -57,7 +60,7 @@ SW_reset;}
 
 
 /********************************************************************************************************************************/
-float Foating_point_division_Local (float FPN_1, float FPN_2){
+float FPN_div_Local (float FPN_1, float FPN_2){
 
 int twos_expnt_1, twos_expnt_2, twos_expnt_3;
 long FPN_part_1, FPN_part_2, FPN_part_3;
@@ -89,11 +92,11 @@ else
 return Result_as_long;}
 /********************************************************************************************************************************/
 
-float Foating_point_multiplication_Local(float FPN_1, float FPN_2){
+float FPN_mult_Local(float FPN_1, float FPN_2){
 float Reciprocal;
 float Result;
-  Reciprocal = Foating_point_division_Local(1.0, FPN_2);
- Result = Foating_point_division_Local(FPN_1, Reciprocal);
+  Reciprocal = FPN_div_Local(1.0, FPN_2);
+ Result = FPN_div_Local(FPN_1, Reciprocal);
 return Result;}
 
 
