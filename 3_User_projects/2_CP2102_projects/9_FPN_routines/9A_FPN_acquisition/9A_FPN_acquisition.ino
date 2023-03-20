@@ -33,7 +33,7 @@ while(1){
   FPN = Scientific_number_from_KBD(digits, &sign, Buff_Length);
   RHS_of_binary_point = unpack_FPN(FPN, &twos_expnt, &sign);
 
-Serial.print(twos_expnt); Serial.write("\t");
+Serial.print(twos_expnt); Serial.write("  \t");
 Print_RHS_of_binary_point(RHS_of_binary_point);
 
 Serial.write("  \t ");Print_long_as_binary(*(long*)&FPN);
