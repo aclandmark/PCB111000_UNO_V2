@@ -59,6 +59,7 @@ else
 {FPN = Assemble_FPN(FPN_digits, twos_expnt, sign_local);
 FPN = Scientifc_num_to_FPN(FPN, tens_expnt);
 *sign = sign_local;
+Check_num_for_to_big_or_small(FPN);
 return FPN;}}
 
 
