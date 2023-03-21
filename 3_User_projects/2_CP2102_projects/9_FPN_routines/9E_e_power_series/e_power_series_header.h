@@ -222,5 +222,5 @@ TWCR = (1 << TWINT);
 #include "UNO_proj_resources\Subroutines\HW_timers.c"
 #include "UNO_proj_resources\Subroutines\FPN_DIY_IO.c"
 #include "UNO_proj_resources\Subroutines\FPN_arithmetic.c"
-
+#include "UNO_proj_resources\PC_comms\KBD_to_display.c"
 /**********************************************************************************/
