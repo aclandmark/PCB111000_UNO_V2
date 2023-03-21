@@ -3,15 +3,20 @@
  * 0.99^0.05 and 0.99^-0.05 OK
  * Reducing the exponent causes a failure
  * Do notinput data thatexceed FPN bounds
- * Use of del key when entering data does not function
- */
+  */
 
  
 #include "e_power_series_header.h"
 
 #define message_1 "\r\nPower function: Enter +ve scientific number\r\n"
-#define message_2 "\r\n\r\n"
+#define message_2 "\r\n"
 #define Buff_Length  20
+
+#define Get_and_echo_Sc_num \
+SC_num = Scientific_number_from_KBD(Num_string, &sign, Buff_Length);\
+FPN_to_String(SC_num, 1, 5, '\t', Num_string);\
+Serial.write(Num_string);
+
 
 int main (void) 
 {
@@ -20,19 +25,20 @@ char Num_string[Buff_Length + 2];
 float Num, Num_bkp;                               //Scientfic number pus its backup
 float Pow;                                        //Power to which the number is to be raised
 int twos_exp;                                     //Power to which 2 is raised 
+float SC_num;
 float logN;                                       //The log of Num
 float Log_result;                                 
 float Result;
-
+char sign;
 
 setup_HW_Arduino_IO;
 
 if(!(watch_dog_reset))Serial.write(message_1);
 if(watch_dog_reset){watch_dog_reset = 0; Serial.write(message_2);}
 
-while(1){
-Serial.write("?\r\n");
-Num = Sc_Num_from_PC_A(Num_string, Buff_Length);                     //User enters the scientific number (back space is not cattered for)
+Serial.write("?  ");
+Get_and_echo_Sc_num;
+Num = SC_num;
 Num_bkp = Num;
 
 if(FPN_GT_or_EQ(Num, 1.0))                                  //Multiply or divide number by 2 untill it
@@ -51,14 +57,15 @@ logN = logE_power_series(Num);
 if(twos_exp) logN 
 += FPN_mult((float)twos_exp, 0.6931472);                     //Log to base e of the scientific number
 
-Serial.write("Natural log is  "); 
+Serial.write("Natural log is\t"); 
 FPN_to_String(logN, 1, 5, '\r',Num_string);
 Serial.write (Num_string);
 
+Serial.write("Enter power\t");
+Get_and_echo_Sc_num;
+Pow = SC_num;
 
-Serial.write("Enter power  ");
-Pow = Sc_Num_from_PC_A(Num_string, Buff_Length);                     //User enters the power.
-
+Serial.write("\r\nLocal result\t");
 Log_result = FPN_mult (logN, Pow);                          //The Log of the result
 
 if((FPN_LT (Log_result, 0.0005)) 
@@ -70,10 +77,12 @@ FPN_to_String(Result, 1, 5, '\r',Num_string);
 Serial.write (Num_string);
 
 Serial.write("Library result\t");                           
-Sc_Num_to_PC_A((pow(Num_bkp,Pow)),1,5,'\r');      
+FPN_to_String((pow(Num_bkp,Pow)), 1, 5, '\r', Num_string);
+Serial.write(Num_string);
 
-I2C_FPN_to_display(Result);}
 
+I2C_FPN_to_display(Result);//}
+SW_reset;
 return 1;}
 
 
