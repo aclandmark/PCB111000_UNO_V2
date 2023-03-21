@@ -6,7 +6,10 @@ long unpack_FPN(float, int *, char*);
 void Print_long_as_binary(long);
 float Scientifc_num_to_FPN(float, char);
 
-long Get_fpn_from_KBD(char *, int *, char *, long * , char *);
+//long Get_fpn_from_KBD(char *, int *, char *, long * , char *);
+long Get_fpn_from_KBD(char *, int *, char *, long * , char *, int);   
+
+
 int strLength (char*);
 
 char PCMSK0_backup, PCMSK2_backup, float_display_mode;
