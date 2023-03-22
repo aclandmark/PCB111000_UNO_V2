@@ -29,14 +29,14 @@ Serial.write(" \t ");
 Digits_before_dp = waitforkeypress_A() - '0'; 
 Digits_after_dp = waitforkeypress_A() - '0' ; 
 
-FPN_to_String(FPN, Digits_before_dp, Digits_after_dp, '\r', print_string);
+FPN_to_String_Local(FPN, Digits_before_dp, Digits_after_dp, '\r', print_string);
 
 Serial.write (print_string);}
 SW_reset;}
 
 
 
-
+/*********************************************************************************************************************/
 void FPN_to_String_Local(float FPN, char pre_dp, char post_dp, char next_char, char * print_string){
 
 char tens_expnt, print_expnt;
@@ -50,9 +50,13 @@ float round_denom;
 float FPN_bkp;
 
 
- Num_digits = pre_dp + post_dp;
+if ((*(long*)(&FPN) == 0x80000000) || (*(long*)(&FPN) == 0))
+{print_string[0] = '0'; print_string[1] = '.';print_string[2] = '0';
+print_string[3] ='\r'; print_string[4] ='\n';print_string[5] = '\0';return;}
 
- if (*(long*)&FPN & (unsigned long) 0x80000000){(*(long*)&FPN &= 0x7FFFFFFF);sign = '-';} else sign = '+';
+Num_digits = pre_dp + post_dp; 
+
+if (*(long*)&FPN & (unsigned long) 0x80000000){(*(long*)&FPN &= 0x7FFFFFFF);sign = '-';} else sign = '+';
 tens_expnt = 0;
 int_part_max = 1;
 for(int m = 0; m < pre_dp; m++) int_part_max *= 10.0;
@@ -69,28 +73,21 @@ print_expnt = tens_expnt+1;}
 
 while (FPN >= 1.0){FPN /= 10.0; tens_expnt += 1;}
 
-
 /*****************************************Build the number 0.000000005 used for rounding*********************************/  
 round_denom = 1.0;
 for(int m = 0; m <= Num_digits; m++)round_denom *= 10.0; 
-FPN = FPN + (5.0/(round_denom));
+FPN = FPN + (5.0/round_denom);
 
 if(FPN >= 1.0){FPN /= 10.0;tens_expnt += 1; print_expnt = tens_expnt;}
-
-//Serial.write("ABC");Serial.print (FPN,5);Serial.write(" \t ");
 
 /*****************************************Obtain the number 12345678 in binary form***************************************/
 if (sign == '-')  *(long*)& FPN |= (unsigned long) 0x80000000;
 FPN_as_long = unpack_FPN(FPN, &twos_expnt, &sign);
-
-//Serial.write("ABC");Serial.print (twos_expnt);Serial.write(" \t ");
-
 FPN_as_long = FPN_as_long >> 4 ; 
 Denominator = 0x8000000 << (-twos_expnt);
 
 /****************************************Convert 12345678 to string form***************************************************/
 {int p = 0;
-for(int m = 0; m < 15; m++)print_string[m] = 0;
 Denominator /= 10.0; 
 
 if(sign == '-')
@@ -116,14 +113,6 @@ print_string[p++] = next_char;
 print_string[p] = '\0';}}
 
 
-
-
-
-
-
-
-
-/*********************************************************************************************************************************/
 
 /*********************************************************************************************************************************/
 void Print_long_as_binary(long L_num){
