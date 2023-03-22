@@ -16,7 +16,7 @@ long Int_KBD_to_display_A(char display_buffer[]){              	//Acquires an in
 char keypress;
 long Long_Num_from_mini_OS;
 
-//for(int n = 0; n<=8; n++) display_buffer[n] = 0;           		//REMOVE LINE	Clear the buffer used for the string
+for(int n = 0; n<=8; n++) display_buffer[n] = 0;           		
 
 while(1){
 keypress = waitforkeypress_A();
