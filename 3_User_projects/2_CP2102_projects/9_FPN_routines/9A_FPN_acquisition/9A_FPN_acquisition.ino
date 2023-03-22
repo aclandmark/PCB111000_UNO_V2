@@ -30,7 +30,7 @@ floating point representation\t\tNumber restored\r\n");}
 
 
 while(1){
-  FPN = Scientific_number_from_KBD(digits, &sign, Buff_Length);
+  FPN = Scientific_number_from_KBD_Local(digits, &sign, Buff_Length);
   RHS_of_binary_point = unpack_FPN(FPN, &twos_expnt, &sign);
 
 Serial.print(twos_expnt); Serial.write("  \t");
@@ -53,7 +53,7 @@ SW_reset;}
 
 
 /**********************************************************************************************************************/
-float Scientific_number_from_KBD_Local(char * digits, char * sign, int BL){
+float Scientific_number_from_KBD_Local(char * digits, char *sign, int BL){
 
 long Significand;
 long  twos_denominator;
@@ -66,10 +66,13 @@ char sign_local;
 
 Significand = Get_fpn_from_KBD(digits, &twos_expnt, &tens_expnt, &twos_denominator, &sign_local, BL);              //Can be positive or negative
 FPN_digits = Fraction_to_Binary_Signed(Significand, twos_denominator);                            //0.1011000011.... for example
-FPN = Assemble_FPN(FPN_digits, twos_expnt, sign_local);
+if (!(FPN_digits)) return 0;
+else
+{FPN = Assemble_FPN(FPN_digits, twos_expnt, sign_local);
 FPN = Scientifc_num_to_FPN(FPN, tens_expnt);
 *sign = sign_local;
-return FPN;}
+Check_num_for_to_big_or_small(FPN);
+return FPN;}}
 
 
 /***********************************************************************************************************************/
