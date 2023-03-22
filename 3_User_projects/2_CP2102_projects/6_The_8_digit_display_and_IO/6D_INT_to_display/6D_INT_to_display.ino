@@ -46,14 +46,14 @@ Note: Zero entry is ignored.\r\n\
 Press SW3 to pause the display\r\n\
 Press reset to repeat.\r\n");
 
-num_from_KBD = Int_KBD_to_display_Local(digits);
+num_from_KBD = Int_KBD_to_display_A(digits);
 Arith_mean = (float)num_from_KBD;
 Geom_mean = Arith_mean;
 
 while(1){
 
 while ((switch_1_down) || (switch_2_down) || (switch_3_down));
-if ((num_from_KBD = Int_KBD_to_display_Local(digits)))
+if ((num_from_KBD = Int_KBD_to_display_A(digits)))
 
 {Arith_mean = Arith_mean * (float)counter;
 Geom_mean = pow (Geom_mean, (float)counter);
