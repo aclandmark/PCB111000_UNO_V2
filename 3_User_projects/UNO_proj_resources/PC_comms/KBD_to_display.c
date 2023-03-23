@@ -7,7 +7,7 @@ Tests have shown that they are generally OK but there is probably a bug some whe
 
 int strLength (char *);
 void reverse (char *);
-void FPN_string_KBD_to_display_A(char *);
+void FPN_string_KBD_to_display_A(char *, int);
 char Get_Float_num_string_from_KBD(char *, int);
 
 
@@ -59,7 +59,7 @@ float FPN_KBD_to_display_A(char digits[], int BL){
 float num_1 = 0;
  char sign = '+';
 
-FPN_string_KBD_to_display_A(digits); 
+FPN_string_KBD_to_display_A(digits, BL); 
 
 if (digits[0]== '-'){for (int m = 0; m < BL - 1; m++)digits[m] =  digits[m + 1];
 sign = '-';}
