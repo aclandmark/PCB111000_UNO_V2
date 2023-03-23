@@ -17,12 +17,12 @@
 */
 
 #include "FPN_KBD_to_display_header.h"
-
+#define Buff_Length  20
 
 int main (void){
 float Num_1;
 float power = 0.5;
-char digits[15];
+char digits[Buff_Length + 2];
 
 char counter = 0;
 
@@ -34,7 +34,7 @@ Serial.write("\r\nEnter scientific number \
 Press SW3 to pause the display.\r\n\
 SW1 to scroll through the results.\r\n");
 
-Num_1 = FPN_KBD_to_display_Local(digits); 
+Num_1 = FPN_KBD_to_display_A(digits, Buff_Length); 
 
 if(Num_1 > 0.0)power = 0.5;
 else power = 3.0;
