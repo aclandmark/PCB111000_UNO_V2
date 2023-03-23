@@ -48,7 +48,7 @@ Serial.print(num);
 Serial.write("\t");
 
 do{
-if(!(num%m)){Int_Num_to_PC_A_Local(m, num_string, '\t');}
+if(!(num%m)){Int_Num_to_PC_A(m, num_string, '\t');}
 m += 1; wdr();}while(m < num);
 
 SW_reset;
