@@ -41,7 +41,7 @@ int main (void)
   User_prompt_A;
  
    Serial.write("\r\nInteger number");
-num = Int_Num_from_PC_A_Local(num_string,BL);
+num = Int_Num_from_PC_A(num_string,BL);
 
 newline_A;
 Serial.print(num);
@@ -59,7 +59,7 @@ return 1;  }
 
 
 /******************************************************************************************/
-long Int_Num_from_PC_A_Local(char * num_as_string, char bufferlen)    //Same as Unsigned_Int_from_PC()
+long Int_Num_from_PC_A_Local(char * num_as_string, char bufferlen)    //Project version implements the backspace key
 {char strln;
 Serial.flush();   
 strln = Serial.readBytesUntil('\r',num_as_string, bufferlen);
