@@ -13,10 +13,6 @@ bit of DIY programming is required.
 The result is the subroutine "long Int_KBD_to_display(char *)"
 This accepts decimal digits from the KBD and sends them to the display.
 
-Instructions:
-Enter a series of numbers at the keyboard but not 0.
-Enter 0 to display interim result
-Press SW1 twice before entering next number
 */
 
 
