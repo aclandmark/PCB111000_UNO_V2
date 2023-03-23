@@ -236,7 +236,7 @@ return tens_expt;}
 
 
 /*************************************************************************************************************************************************/
-/*char Float_num_string_from_KBD_Legacy(char display_buffer[]){            //Operation is similar to that of Int_KBD_to_display()
+char Float_num_string_from_KBD_Legacy(char display_buffer[]){            //Operation is similar to that of Int_KBD_to_display()
 char keypress;
 float Float_from_mini_OS = 0;
 char decimal_place_counter = 0;
@@ -307,10 +307,10 @@ if(display_buffer[m] == '.')
 display_buffer[p] = display_buffer[p+1];}}
 
 return expt;}
-*/
+
 
 /***********************************************************************************************************************/
-/*long fpn_from_KBD_Legacy(char digits[], char *expnt, long *Denominator ){		//Defines FPN in terms of significant, denominate and exponent
+long fpn_from_KBD_Legacy(char digits[], char *expnt, long *Denominator ){		//Defines FPN in terms of significant, denominate and exponent
 
 long num_1=0, num_2 = 0;
  char sign = '+';
@@ -325,7 +325,7 @@ while(num_2){(*expnt)++; *Denominator *=10; num_2 /= 10; }
 
 if (sign == '-') num_1 = num_1 * (-1);
 return num_1;}
-*/
+
 
 
 
