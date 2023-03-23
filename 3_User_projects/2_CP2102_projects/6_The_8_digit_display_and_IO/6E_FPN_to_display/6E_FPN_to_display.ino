@@ -34,7 +34,7 @@ Serial.write("\r\nEnter scientific number \
 Press SW3 to pause the display.\r\n\
 SW1 to scroll through the results.\r\n");
 
-Num_1 = FPN_KBD_to_display_A(digits, Buff_Length); 
+Num_1 = FPN_KBD_to_display_A_Local(digits, Buff_Length); 
 
 if(Num_1 > 0.0)power = 0.5;
 else power = 3.0;
@@ -76,44 +76,60 @@ SW_reset;}
 
 
 /***********************************************************************************************************************/
-float FPN_KBD_to_display_Local(char digits[]){ 
+float FPN_KBD_to_display_A_Local(char digits[], int BL){      
 
-//char  expnt;
-float num = 0;
+float num_1 = 0;
  char sign = '+';
 
-FPN_string_KBD_to_display_Local(digits);                                 //Acquire FPN string
+FPN_string_KBD_to_display_A_Local(digits, BL); 
 
-if (digits[0]== '-')                                                     //Detect negative sign
-{for (int m = 0; m <= 13; m++)
-digits[m] =  digits[m + 1];
+if (digits[0]== '-'){for (int m = 0; m < BL - 1; m++)digits[m] =  digits[m + 1];
 sign = '-';}
-num = atof(digits);                                                      //Convert to binary
+num_1 = atof(digits);
 
-if (sign == '-') num = num * (-1);                                       //Restore sign
-return num;}
+if (sign == '-') num_1 = num_1 * (-1);
+return num_1;}
+
 
 
 
 /********************************************************************************************************************************************/
-void FPN_string_KBD_to_display_Local(char display_buffer[]){            //Operation is similar to that of Int_KBD_to_display()
+void FPN_string_KBD_to_display_A_Local(char display_buffer[], int BL){    //Operation is similar to that of Int_KBD_to_display()
 char keypress;
 
-for(int n = 0; n<=14; n++) display_buffer[n] = 0;                       //Clear the buffer used for the string
+for(int n = 0; n < BL; n++) display_buffer[n] = 0;   
+
+while(1){                                                            //Remain in loop until a valid character is received
+keypress = waitforkeypress_A();
+if ((!(decimal_digit_A(keypress)))
+&& (keypress != '-')
+&& (keypress != '.'))continue;                                      //Ignore keypress if it is not OK
+display_buffer[0] = keypress;
+break;}
+
+I2C_Tx_8_byte_array(display_buffer);                                //Update display with the first key press
 
 while(1){
-if ((keypress = wait_for_return_key_A())  =='\r')break;                  //Stay in loop until return key press is detected
+if ((keypress = wait_for_return_key_A())  =='\r')break;               //Stay in loop until return key press is detected
 
-if (!(decimal_digit_A(keypress)) && (keypress != '.')                    //Check for valid keypresses
+if (!(decimal_digit_A(keypress)) && (keypress != '.')                 //Check for valid keypresses
 && (keypress != '-') && (keypress != 'E') 
-&& (keypress != 'e'))continue;                                            //Skip back to top of loop for invalid keypress
+&& (keypress != 'e') &&  (keypress != '\b'))continue;
 
-for(int n = 14; n>=1; n--)                                               //Shift display for each new keypress
+switch (keypress){
+
+case '\b':  for (int n = 0; n < BL - 1; n++)                             //Backspace keypress
+display_buffer[n] = display_buffer[n + 1];
+I2C_Tx_8_byte_array(display_buffer); break;
+
+default:
+for(int n = BL - 1; n>=1; n--)                                            //Shift display for each new keypress except '.'
 display_buffer[n] = display_buffer[n-1];
-display_buffer[0] = keypress;                                            //Add new keypress           
-I2C_Tx_8_byte_array(display_buffer); }
+display_buffer[0] = keypress;                                         //Add new keypress to display           
+I2C_Tx_8_byte_array(display_buffer); break;}}
 
-I2C_Tx_any_segment_clear_all();                                           //Flash display when -cr- is pressed
+
+I2C_Tx_any_segment_clear_all();                     //Flash display
 _delay_ms(100);
 I2C_Tx_8_byte_array(display_buffer);
 
