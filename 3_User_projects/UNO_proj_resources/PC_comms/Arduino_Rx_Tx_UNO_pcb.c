@@ -75,6 +75,9 @@ int trailing_bs_counter = 0;
 Serial.flush();   
 strln = Serial.readBytesUntil('\r',num_as_string, bufferlen);  
 
+_delay_ms(1);					///?
+
+
 //Remove trailing delete chars******************************************************************************************
 for(int m = strln; m; m--){if(num_as_string[m-1] == '\b')trailing_bs_counter += 1;else break;}
 for(int m = 0; m < (trailing_bs_counter * 2); m++){if(strln == m)break; else num_as_string[strln - m-1] = '\0'; }
