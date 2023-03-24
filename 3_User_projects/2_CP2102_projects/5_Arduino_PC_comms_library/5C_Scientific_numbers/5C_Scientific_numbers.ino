@@ -29,7 +29,7 @@ UNO_proj_resources\PC_comms\Basic_Rx_Tx_Arduino.c
 
 #include "Scientific_numbers_header.h"
 
-#define BL 30                     //Buffer length
+#define Buff_Length 30                     //Buffer length
 
 
 /************************************************************************************************************/
@@ -38,7 +38,7 @@ UNO_proj_resources\PC_comms\Basic_Rx_Tx_Arduino.c
 
 int main (void)  
   { 
-    char num_string[BL + 2];
+    char num_string[Buff_Length + 2];
     float  num_1, num_2, num_3;
     float index;
  
@@ -48,7 +48,7 @@ int main (void)
   else {Serial.write("\r\n\r\nUsing Arduino functions to receive and print scientific numbers.\r\n");}
    Serial.write("\r\nScientific number? Then press AK.\r\n");
    
-num_1 = Sc_Num_from_PC_A(num_string, BL);
+num_1 = Sc_Num_from_PC_A(num_string, Buff_Length);
 newline_A;
   Sc_Num_to_PC_A(num_1,2,6,'\r');
 
@@ -61,7 +61,7 @@ while(1){
   while(!(Serial.available()))wdr();
 Serial.read();                                            //The equivalent of waitforkeypress()
 num_2 = pow (num_1,index);                                    //-C- library function
-Sc_Num_to_PC_A(num_2, 2, 4, '\r');
+Sc_Num_to_PC_A_Local(num_2, 2, 4, '\r');
 
 if ((index < 0.0) || (index > 1.0));
 else 
@@ -105,14 +105,14 @@ Serial.write(next_char);}
 
 
 /******************************************************************************************/
-float Sc_Num_from_PC_local(char * num_as_string,char next_char)
+float Sc_Num_from_PC_A_Local(char * num_as_string, int BL)
 {char strln;                                                          //Length of a string of characters
 
 Serial.flush();                                                       //Clear the Arduino serial buffer   
-strln = Serial.readBytesUntil('\r',num_as_string, 20);                //Read upto 20 characters or until a -cr- is received 
+strln = Serial.readBytesUntil('\r',num_as_string, BL);                //Read upto 20 characters or until a -cr- is received 
 num_as_string[strln] = 0;                                             //Terminate the string with the null character
-Serial.write(num_as_string);                                          //Print out the numerical string
-Serial.write(next_char);                                              //new-line, space, \t or other specified character
+//Serial.write(num_as_string);                                          //Print out the numerical string
+//Serial.write(next_char);                                              //new-line, space, \t or other specified character
 return atof(num_as_string);}                                          //"askii to float" -C- library function
 
 
