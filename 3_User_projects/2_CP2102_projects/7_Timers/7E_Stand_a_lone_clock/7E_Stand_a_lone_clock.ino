@@ -56,7 +56,7 @@ char display_mode;
 
 setup_HW_Arduino_IO;
 if (switch_2_down)
-{User_prompt; 
+{User_prompt_A; 
 User_instructions;
 while(switch_2_down);}
 time_from_IO();
