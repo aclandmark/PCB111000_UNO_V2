@@ -51,7 +51,7 @@ char keypress;
 setup_HW_Arduino_IO;
 
 if (PIND & 0x80)                                               //Push SW2 to avoid user prompt 
-{User_prompt;}
+{User_prompt_A;}
 while ((PIND & 0x80)^0x80);                                     //wait for SW2 release                
 User_instructions;
 input_mode = eeprom_read_byte((uint8_t*)0x02);                 //Read mode. Default value is 255
