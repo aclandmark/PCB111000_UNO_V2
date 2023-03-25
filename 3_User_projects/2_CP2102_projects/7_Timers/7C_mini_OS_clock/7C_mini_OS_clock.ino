@@ -39,7 +39,7 @@ char keypress;
 setup_HW_Arduino_IO;
 
 if (switch_2_up)                                               //Press SW2 to omit user prompt
-{User_prompt;}
+{User_prompt_A;}
 while (switch_2_down);
 
 input_mode = eeprom_read_byte((uint8_t*)0x02);                 //Read mode. Default value is 255
