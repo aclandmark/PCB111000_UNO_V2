@@ -29,7 +29,7 @@ char User_response;
 setup_HW_Arduino_IO;
 
 Serial.write("Press 'R' to enter time or 'r' to start at time zero  ");
-User_prompt;
+User_prompt_A;
 
 if(User_response == 'R')set_time();
 else {reset_clock_1; deci_SecsH = '0'; deci_SecsL = '0'; deci_sec_counter = 0; }
