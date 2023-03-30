@@ -17,8 +17,10 @@ See https://en.wikipedia.org/wiki/Pulse_wave for details of the pulse train
 #include "8B_header_file_1.h"
 #include "8B_header_file_2.h"
 
+#define Buff_Length  20
+
 float Num_1, Num_2;
-char digits[12];                                                       //Array used to drive the display
+char digits[Buff_Length + 2];                                                       //Array used to drive the display
 
 int main (void){
 
@@ -28,7 +30,7 @@ int print_spaces;
 float Time;                                                            //< 0 Time >= 1 (Assumes a waveformperion T of unit
 float amplitude;                                                       //Synthesized amplitude at and any time
 float duty_cycle;
-char num_as_string[22];                                                //Array used to data entry
+char num_as_string[Buff_Length + 2];                                                //Array used to data entry
 float pulse_amplitude = 100.0;                                         //Arbitrary values chosen 
 int print_offset = 25;                                                 //to fill screen
 
@@ -61,7 +63,7 @@ Serial.write("\r\nEnter positive scientific number \
 
 setup_watchdog;
 
-Num_1 = Sc_Num_from_PC_A( num_as_string, '\r', 20 );
+Num_1 = Sc_Num_from_PC_A( num_as_string, Buff_Length );
 One_25ms_WDT_with_interrupt;
 
 FPN_to_String(Num_1, 1, 3, ' ', digits);
