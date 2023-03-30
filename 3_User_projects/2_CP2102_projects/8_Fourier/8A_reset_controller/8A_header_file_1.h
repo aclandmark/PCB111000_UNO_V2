@@ -5,7 +5,7 @@
 char watch_dog_reset = 0;
 char MCUSR_copy;
 char User_response;
-char num_as_string[12];
+//char num_as_string[12];
 char reset_status;
 
 
