@@ -21,7 +21,7 @@ setup_HW_with_reset_analysis;
 
 switch (reset_status){
 
-case 1: User_prompt;
+case 1: User_prompt_A;
 Serial.write("\r\nProgram running following POR\t"); break;
 case 2: Serial.write("\r\nProgram triggered by a SW_reset.\t"); break;
 case 3: Serial.write("\r\nProgram triggered by external reset or run (the -r- keypress)."); break;
