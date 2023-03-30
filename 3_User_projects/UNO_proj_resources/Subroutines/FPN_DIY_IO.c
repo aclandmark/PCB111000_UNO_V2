@@ -8,7 +8,7 @@ float Scientifc_num_to_FPN(float, char);
 
 //long Get_fpn_from_KBD(char *, int *, char *, long * , char *);
 long Get_fpn_from_KBD(char *, int *, char *, long * , char *, int);   
-
+void Check_num_for_to_big_or_small(float);
 
 int strLength (char*);
 
