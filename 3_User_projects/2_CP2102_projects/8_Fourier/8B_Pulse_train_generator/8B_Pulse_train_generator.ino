@@ -20,7 +20,7 @@ See https://en.wikipedia.org/wiki/Pulse_wave for details of the pulse train
 #define Buff_Length  20
 
 float Num_1, Num_2;
-char digits[Buff_Length + 2];                                                       //Array used to drive the display
+char digits[12];                                                       //Array used to drive the display
 
 int main (void){
 
