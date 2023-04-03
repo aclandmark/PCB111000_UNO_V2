@@ -1,6 +1,3 @@
-/*NO LONGER WORKS PROPERLY on a single CA version on offset 0
-OK on offsets 2 and 4
-Probably damaded EEPROM location*/
 
 
 /**************Proj_2C1_random_LED kaleidoscope***************************/
@@ -58,3 +55,7 @@ ISR(USART_RX_vect){
   Char_from_PC_Basic();
 I2C_Tx_any_segment_clear_all();
 sei();while(1);}
+
+
+
+/********************************************************************/
