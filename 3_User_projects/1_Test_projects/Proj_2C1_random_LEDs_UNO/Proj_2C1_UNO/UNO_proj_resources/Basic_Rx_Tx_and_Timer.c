@@ -1,52 +1,10 @@
 
 
-/*
-Basic serial comms functions used to exchange data with the PC
-Two versions are given:
-	Those ending in _Basic are based on data sheet definitions and provide a useful learning aide
-	Those ending in _A use the Arduino library and are probably the sensible choice for most user applications
-Note however 
-	Arduino uses the UART receive interrupt vector  ISR(USART_RX_vect)
-	If the user application requires this then the Arduino library cannot easily be used
-	
-Timer T1 and T2 functions are also included
-Note T0 is used exclusively for one wire comms with the display driver/mini-OS device ATTtiny 1606)
-*/
-
-
-
-
 
 
 #define T0_delay_10ms 	7,178
 
-#define T1_delay_10ms	2,0xD8EF
-#define T1_delay_50ms 5,0xFE78
-#define T1_delay_100ms 5,0xFCF2
-#define T1_delay_250ms 5,0xF85F
-#define T1_delay_500ms 5,0xF0BE
-
-#define T1_delay_1sec 5,0xE17D
-#define T1_delay_2sec 5,0xC2FB
-#define T1_delay_4sec 5,0x85F7
-
-
-void setup_PC_comms_Basic (unsigned char, unsigned char);
-void Timer_T0_10mS_delay_x_m(int);
 void Timer_T0_sub(char, unsigned char);
-
-char isCharavailable_Basic (int);
-char isCharavailable_A (int);
-char waitforkeypress_Basic(void);
-char waitforkeypress_A(void);
-
-char Char_from_PC_Basic(void);
-void String_to_PC_Basic(const char*);
-void Char_to_PC_Basic(char);
-
-char decimal_digit (char);
-char wait_for_return_key_A(void);
-void Check_num_for_to_big_or_small(float);
 
 
 
@@ -58,18 +16,6 @@ UBRR0L = UBRR0L_N;
 UCSR0A = (1 << U2X0);													//Double speed operation
 UCSR0B = (1 << RXEN0) | (1<< TXEN0);									//Enable Receive and transmitter units 
 UCSR0C =  (1 << UCSZ00)| (1 << UCSZ01);} 								//8 bit asynchronous operation, no parity
-
-
-
-/**********************************************************************************************************************************************************************************/
-void Timer_T1_sub(char Counter_speed, unsigned int Start_point){ 
-TCNT1H = (Start_point >> 8);
-TCNT1L = Start_point & 0x00FF;											//TCNT1 counts up from its start_point to 0x10000 (zero)
-TIFR1 = 0xFF;															//Clear timer interrupt flags
-TCCR1B = Counter_speed;	
-while(!(TIFR1 && (1<<TOV1)));											//Wait here for timer to overflow (count from 0xFFFF to zero)
-TIFR1 |= (1<<TOV1); 													//Clear overflow flag
-TCCR1B = 0;}															//Halt counter
 
 
 
