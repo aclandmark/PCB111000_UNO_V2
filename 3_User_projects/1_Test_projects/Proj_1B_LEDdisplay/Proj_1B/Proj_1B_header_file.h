@@ -5,7 +5,7 @@
 char watch_dog_reset = 0;
 char MCUSR_copy;
 char User_response;
-char num_as_string[12];
+//char num_as_string[12];
 
 
 /*****************************************************************************/
@@ -38,7 +38,6 @@ set_up_activity_leds;\
 \
 setup_PC_comms_Basic(0,16);\
 _delay_ms(10);\
-User_app_commentary_mode;\
 \
 if (((PINB & 0x04)^0x04) && \
 ((PIND & 0x04)^0x04))                         /*Press SW1 and SW3 to adjust intensity*/\
@@ -47,42 +46,6 @@ I2C_Tx_LED_dimmer_UNO();\
 if(((PIND & 0x04)^0x04) && \
 ((PIND & 0x80)^0x80))                         /*Press SW1 and SW2 to trigger recalibration*/\
 Cal_UNO_pcb_A();
-
-
-
-/*****************************************************************************/
-/*Users press -t- to upload the project commentry and hex file
- They then press -r- to print out the commentary line by line and -X- to run the project
- Having printed the commentary once pressing -r- again will run the project immediately
- with no commentary
- EEPROM 0x3F6 controls printing the project commentary.
-After each line has been printed 0x3F6 increments and the program resets.
-When X is pressed when program control jumps to the user app.
-*/
-
-
-#define User_app_commentary_mode \
-\
-if(eeprom_read_byte((uint8_t*)0x3F6) == 0xFF)\
-eeprom_write_byte((uint8_t*)0x3F6,0);\
-\
-if(eeprom_read_byte((uint8_t*)0x3F6) == 0x40){\
-for(int m = 0; m < 10; m++)String_to_PC_Basic("\r\n");\
-String_to_PC_Basic\
-("Project commentary: Press 'X' to escape or AOK\r\n");\
-\
-eeprom_write_byte((uint8_t*)0x3F6,0x41);}\
-\
-if ((eeprom_read_byte((uint8_t*)0x3F6) & 0x40)){\
-eeprom_write_byte((uint8_t*)0x3F6,\
-(eeprom_read_byte((uint8_t*)0x3F6) | 0x80));\
-\
-for(int m = 0; m < 4; m++)String_to_PC_Basic("\r\n");\
-\
-asm("jmp 0x6C00");}                                     /*Go to Text_Verification.hex to print the next string*/ 
-
-
-
 
 
 
@@ -190,12 +153,10 @@ TWCR = (1 << TWINT);
 
 
 /*********************************************************************************/
-#include "UNO_proj_resources/PC_comms/Basic_Rx_Tx_and_Timer.c"
-//#include "UNO_proj_resources/PC_comms/Basic_PC_comms.c"
-#include "UNO_proj_resources/Subroutines/Random_and_prime_nos.c"
 
-#include "UNO_proj_resources/Chip2chip_comms/I2C_subroutines_1.c"
-#include "UNO_proj_resources/Chip2chip_comms/I2C_slave_Rx_Tx.c"
+#include "Subroutines/Basic_Rx_Tx_and_Timer.c"
+
+#include "Subroutines/I2C_subroutines.c"
 
 
 
