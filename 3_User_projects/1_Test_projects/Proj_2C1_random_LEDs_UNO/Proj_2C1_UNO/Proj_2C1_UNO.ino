@@ -19,7 +19,7 @@ setup_HW_basic;
 wdt_enable(WDTO_2S);                                                           //WDT prevents display from being completed in either direction
 
 I2C_Tx_any_segment_clear_all();                                                //Initialise display
-PRN = PRN_16bit_GEN (0xFA,  &PRN_counter);
+PRN = PRN_16bit_GEN (0,  &PRN_counter);
 UCSR0B |= (1 << RXCIE0);                                                      //Set Interrupt on key press (for test purposes only)
 sei();                                                                        //Global enable interrupt
 
