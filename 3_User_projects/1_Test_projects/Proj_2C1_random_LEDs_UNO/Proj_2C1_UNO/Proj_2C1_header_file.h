@@ -155,7 +155,6 @@ TWCR = (1 << TWINT);
 /*********************************************************************************/
 
 #include "UNO_proj_resources/Basic_Rx_Tx_and_Timer.c"
-#include "UNO_proj_resources/Random_and_prime_nos.c"
 
 #include "UNO_proj_resources/I2C_subroutines.c"
 
