@@ -154,9 +154,9 @@ TWCR = (1 << TWINT);
 
 /*********************************************************************************/
 
-#include "UNO_proj_resources/Basic_Rx_Tx_and_Timer.c"
+#include "Subroutines/Basic_Rx_Tx_and_Timer.c"
 
-#include "UNO_proj_resources/I2C_subroutines.c"
+#include "Subroutines/I2C_subroutines.c"
 
 
 
