@@ -68,7 +68,6 @@ set_up_activity_leds;\
 Serial.begin(115200);\
 while (!Serial);\
 sei();\
-User_app_commentary_mode;\
 \
 if (((PINB & 0x04)^0x04) && \
 ((PIND & 0x04)^0x04))                         /*Press SW1 and SW3 to adjust intensity*/\
@@ -77,40 +76,6 @@ I2C_Tx_LED_dimmer_UNO();\
 if(((PIND & 0x04)^0x04) && \
 ((PIND & 0x80)^0x80))                         /*Press SW1 and SW2 to trigger recalibration*/\
 Cal_UNO_pcb_A_Arduino();
-
-
-
-/*****************************************************************************/
-/*Users press -t- to upload the project commentry and hex file
- They then press -r- to print out the commentary line by line and -X- to run the project
- Having printed the commentary once pressing -r- again will run the project immediately
- with no commentary
- EEPROM 0x3F6 controls printing the project commentary.
-After each line has been printed 0x3F6 increments and the program resets.
-When X is pressed when program control jumps to the user app.
-*/
-
-
-#define User_app_commentary_mode \
-\
-if(eeprom_read_byte((uint8_t*)0x3F6) == 0xFF)\
-eeprom_write_byte((uint8_t*)0x3F6,0);\
-\
-if(eeprom_read_byte((uint8_t*)0x3F6) == 0x40){\
-for(int m = 0; m < 10; m++)Serial.write("\r\n");\
-Serial.write\
-("Project commentary: Press 'X' to escape or AOK\r\n");\
-\
-eeprom_write_byte((uint8_t*)0x3F6,0x41);}\
-\
-if ((eeprom_read_byte((uint8_t*)0x3F6) & 0x40)){\
-eeprom_write_byte((uint8_t*)0x3F6,\
-(eeprom_read_byte((uint8_t*)0x3F6) | 0x80));\
-\
-for(int m = 0; m < 4; m++)Serial.write("\r\n");\
-\
-asm("jmp 0x6C00");}                                     /*Go to Text_Verification.hex to print the next string*/ 
-
 
 
 
@@ -219,36 +184,14 @@ TWCR = (1 << TWINT);
 
 
 
-/******************************************************************/
-#define pci_on_sw1_and_sw2_enabled (PCMSK2 & 0x84) == 0x84
-#define pci_on_sw3_enabled (PCMSK0 & 0x04) == 0x04
-#define PCIenabled ((pci_on_sw1_and_sw2_enabled) || (pci_on_sw3_enabled))
-#define disable_pci_on_sw1_and_sw2  PCMSK2 &= (~((1 << PCINT18) | (1 << PCINT23)));
-#define disable_pci_on_sw3  PCMSK0 &= (~(1 << PCINT2));
-
-#define I2C_Tx_float_display_control \
-{\
-PCMSK0_backup= PCMSK0;\
-PCMSK2_backup= PCMSK2;\
-float_display_mode = '0';\
-if (PCIenabled){disable_pci_on_sw3;disable_pci_on_sw1_and_sw2;}\
-while(1){\
-if(switch_3_down)float_display_mode = '1'; else float_display_mode = '0';\
-if((switch_1_down)||(switch_2_down))float_display_mode = '2';\
-waiting_for_I2C_master;\
-send_byte_with_Nack(float_display_mode);\
-clear_I2C_interrupt;\
-if(float_display_mode == '2')break;}\
-PCMSK0 = PCMSK0_backup;\
-PCMSK2 = PCMSK2_backup;}
-
-
 
 
 /**********************************************************************************/
 #include "Subroutines\I2C_subroutines.c"
 #include "Subroutines\Arduino_Rx_Tx_UNO_pcb.c"
 #include "Subroutines\FPN_plus_HW_timers.c"
+
+//#include "Subroutines\KBD_to_display.c"
 
 
 /**********************************************************************************/
