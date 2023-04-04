@@ -31,11 +31,12 @@ User_prompt;
 sei();
 
 Serial.write("Number?  Then press and hold SW1 to repeat.\r\n");
-
+//_delay_ms(25);
 while(1){
 if(switch_1_down)Serial.write("Next Number?\r\n");
 
 Significand = fpn_from_KBD_local(digits, &expnt, &Denominator);
+
 FPN_1 = Significand_to_FPN((float)Significand, Denominator, expnt);
 Sc_Num_to_PC(FPN_1, 1, 6, '\r');
 Significand = Fraction_to_Binary_Signed(Significand, Denominator);
