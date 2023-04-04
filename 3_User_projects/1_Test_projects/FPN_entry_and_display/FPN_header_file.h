@@ -191,7 +191,5 @@ TWCR = (1 << TWINT);
 #include "Subroutines\Arduino_Rx_Tx_UNO_pcb.c"
 #include "Subroutines\FPN_plus_HW_timers.c"
 
-//#include "Subroutines\KBD_to_display.c"
-
 
 /**********************************************************************************/
