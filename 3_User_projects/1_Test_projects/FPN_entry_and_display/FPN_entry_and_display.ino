@@ -6,14 +6,6 @@
 /*FLOAT string development for PCB111000_UNO_V2*/
 
 
-
-/*long Fraction_to_Binary_Signed( long, long);
-void I2C_Tx_float_num(long, char);
-long Binary_points_to_Decimal_Signed (long);
-void Decimal_to_PC(char, unsigned long, int);
-void Exp_to_PC (signed char);
-char decimalOverflow(char, unsigned long, int);  */
-
 #include "FPN_header_file.h"
 
 int main (void){
@@ -31,7 +23,6 @@ User_prompt;
 sei();
 
 Serial.write("Number?  Then press and hold SW1 to repeat.\r\n");
-//_delay_ms(25);
 while(1){
 if(switch_1_down)Serial.write("Next Number?\r\n");
 
@@ -50,10 +41,7 @@ FPN_2 = FPN_1 * 2.5; Sc_Num_to_PC(FPN_2, 1, 6, '\r');
 Significand = FPN_to_Significand(FPN_2, &Denominator, &expnt);
 Significand = Fraction_to_Binary_Signed(Significand, Denominator);
 I2C_Tx_float_num(Significand, expnt);
-I2C_Tx_float_display_control;
-
-}
-}
+I2C_Tx_float_display_control;}}
 
 
 
@@ -165,3 +153,22 @@ if(display_buffer[m] == '.'){for (int p = m; p <= 14; p++)display_buffer[p] = di
 
 return expt;
 }
+
+/*
+void I2C_FPN_to_display(float num){
+  long Denominator;
+  long Significand;
+  char expnt;
+
+Significand = FPN_to_Significand(num, &Denominator, &expnt);
+Significand = Fraction_to_Binary_Signed(Significand, Denominator);
+I2C_Tx_float_num(Significand, expnt);
+I2C_Tx_float_display_control;}
+
+*/
+
+
+
+
+
+/**************************************************************************/
