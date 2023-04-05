@@ -11,7 +11,6 @@ char watch_dog_reset = 0;
 char MCUSR_copy;
 char User_response;
 char num_as_string[12];
-
      
 char PCMSK0_backup, PCMSK2_backup, float_display_mode;
 
@@ -20,8 +19,6 @@ char PCMSK0_backup, PCMSK2_backup, float_display_mode;
 #include <avr/wdt.h>
 
 
-unsigned char PRN_8bit_GEN(unsigned char, char *);
-char isCharavailable_A (int);
 
 /*****************************************************************************/
 #define switch_1_down  ((PIND & 0x04)^0x04)
@@ -43,7 +40,11 @@ PCMSK2 |= (1 << PCINT18) | (1 << PCINT23);
 
 
 /*****************************************************************************/
-#define SW_reset {wdt_enable(WDTO_30MS);while(1);}
+#define SW_reset                     {eeprom_write_byte((uint8_t*)(0x3FC),0);wdt_enable(WDTO_30MS);while(1);}
+#define SW_reset_detected           !(eeprom_read_byte((uint8_t*)(0x3FC)))
+#define clear_reset_eeprom           eeprom_write_byte((uint8_t*)(0x3FC),0xFF);
+
+
 
 #define switch_2_up   (PIND & 0x80)
 
@@ -52,23 +53,19 @@ PCMSK2 |= (1 << PCINT18) | (1 << PCINT23);
 CLKPR = (1 << CLKPCE);                        /*Reduce 16MHz crystal clock to 8MHz*/\
 CLKPR = (1 << CLKPS0);\
 \
-MCUSR_copy = \
-eeprom_read_byte((uint8_t*)0x3FC);            /*Saved to EEPROM by the bootloader*/\
-if (MCUSR_copy & (1 << PORF))                 /*Power on reset flag set*/\
-{MCUSR_copy = (1 << PORF);\
-eeprom_write_byte((uint8_t*)0x3F5,0);}        /*Initialise random generator memory */\
 setup_watchdog;\
 \
 set_up_I2C;                                   /*UNO hosts the slave I2C*/\
 ADMUX |= (1 << REFS0);                        /*Set analogue reference to +5V*/\
 set_up_switched_inputs;\
 Unused_I_O;\
-_delay_ms(25);\
 set_up_activity_leds;\
 \
 Serial.begin(115200);\
 while (!Serial);\
 sei();\
+\
+_delay_ms(10);\
 \
 if (((PINB & 0x04)^0x04) && \
 ((PIND & 0x04)^0x04))                         /*Press SW1 and SW3 to adjust intensity*/\
@@ -84,12 +81,11 @@ Cal_UNO_pcb_A_Arduino();
 
 /*****************************************************************************/
 #define setup_watchdog \
-if (MCUSR_copy & (1 << WDRF))watch_dog_reset = 1;\
+if (SW_reset_detected){watch_dog_reset = 1;clear_reset_eeprom;}\
 wdr();\
 MCUSR &= ~(1<<WDRF);                          /*Line not needed WD flag already reset by bootloader */\
 WDTCSR |= (1 <<WDCE) | (1<< WDE);\
 WDTCSR = 0;
-
 
 #define wdr()  __asm__ __volatile__("wdr")
 
@@ -98,7 +94,6 @@ wdr();\
 MCUSR &= (~(1 << WDRF));\
 WDTCSR |= (1<<WDCE) | (1<<WDE);\
 WDTCSR = 0x00;
-
 
 
 /*****************************************************************************/
@@ -144,7 +139,6 @@ DDRD &= (~((1 << PD3)|(1 << PD4)|(1 << PD5)));\
 PORTC |= ((1 << PC0)|(1 << PC1)|(1 << PC2));\
 PORTD |= ((1 << PD3)|(1 << PD4)|(1 << PD5));
 
-
 /*
 Note: The hex_text_bootloader reads PD6 to control the reset operation.
 It should really be weak pull up but has been left in its default condition (tri-state) 
@@ -154,19 +148,7 @@ This is OK because it is always connected to a defined logic level
 
 
 /*****************************************************************************/
-#define OSC_CAL_328                                /*User cal bytes if set are stored in EEPROM locations 0x3FF and 0x3FE*/\
-if ((eeprom_read_byte((uint8_t*)0x3FE) > 0x0F)\
-&&  (eeprom_read_byte((uint8_t*)0x3FE) < 0xF0)\
-&& (eeprom_read_byte((uint8_t*)0x3FE)\
-== eeprom_read_byte((uint8_t*)0x3FF)))\
-{OSCCAL = eeprom_read_byte((uint8_t*)0x3FE);}       //At reset the micro reads register OSCCAL to obtain the calibration byte
-
-
-//Note: Arduino reads the EEPROM as unsigned 8 bit chars
-
-
-/*****************************************************************************/
-#define User_prompt \
+#define User_prompt_A \
 while(1){\
 do{Serial.write("R?    ");}  while((isCharavailable_A (250) == 0));\
 User_response = Serial.read();\
@@ -180,11 +162,9 @@ TWCR = (1 << TWEA) | (1 << TWEN);\
 while (!(TWCR & (1 << TWINT)));\
 TWDR;
 
+
 #define clear_I2C_interrupt \
 TWCR = (1 << TWINT);
-
-
-
 
 
 /**********************************************************************************/
