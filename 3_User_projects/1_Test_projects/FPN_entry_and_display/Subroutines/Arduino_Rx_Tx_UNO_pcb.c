@@ -53,7 +53,7 @@ void Cal_UNO_pcb_A_Arduino(void)
 {unsigned char OSCCAL_mini_OS;
 int error_mag;
 
-User_prompt;
+User_prompt_A;
 I2C_Tx_initiate_mode('R');
 Serial.write("\r\nPCB_A (mini_OS) device calibrating");
 waiting_for_I2C_master;  
