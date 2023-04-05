@@ -5,7 +5,6 @@
 char watch_dog_reset = 0;
 char MCUSR_copy;
 char User_response;
-//char num_as_string[12];
 
 
 /*****************************************************************************/
@@ -14,7 +13,9 @@ char User_response;
 
 
 /*****************************************************************************/
-#define SW_reset {wdt_enable(WDTO_30MS);while(1);}
+#define SW_reset                     {eeprom_write_byte((uint8_t*)(0x3FC),0);wdt_enable(WDTO_30MS);while(1);}
+#define SW_reset_detected           !(eeprom_read_byte((uint8_t*)(0x3FC)))
+#define clear_reset_eeprom           eeprom_write_byte((uint8_t*)(0x3FC),0xFF);
 
 
 
@@ -23,12 +24,7 @@ char User_response;
 CLKPR = (1 << CLKPCE);                        /*Reduce 16MHz crystal clock to 8MHz*/\
 CLKPR = (1 << CLKPS0);\
 \
-MCUSR_copy = \
-eeprom_read_byte((uint8_t*)0x3FC);            /*Saved to EEPROM by the bootloader*/\
-if (MCUSR_copy & (1 << PORF))                 /*Power on reset flag set*/\
-{MCUSR_copy = (1 << PORF);\
-eeprom_write_byte((uint8_t*)0x3F5,0);}        /*Initialise random generator memory */\
-setup_watchdog_for_UNO;\
+setup_watchdog;\
 \
 set_up_I2C;                                   /*UNO hosts the slave I2C*/\
 ADMUX |= (1 << REFS0);                        /*Set analogue reference to +5V*/\
@@ -50,8 +46,8 @@ Cal_UNO_pcb_A();
 
 
 /*****************************************************************************/
-#define setup_watchdog_for_UNO \
-if (MCUSR_copy & (1 << WDRF))watch_dog_reset = 1;\
+#define setup_watchdog \
+if (SW_reset_detected){watch_dog_reset = 1;clear_reset_eeprom;}\
 wdr();\
 MCUSR &= ~(1<<WDRF);                          /*Line not needed WD flag already reset by bootloader */\
 WDTCSR |= (1 <<WDCE) | (1<< WDE);\
@@ -111,25 +107,12 @@ DDRD &= (~((1 << PD3)|(1 << PD4)|(1 << PD5)));\
 PORTC |= ((1 << PC0)|(1 << PC1)|(1 << PC2));\
 PORTD |= ((1 << PD3)|(1 << PD4)|(1 << PD5));
 
-
 /*
 Note: The hex_text_bootloader reads PD6 to control the reset operation.
 It should really be weak pull up but has been left in its default condition (tri-state) 
 This is OK because it is always connected to a defined logic level
 */
 
-
-
-/*****************************************************************************/
-#define OSC_CAL_328                                /*User cal bytes if set are stored in EEPROM locations 0x3FF and 0x3FE*/\
-if ((eeprom_read_byte((uint8_t*)0x3FE) > 0x0F)\
-&&  (eeprom_read_byte((uint8_t*)0x3FE) < 0xF0)\
-&& (eeprom_read_byte((uint8_t*)0x3FE)\
-== eeprom_read_byte((uint8_t*)0x3FF)))\
-{OSCCAL = eeprom_read_byte((uint8_t*)0x3FE);}       //At reset the micro reads register OSCCAL to obtain the calibration byte
-
-
-//Note: Arduino reads the EEPROM as unsigned 8 bit chars
 
 
 /*****************************************************************************/
@@ -153,9 +136,7 @@ TWCR = (1 << TWINT);
 
 
 /*********************************************************************************/
-
 #include "Subroutines/Basic_Rx_Tx_and_Timer.c"
-
 #include "Subroutines/I2C_subroutines.c"
 
 
