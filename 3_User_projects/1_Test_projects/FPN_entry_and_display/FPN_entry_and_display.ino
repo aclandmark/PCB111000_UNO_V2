@@ -8,6 +8,7 @@
 
 #include "FPN_header_file.h"
 
+
 int main (void){
 
  
@@ -19,10 +20,10 @@ float FPN_1, FPN_2;
 
 
 setup_HW_Arduino_IO; 
-User_prompt;
+User_prompt_A;
 sei();
 
-Serial.write("Number?  Then press and hold SW1 to repeat.\r\n");
+Serial.write("Number?  Then press and hold SW1 twice.\r\nReset when finished!\r\n");
 while(1){
 if(switch_1_down)Serial.write("Next Number?\r\n");
 
@@ -32,6 +33,7 @@ FPN_1 = Significand_to_FPN((float)Significand, Denominator, expnt);
 Sc_Num_to_PC(FPN_1, 1, 6, '\r');
 Significand = Fraction_to_Binary_Signed(Significand, Denominator);
 
+
 I2C_Tx_float_num(Significand, expnt);
 I2C_Tx_float_display_control;
 
@@ -40,6 +42,8 @@ while(switch_1_down);
 FPN_2 = FPN_1 * 2.5; Sc_Num_to_PC(FPN_2, 1, 6, '\r');
 Significand = FPN_to_Significand(FPN_2, &Denominator, &expnt);
 Significand = Fraction_to_Binary_Signed(Significand, Denominator);
+
+
 I2C_Tx_float_num(Significand, expnt);
 I2C_Tx_float_display_control;}}
 
@@ -151,23 +155,7 @@ for (m = 0; m <=14; m++)if(display_buffer[m] == '.')break;
 if(display_buffer[m] == '.'){for (int p = m; p <= 14; p++)display_buffer[p] = display_buffer[p+1];}}
 
 
-return expt;
-}
-
-/*
-void I2C_FPN_to_display(float num){
-  long Denominator;
-  long Significand;
-  char expnt;
-
-Significand = FPN_to_Significand(num, &Denominator, &expnt);
-Significand = Fraction_to_Binary_Signed(Significand, Denominator);
-I2C_Tx_float_num(Significand, expnt);
-I2C_Tx_float_display_control;}
-
-*/
-
-
+return expt;}
 
 
 
