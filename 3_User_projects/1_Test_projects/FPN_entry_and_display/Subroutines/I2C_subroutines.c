@@ -71,7 +71,13 @@ void I2C_Tx_8_byte_array(char s[]){									//was I2C_Tx_1
 char num_bytes=8; char mode=4;
 I2C_Tx(num_bytes,mode, s);}
 
-
+/***************************************************************************/
+void I2C_Tx_any_segment_clear_all(void){
+char segment = 'a'; char digit_num = 0;
+char s[2]; char num_bytes=2; char mode = 2;
+s[0] = segment;
+s[1] = digit_num; 
+I2C_Tx(num_bytes,mode, s);}
 
 
 
