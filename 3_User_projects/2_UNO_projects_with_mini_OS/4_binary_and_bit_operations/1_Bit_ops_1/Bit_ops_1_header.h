@@ -193,13 +193,13 @@ TWCR = (1 << TWINT);
 
 /*********************************************************************************/
 //#include "UNO_proj_resources/PC_comms/Basic_Rx_Tx_and_Timer.c"
-#include "UNO_proj_resources/PC_comms/Basic_Rx_Tx_Basic.c"
+#include "UNO_proj_resources_with_mini_OS/PC_comms/Basic_Rx_Tx_Basic.c"
 
-#include "UNO_proj_resources/Chip2chip_comms/I2C_subroutines_1.c"
-#include "UNO_proj_resources/Chip2chip_comms/I2C_slave_Rx_Tx.c"
+#include "UNO_proj_resources_with_mini_OS/Chip2chip_comms/I2C_subroutines_1.c"
+#include "UNO_proj_resources_with_mini_OS/Chip2chip_comms/I2C_slave_Rx_Tx.c"
 
-#include "UNO_proj_resources/Subroutines/Random_and_prime_nos.c"
-#include "UNO_proj_resources/Subroutines/HW_timers.c"
+#include "UNO_proj_resources_with_mini_OS/Subroutines/Random_and_prime_nos.c"
+#include "UNO_proj_resources_with_mini_OS/Subroutines/HW_timers.c"
 
 
 /**********************************************************************************/
