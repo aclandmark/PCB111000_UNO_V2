@@ -35,6 +35,8 @@ unsigned char eep_offset;																//The subroutine provides it for every 
 eep_offset = eeprom_read_byte((uint8_t*)(0x3EF));										//Three pairs of eeprom registers are reserved to backup PRN numbers
 if(eep_offset > 4) eep_offset = 0;
 
+eep_offset = 2;////////////////////////////////////Damaged EEPROM on one of the UNO pcbs
+
 if((!(*PRN_counter)) && (!(start)))														//Only read the EEPROM the first time a program calls this subroutine
 {lfsr = (eeprom_read_byte((uint8_t*)(0x3F5 - eep_offset)) << 8) + 
 eeprom_read_byte((uint8_t*)(0x3F4 - eep_offset));}										//Data saved to EEPROM survives resets including POR (power on reset)
