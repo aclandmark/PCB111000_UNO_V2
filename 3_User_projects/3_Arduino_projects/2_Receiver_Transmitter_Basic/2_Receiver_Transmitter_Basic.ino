@@ -21,6 +21,7 @@ digits 1, 2 and 5 can therfore by extracted by subtracting 48 from 49, 50 and 53
  
 int main (void)                          //Example 1
   { setup_HW_basic;
+ User_prompt_Basic;
   Char_to_PC_Basic('?');
   newline;
   while (1)
@@ -42,6 +43,7 @@ int main (void)                          //Example 1
 ********Example 1: Echoes keypresses*************************************************************************
   int main (void)                          //Example 1
   { setup_HW_basic;
+ User_prompt_Basic;
   Char_to_PC_Basic('?');
   newline;
   while (1)
@@ -59,6 +61,7 @@ int main (void)                          //Example 1
   int main (void)                          //Example 2
   { char symbol;
   setup_HW_basic;
+  User_prompt_Basic;
   newline;
   symbol = '!';
   while (symbol <= '~')
@@ -98,6 +101,7 @@ int main (void)                          //Example 3
 ********Example 4: Send strings to the PC********************************************************************
 int main (void)                          //Example 4
   { setup_HW_basic;
+  User_prompt_Basic;
   String_to_PC_Basic("\r\nDefining and using text strings\r\n");
   const char *message_1 = "Hello world\r\n";
   const char *message_2 = "Sending text to a PC\r\n";
@@ -118,6 +122,7 @@ int main (void)                          //Example 4
 int main (void)                          //Example 5
   { char symbol = '!';
   setup_HW_basic;
+  User_prompt_Basic;
   newline_Basic();
   while (symbol <= '~')
   { Num_to_PC_Basic(symbol);
@@ -140,6 +145,7 @@ int main (void)                          //Example 5
   { int i = 0, number = 12345;
   char s[12];
   setup_HW_basic;
+  User_prompt_Basic;
   do {
     s[i++] = number % 10 + '0';
   }
@@ -159,6 +165,7 @@ int main (void)                          //Example 7
   { long num = 0;
   char keypress;
   setup_HW_basic;
+  User_prompt_Basic;
   num = 0; Char_to_PC_Basic('?');
   while ((keypress = waitforkeypress_Basic()) != '\r')
   { num = num * 10 + keypress  - '0';
@@ -179,6 +186,7 @@ int main (void)                          //Example 8
   char Num_string[12];
   
   setup_HW_basic;
+  User_prompt_Basic;
   String_to_PC_Basic("\r\n?\r\n");
   Num_string_from_KBD_Basic(Num_string);
 
@@ -212,6 +220,7 @@ int main (void)                          //Example 9
   int no_decimal_places;
 
     setup_HW_basic;
+    User_prompt_Basic;
   String_to_PC_Basic("?\r\n");
   
   for(int m = 0; m <=2; m++)
