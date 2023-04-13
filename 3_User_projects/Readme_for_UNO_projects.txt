@@ -10,3 +10,5 @@ Default project
 Hello world project
 Display brightness control
 clock calibration for mini_OS chip
+
+Bootloader saves a copy of MCUSR to EEPROM so user projects know the reset source 
