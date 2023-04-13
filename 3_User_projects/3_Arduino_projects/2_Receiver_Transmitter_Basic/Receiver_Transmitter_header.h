@@ -119,7 +119,7 @@ This is OK because it is always connected to a defined logic level
 
 
 /*****************************************************************************/
-#define User_prompt \
+#define User_prompt_Basic \
 while(1){\
 do{String_to_PC_Basic("R?    ");}  while((isCharavailable_Basic(250) == 0));\
 User_response = Char_from_PC_Basic();\
