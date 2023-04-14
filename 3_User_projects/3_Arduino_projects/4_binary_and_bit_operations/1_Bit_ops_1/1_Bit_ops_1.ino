@@ -18,6 +18,7 @@ char PRN_counter = 0;
 
 
 setup_HW_basic;
+User_prompt_Basic;
 for(int m = 0; m <= 7; m++)digits[m] = 0;
 lfsr = (PRN_8bit_GEN (0, &PRN_counter));                                     //Generate a new PRN (0) tells subroutine to use the EEPROM
 
