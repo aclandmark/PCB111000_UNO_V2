@@ -23,6 +23,7 @@ int test = 0;
 
 
  setup_HW_basic;
+ User_prompt_Basic;
 for(int m = 0; m <=7; m++)digits[m] = 0;
  
  
