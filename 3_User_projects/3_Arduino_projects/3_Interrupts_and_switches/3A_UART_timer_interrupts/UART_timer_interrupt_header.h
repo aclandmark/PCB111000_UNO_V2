@@ -21,6 +21,12 @@ char num_as_string[12];
 
 
 /*****************************************************************************/
+#define switch_2_down  ((PIND & 0x80)^0x80)
+#define switch_2_up   (PIND & 0x80)
+
+
+
+/*****************************************************************************/
 #define setup_HW_basic \
 CLKPR = (1 << CLKPCE);                        /*Reduce 16MHz crystal clock to 8MHz*/\
 CLKPR = (1 << CLKPS0);\
