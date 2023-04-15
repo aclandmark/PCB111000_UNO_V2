@@ -48,9 +48,9 @@ int main (void)
   else {Serial.write("\r\n\r\nUsing Arduino functions to receive and print scientific numbers.\r\n");}
    Serial.write("\r\nScientific number? Then press AK.\r\n");
    
-num_1 = Sc_Num_from_PC_A(num_string, Buff_Length);
+num_1 = Sc_Num_from_PC_A_Local(num_string, Buff_Length);
 newline_A;
-  Sc_Num_to_PC_A(num_1,2,6,'\r');
+  Sc_Num_to_PC_A_Local(num_1,2,6,'\r');
 
 if (num_1 < 0.0) index = 3;                                   //Raise negative numbers to the power of 3
 else {
