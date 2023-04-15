@@ -41,14 +41,14 @@ int main (void)
   User_prompt_A;
  
    Serial.write("\r\nInteger number");
-num = Int_Num_from_PC_A(num_string,BL);
+num = Int_Num_from_PC_A_Local(num_string,BL);
 
 newline_A;
 Serial.print(num);
 Serial.write("\t");
 
 do{
-if(!(num%m)){Int_Num_to_PC_A(m, num_string, '\t');}
+if(!(num%m)){Int_Num_to_PC_A_Local(m, num_string, '\t');}
 m += 1; wdr();}while(m < num);
 
 SW_reset;
