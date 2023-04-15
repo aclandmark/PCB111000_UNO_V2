@@ -13,6 +13,7 @@ long Num_1, Num_2;
 char digits[8];
 
  setup_HW_basic;
+ User_prompt_Basic;
  _delay_ms(10);
  sei();
    
