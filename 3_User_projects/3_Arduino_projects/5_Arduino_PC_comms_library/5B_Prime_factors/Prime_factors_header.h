@@ -7,7 +7,7 @@ char User_response;
 char num_as_string[12];
 
 
-unsigned char PRN_8bit_GEN(unsigned char, char *);
+//unsigned char PRN_8bit_GEN(unsigned char, char *);
 char isCharavailable_A (int);
 void Cal_UNO_pcb_A_Arduino(void);
 
