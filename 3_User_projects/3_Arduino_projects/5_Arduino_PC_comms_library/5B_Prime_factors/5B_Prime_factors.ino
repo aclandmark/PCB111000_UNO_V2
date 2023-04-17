@@ -19,6 +19,7 @@ int main (void)
     char factor_counter;
  
  setup_HW_Arduino_IO;
+ User_prompt_A;
    Serial.write("\r\nInteger number\t");
    number = Int_Num_from_PC_A(num_string, BL);
 
