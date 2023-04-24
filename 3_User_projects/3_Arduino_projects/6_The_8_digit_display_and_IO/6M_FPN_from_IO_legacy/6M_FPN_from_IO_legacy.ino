@@ -50,11 +50,6 @@ IT INTRODUCES
 #include "FPN_IO_to_display_header.h"
 
 
-volatile char Data_Entry_complete, digit_entry;
-volatile char scroll_control;
-char digits[8];
-
-
 int main (void){
   float x1;
   float power;
