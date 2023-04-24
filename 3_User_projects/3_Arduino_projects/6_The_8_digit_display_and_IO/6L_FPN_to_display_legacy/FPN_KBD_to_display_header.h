@@ -1,15 +1,22 @@
 
 
 
-#include <avr/wdt.h>
-
 
 char watch_dog_reset = 0;
-char MCUSR_copy;
 char User_response;
-char num_as_string[12];                           //Required by pcb_A calibration routine to print out cal results
+char num_as_string[12];
+
+/*****************************************************************************/
+#include <avr/wdt.h>
+
+#define newline_A         Serial.write("\r\n"); 
 
 
+
+/*****************************************************************************/
+#define SW_reset                     {eeprom_write_byte((uint8_t*)(0x3FC),0);wdt_enable(WDTO_30MS);while(1);}
+#define SW_reset_detected           !(eeprom_read_byte((uint8_t*)(0x3FC)))
+#define clear_reset_eeprom           eeprom_write_byte((uint8_t*)(0x3FC),0xFF);
 
 #define switch_1_down  ((PIND & 0x04)^0x04)
 #define switch_1_up   (PIND & 0x04)
@@ -25,11 +32,6 @@ char num_as_string[12];                           //Required by pcb_A calibratio
 CLKPR = (1 << CLKPCE);                        /*Reduce 16MHz crystal clock to 8MHz*/\
 CLKPR = (1 << CLKPS0);\
 \
-MCUSR_copy = \
-eeprom_read_byte((uint8_t*)0x3FC);            /*Saved to EEPROM by the bootloader*/\
-if (MCUSR_copy & (1 << PORF))                 /*Power on reset flag set*/\
-{MCUSR_copy = (1 << PORF);\
-eeprom_write_byte((uint8_t*)0x3F5,0);}        /*Initialise random generator memory */\
 setup_watchdog;\
 \
 set_up_I2C;                                   /*UNO hosts the slave I2C*/\
@@ -41,7 +43,6 @@ set_up_activity_leds;\
 Serial.begin(115200);\
 while (!Serial);\
 sei();\
-User_app_commentary_mode;\
 \
 if (((PINB & 0x04)^0x04) && \
 ((PIND & 0x04)^0x04))                         /*Press SW1 and SW3 to adjust intensity*/\
@@ -49,23 +50,32 @@ I2C_Tx_LED_dimmer_UNO();\
 \
 if(((PIND & 0x04)^0x04) && \
 ((PIND & 0x80)^0x80))                         /*Press SW1 and SW2 to trigger recalibration*/\
-Cal_UNO_pcb_A_Arduino();
+Cal_UNO_pcb_A_Arduino();                      /*See \PC_comms\Basic_Rx_Tx_Arduino.c*/
 
 
 
 /*****************************************************************************/
 #define setup_watchdog \
-if (MCUSR_copy & (1 << WDRF))watch_dog_reset = 1;\
+if (SW_reset_detected){watch_dog_reset = 1;clear_reset_eeprom;}\
 wdr();\
-MCUSR &= ~(1<<WDRF);\
+MCUSR &= ~(1<<WDRF);                          /*Line not needed WD flag already reset by bootloader */\
 WDTCSR |= (1 <<WDCE) | (1<< WDE);\
 WDTCSR = 0;
 
 
 #define wdr()  __asm__ __volatile__("wdr")
 
+#define wd_timer_off \
+wdr();\
+MCUSR &= (~(1 << WDRF));\
+WDTCSR |= (1<<WDCE) | (1<<WDE);\
+WDTCSR = 0x00;
 
-#define SW_reset {wdt_enable(WDTO_30MS);while(1);}
+
+#define One_Sec_WDT_with_interrupt \
+wdr();\
+WDTCSR |= (1 <<WDCE) | (1<< WDE);\
+WDTCSR = (1<< WDE) | (1 << WDIE) |  (1 << WDP2)  |  (1 << WDP1);
 
 
 
@@ -103,6 +113,7 @@ else {PORTB |= (1 << PB1);}
 
 
 
+
 /*****************************************************************************/
 #define Unused_I_O                                  /*Set all unused ports to weak pull up*/\
 MCUCR &= (~(1 << PUD));\
@@ -110,6 +121,7 @@ DDRC &= (~((1 << PC0)|(1 << PC1)|(1 << PC2)));\
 DDRD &= (~((1 << PD3)|(1 << PD4)|(1 << PD5)));\
 PORTC |= ((1 << PC0)|(1 << PC1)|(1 << PC2));\
 PORTD |= ((1 << PD3)|(1 << PD4)|(1 << PD5));
+
 
 /*
 Note: The hex_text_bootloader reads PD6 to control the reset operation.
@@ -139,38 +151,14 @@ TWCR = (1 << TWINT);
 
 
 
-/*****************************************************************************/
-#define User_app_commentary_mode \
-\
-if(eeprom_read_byte((uint8_t*)0x3F6) == 0xFF)\
-eeprom_write_byte((uint8_t*)0x3F6,0);\
-\
-if(eeprom_read_byte((uint8_t*)0x3F6) == 0x40){\
-for(int m = 0; m < 10; m++)Serial.write("\r\n");\
-Serial.write\
-("Project commentary: Press 'X' to escape or AOK\r\n");\
-waitforkeypress_A();\
-\
-eeprom_write_byte((uint8_t*)0x3F6,0x41);}\
-\
-if ((eeprom_read_byte((uint8_t*)0x3F6) & 0x40)){\
-eeprom_write_byte((uint8_t*)0x3F6,\
-(eeprom_read_byte((uint8_t*)0x3F6) | 0x80));\
-\
-for(int m = 0; m < 8; m++)Serial.write("\r\n");\
-_delay_ms(10);\
-asm("jmp 0x6C00");}                                     /*Go to Text_Verification.hex to print the next string*/ 
-
-
-
-/**********************************************************************************/
-#include "UNO_proj_resources\Chip2chip_comms\I2C_slave_Rx_Tx.c"
-#include "UNO_proj_resources\Chip2chip_comms\I2C_subroutines_1.c"
-#include "UNO_proj_resources\PC_comms\Basic_Rx_Tx_Arduino.c"
-#include "UNO_proj_resources\Subroutines\HW_timers.c"
-#include "UNO_proj_resources\PC_comms\KBD_to_display.c"
-#include "UNO_proj_resources\Subroutines\FPN_DIY_IO.c"
-#include "UNO_proj_resources\PC_comms\Arduino_Rx_Tx_UNO_pcb.c"
+/*********************************************************************************/
+#include "Arduino_proj_resources\Chip2chip_comms\I2C_slave_Rx_Tx.c"
+#include "Arduino_proj_resources\Chip2chip_comms\I2C_subroutines_1.c"
+#include "Arduino_proj_resources\PC_comms\Basic_Rx_Tx_Arduino.c"
+#include "Arduino_proj_resources\PC_comms\Arduino_Rx_Tx_UNO_pcb.c"
+#include "Arduino_proj_resources\Subroutines\HW_timers.c"
+#include "Arduino_proj_resources\Subroutines\FPN_DIY_IO.c"
+#include "Arduino_proj_resources\PC_comms\KBD_to_display.c"
 
 
 
