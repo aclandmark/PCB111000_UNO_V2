@@ -148,6 +148,7 @@ if(eeprom_read_byte((uint8_t*)0x3F6) == 0x40){\
 for(int m = 0; m < 10; m++)Serial.write("\r\n");\
 Serial.write\
 ("Project commentary: Press 'X' to escape or AOK\r\n");\
+waitforkeypress_A();\
 \
 eeprom_write_byte((uint8_t*)0x3F6,0x41);}\
 \
@@ -155,8 +156,8 @@ if ((eeprom_read_byte((uint8_t*)0x3F6) & 0x40)){\
 eeprom_write_byte((uint8_t*)0x3F6,\
 (eeprom_read_byte((uint8_t*)0x3F6) | 0x80));\
 \
-for(int m = 0; m < 4; m++)Serial.write("\r\n");\
-\
+for(int m = 0; m < 8; m++)Serial.write("\r\n");\
+_delay_ms(10);\
 asm("jmp 0x6C00");}                                     /*Go to Text_Verification.hex to print the next string*/ 
 
 
