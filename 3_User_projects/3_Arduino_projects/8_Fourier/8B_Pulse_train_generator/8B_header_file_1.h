@@ -1,11 +1,12 @@
 
-#include "8A_header_file_2.h"
+#include "8B_header_file_2.h"
 
 
 char watch_dog_reset = 0;
 char User_response;
 char reset_status;
 
+#define newline_A         Serial.write("\r\n"); 
 
 
 /*****************************************************************************/
@@ -109,7 +110,7 @@ TWCR = (1 << TWINT);
 #include "Arduino_proj_resources/Subroutines/HW_timers.c"
 #include "Arduino_proj_resources/PC_comms/Basic_Rx_Tx_Arduino.c"
 #include "Arduino_proj_resources/PC_comms/Arduino_Rx_Tx_UNO_pcb.c"
-
-
+#include "Arduino_proj_resources/Subroutines/FPN_DIY_IO.c"
+#include "Arduino_proj_resources/PC_comms/KBD_to_display.c"
 
 /******************************************************************************/
