@@ -43,7 +43,7 @@ setup_HW_with_reset_analysis;
 set_up_PCI;
 
 switch (reset_status)                                                    //Check each time a reset occurs
-{case 1: User_prompt_A;                                                  //POR
+{case 0: User_prompt_A;                                                  //POR
 SW_reset;break;
 case 4: Timer_T1_sub_with_interrupt(T1_delay_250ms);                    //Flagged WDTout. Restart with new waveform
 for(int p = 0; p <10; p++)newline_A; break;
@@ -51,7 +51,6 @@ for(int p = 0; p <10; p++)newline_A; break;
 case 5:Serial.write
 ("\r\n\r\nNumerical result out of bounds.\r\n");                          //WDTout with interrupt
 case 2:                                                                  //SW_reset
-case 3:                                                                  //Post prtD
  eeprom_write_byte((uint8_t*)(0x0),1);                                   //1 to 9 gives mark space ratio
  eeprom_write_byte((uint8_t*)(0x1),45);                                  //Waveform period
  eeprom_write_byte((uint8_t*)(0x2),0); 
