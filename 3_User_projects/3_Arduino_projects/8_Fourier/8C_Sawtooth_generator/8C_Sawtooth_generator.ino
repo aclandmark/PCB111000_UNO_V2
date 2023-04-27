@@ -35,7 +35,7 @@ setup_HW_with_reset_analysis;
 set_up_PCI;
 setup_watchdog;
 
-if(reset_status != 2)eeprom_write_byte((uint8_t*)(0x0),0); 
+if(reset_status != 2){User_prompt_A; eeprom_write_byte((uint8_t*)(0x0),0);} 
 
 enable_pci_on_sw1;
  
