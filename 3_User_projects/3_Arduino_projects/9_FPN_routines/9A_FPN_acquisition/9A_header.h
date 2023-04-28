@@ -24,11 +24,6 @@ char User_response;
 CLKPR = (1 << CLKPCE);                        /*Reduce 16MHz crystal clock to 8MHz*/\
 CLKPR = (1 << CLKPS0);\
 \
-MCUSR_copy = \
-eeprom_read_byte((uint8_t*)0x3FC);            /*Saved to EEPROM by the bootloader*/\
-if (MCUSR_copy & (1 << PORF))                 /*Power on reset flag set*/\
-{MCUSR_copy = (1 << PORF);\
-eeprom_write_byte((uint8_t*)0x3F5,0);}        /*Initialise random generator memory */\
 setup_watchdog;\
 \
 set_up_I2C;                                   /*UNO hosts the slave I2C*/\
@@ -40,7 +35,6 @@ set_up_activity_leds;\
 Serial.begin(115200);\
 while (!Serial);\
 sei();\
-User_app_commentary_mode;\
 \
 if (((PINB & 0x04)^0x04) && \
 ((PIND & 0x04)^0x04))                         /*Press SW1 and SW3 to adjust intensity*/\
@@ -138,39 +132,15 @@ TWCR = (1 << TWINT);
 
 
 
-/*****************************************************************************/
-#define User_app_commentary_mode \
-\
-if(eeprom_read_byte((uint8_t*)0x3F6) == 0xFF)\
-eeprom_write_byte((uint8_t*)0x3F6,0);\
-\
-if(eeprom_read_byte((uint8_t*)0x3F6) == 0x40){\
-for(int m = 0; m < 10; m++)Serial.write("\r\n");\
-Serial.write\
-("Project commentary: Press 'X' to escape or AOK\r\n");\
-waitforkeypress_A();\
-\
-eeprom_write_byte((uint8_t*)0x3F6,0x41);}\
-\
-if ((eeprom_read_byte((uint8_t*)0x3F6) & 0x40)){\
-eeprom_write_byte((uint8_t*)0x3F6,\
-(eeprom_read_byte((uint8_t*)0x3F6) | 0x80));\
-\
-for(int m = 0; m < 8; m++)Serial.write("\r\n");\
-_delay_ms(10);\
-asm("jmp 0x6C00");}                                     /*Go to Text_Verification.hex to print the next string*/ 
-
-
-
 /**********************************************************************************/
-#include "UNO_proj_resources\Chip2chip_comms\I2C_slave_Rx_Tx.c"
-#include "UNO_proj_resources\Chip2chip_comms\I2C_subroutines_1.c"
-#include "UNO_proj_resources\PC_comms\Basic_Rx_Tx_Arduino.c"
-#include "UNO_proj_resources\Subroutines\HW_timers.c"
-#include "UNO_proj_resources\PC_comms\KBD_to_display.c"
-#include "UNO_proj_resources\Subroutines\FPN_DIY_IO.c"
-#include "UNO_proj_resources\Subroutines\FPN_arithmetic.c"
-#include "UNO_proj_resources\PC_comms\Arduino_Rx_Tx_UNO_pcb.c"
+#include "Arduino_proj_resources\Chip2chip_comms\I2C_slave_Rx_Tx.c"
+#include "Arduino_proj_resources\Chip2chip_comms\I2C_subroutines_1.c"
+#include "Arduino_proj_resources\PC_comms\Basic_Rx_Tx_Arduino.c"
+#include "Arduino_proj_resources\Subroutines\HW_timers.c"
+#include "Arduino_proj_resources\PC_comms\KBD_to_display.c"
+#include "Arduino_proj_resources\Subroutines\FPN_DIY_IO.c"
+#include "Arduino_proj_resources\Subroutines\FPN_arithmetic.c"
+#include "Arduino_proj_resources\PC_comms\Arduino_Rx_Tx_UNO_pcb.c"
 
 
 
