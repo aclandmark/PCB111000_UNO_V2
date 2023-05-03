@@ -31,8 +31,8 @@ if(eeprom_read_byte((uint8_t*)0x3F6) == 0xFF)\
 eeprom_write_byte((uint8_t*)0x3F6,0);\
 \
 if(eeprom_read_byte((uint8_t*)0x3F6) == 0x40){\
-for(int m = 0; m < 10; m++)Serial.write("\r\n");\
-Serial.write\
+for(int m = 0; m < 10; m++)String_to_PC_Basic("\r\n");\
+String_to_PC_Basic\
 ("Project commentary: Press 'X' to escape or AOK\r\n");\
 \
 eeprom_write_byte((uint8_t*)0x3F6,0x41);}\
@@ -41,7 +41,7 @@ if ((eeprom_read_byte((uint8_t*)0x3F6) & 0x40)){\
 eeprom_write_byte((uint8_t*)0x3F6,\
 (eeprom_read_byte((uint8_t*)0x3F6) | 0x80));\
 \
-for(int m = 0; m < 4; m++)Serial.write("\r\n");\
+for(int m = 0; m < 4; m++)String_to_PC_Basic("\r\n");\
 \
 asm("jmp 0x6C00");}                                     /*Go to Text_Verification.hex to print the next string*/ 
 
