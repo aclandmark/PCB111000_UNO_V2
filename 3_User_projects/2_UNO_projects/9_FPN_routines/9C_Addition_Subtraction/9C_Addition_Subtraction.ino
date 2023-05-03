@@ -28,6 +28,8 @@ FPN_to_String(Result, 1, 5, '\r', num_as_string);
 Serial.write(num_as_string);
 
 if ((*(long *)&Result))I2C_FPN_to_display(Result);
+else I2C_Tx_long(0);
+
 FPN_1 = Result;}
 
 SW_reset;}
