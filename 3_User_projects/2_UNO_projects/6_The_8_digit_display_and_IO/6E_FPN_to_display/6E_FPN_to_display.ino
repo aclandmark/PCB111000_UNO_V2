@@ -34,7 +34,7 @@ Serial.write("\r\nEnter scientific number \
 Press SW3 to pause the display.\r\n\
 SW1 to scroll through the results.\r\n");
 
-Num_1 = FPN_KBD_to_display_A_Local(digits, Buff_Length); 
+Num_1 = FPN_KBD_to_display_A(digits, Buff_Length); 
 
 if(Num_1 > 0.0)power = 0.5;
 else power = 3.0;
@@ -117,10 +117,17 @@ if (!(decimal_digit_A(keypress)) && (keypress != '.')                 //Check fo
 && (keypress != 'e') &&  (keypress != '\b'))continue;
 
 switch (keypress){
-
+/*
 case '\b':  for (int n = 0; n < BL - 1; n++)                             //Backspace keypress
 display_buffer[n] = display_buffer[n + 1];
 I2C_Tx_8_byte_array(display_buffer); break;
+*/
+case '\b':  for (int n = 0; n < BL - 1; n++)                             //Backspace keypress
+display_buffer[n] = display_buffer[n + 1];
+display_buffer[BL - 1] = 0;
+I2C_Tx_8_byte_array(display_buffer); break;
+
+
 
 default:
 for(int n = BL - 1; n>=1; n--)                                            //Shift display for each new keypress except '.'
