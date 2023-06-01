@@ -42,14 +42,14 @@ Note: Zero entry is ignored.\r\n\
 Press SW3 to pause the display\r\n\
 Press reset to repeat.\r\n");
 
-num_from_KBD = Int_KBD_to_display_A_Local(digits);
+num_from_KBD = Int_KBD_to_display_A(digits);
 Arith_mean = (float)num_from_KBD;
 Geom_mean = Arith_mean;
 
 while(1){
 
 while ((switch_1_down) || (switch_2_down) || (switch_3_down));
-if ((num_from_KBD = Int_KBD_to_display_A_Local(digits)))
+if ((num_from_KBD = Int_KBD_to_display_A(digits)))
 
 {Arith_mean = Arith_mean * (float)counter;
 Geom_mean = pow (Geom_mean, (float)counter);
@@ -98,9 +98,15 @@ if ((keypress = wait_for_return_key_A())  =='\r')break;         //Detect return 
 if ((decimal_digit_A(keypress)) || (keypress == '\b')\
  || (keypress == '-'))
 
-{if (keypress == '\b'){                                 //Backspace key
+ /*{if (keypress == '\b'){                                 //Backspace key
 for (int n = 0; n <= 7; n++)
 display_buffer[n] = display_buffer[n + 1];}
+*/
+{if (keypress == '\b'){                                 //Backspace key
+for (int n = 0; n < 7; n++)
+display_buffer[n] = display_buffer[n + 1];
+display_buffer[7] = 0;}
+
 else
 {for(int n = 8; n>=1; n--)                                      //Shift display for each new keypress
 display_buffer[n] = display_buffer[n-1];
