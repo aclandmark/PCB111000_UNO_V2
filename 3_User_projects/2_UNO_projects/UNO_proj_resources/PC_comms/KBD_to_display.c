@@ -31,9 +31,14 @@ if ((keypress = wait_for_return_key_A())  =='\r')break;        	//Detect return 
 if ((decimal_digit_A(keypress)) || (keypress == '\b')\
  || (keypress == '-'))
 
+//{if (keypress == '\b'){                         				//Backspace key
+//for (int n = 0; n <= 7; n++)
+//display_buffer[n] = display_buffer[n + 1];}
 {if (keypress == '\b'){                         				//Backspace key
-for (int n = 0; n <= 7; n++)
-display_buffer[n] = display_buffer[n + 1];}
+for (int n = 0; n < 7; n++)
+display_buffer[n] = display_buffer[n + 1];
+display_buffer[7] = 0;}
+
 else
 {for(int n = 8; n>=1; n--)                                    	//Shift display for each new keypress
 display_buffer[n] = display_buffer[n-1];
@@ -95,8 +100,12 @@ if (!(decimal_digit_A(keypress)) && (keypress != '.')                 //Check fo
 
 switch (keypress){
 
+//case '\b':  for (int n = 0; n < BL - 1; n++)                             //Backspace keypress
+//display_buffer[n] = display_buffer[n + 1];
+//I2C_Tx_8_byte_array(display_buffer); break;
 case '\b':  for (int n = 0; n < BL - 1; n++)                             //Backspace keypress
 display_buffer[n] = display_buffer[n + 1];
+display_buffer[BL - 1] = 0;
 I2C_Tx_8_byte_array(display_buffer); break;
 
 default:
@@ -191,9 +200,13 @@ if ((decimal_digit_A(keypress)) || (keypress == '.')                      //Chec
 {if(display_buffer[0] == '.')decimal_place_counter = 1;
 if((keypress == 'E') || (keypress == 'e'))keypress_E = 1;
   
-if(keypress == '\b'){for (int n = 0; n < BL-1; n++)                        //Backspace keypress
+//if(keypress == '\b'){for (int n = 0; n < BL-1; n++)                        //Backspace keypress
+//display_buffer[n] = display_buffer[n + 1];
+//I2C_Tx_8_byte_array(display_buffer);}
+case '\b':  for (int n = 0; n < BL - 1; n++)                             //Backspace keypress
 display_buffer[n] = display_buffer[n + 1];
-I2C_Tx_8_byte_array(display_buffer);}
+display_buffer[BL - 1] = 0;
+I2C_Tx_8_byte_array(display_buffer); break;
 
 else
 
@@ -267,9 +280,13 @@ if ((decimal_digit_A(keypress)) || (keypress == '.')                      //Chec
 {if(display_buffer[0] == '.')decimal_place_counter = 1;
 if((keypress == 'E') || (keypress == 'e'))keypress_E = 1;
   
-  if(keypress == '\b'){for (int n = 0; n <= 11; n++)                      //Backspace keypress
+//if(keypress == '\b'){for (int n = 0; n <= 11; n++)                      //Backspace keypress
+//display_buffer[n] = display_buffer[n + 1];
+//I2C_Tx_8_byte_array(display_buffer);}
+case '\b':  for (int n = 0; n < 11; n++)                             //Backspace keypress
 display_buffer[n] = display_buffer[n + 1];
-I2C_Tx_8_byte_array(display_buffer);}
+display_buffer[11] = 0;
+I2C_Tx_8_byte_array(display_buffer); break;
 
 else
 
