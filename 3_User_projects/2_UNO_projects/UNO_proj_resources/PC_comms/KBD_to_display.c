@@ -203,10 +203,10 @@ if((keypress == 'E') || (keypress == 'e'))keypress_E = 1;
 //if(keypress == '\b'){for (int n = 0; n < BL-1; n++)                        //Backspace keypress
 //display_buffer[n] = display_buffer[n + 1];
 //I2C_Tx_8_byte_array(display_buffer);}
-case '\b':  for (int n = 0; n < BL - 1; n++)                             //Backspace keypress
+if(keypress == '\b')  {for (int n = 0; n < BL - 1; n++)                             //Backspace keypress
 display_buffer[n] = display_buffer[n + 1];
 display_buffer[BL - 1] = 0;
-I2C_Tx_8_byte_array(display_buffer); break;
+I2C_Tx_8_byte_array(display_buffer);}
 
 else
 
@@ -283,10 +283,10 @@ if((keypress == 'E') || (keypress == 'e'))keypress_E = 1;
 //if(keypress == '\b'){for (int n = 0; n <= 11; n++)                      //Backspace keypress
 //display_buffer[n] = display_buffer[n + 1];
 //I2C_Tx_8_byte_array(display_buffer);}
-case '\b':  for (int n = 0; n < 11; n++)                             //Backspace keypress
+if(keypress == '\b'){for (int n = 0; n < 11; n++)                             //Backspace keypress
 display_buffer[n] = display_buffer[n + 1];
 display_buffer[11] = 0;
-I2C_Tx_8_byte_array(display_buffer); break;
+I2C_Tx_8_byte_array(display_buffer);}
 
 else
 
