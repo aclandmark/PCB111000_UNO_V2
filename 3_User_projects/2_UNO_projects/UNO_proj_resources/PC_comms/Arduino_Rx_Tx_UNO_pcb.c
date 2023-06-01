@@ -57,7 +57,8 @@ for(int m = 0; m < strln; m++){
  
 //Remove remainingdel chars*********************************************************************************************
  if(num_as_string[m] != '\b');
-  else for(int p = m; p < strln-1; p++){num_as_string[p-1] = num_as_string[p+1]; num_as_string[p+1] = '\0';m = 0;} }
+ //else for(int p = m; p < strln-1; p++){num_as_string[p-1] = num_as_string[p+1]; num_as_string[p+1] = '\0';m = 0;} }
+else for(int p = m; p < strln-1; p++){num_as_string[p-1] = num_as_string[p+1]; num_as_string[p+1] = 0;num_as_string[p] = 0;m = 0;} } 
 
 num_as_string[strln] = 0;
 if(atol(num_as_string) > 0x7FFFF)
@@ -89,7 +90,8 @@ for(int m = 0; m < strln; m++){
  
 //Remove remaining del chars*********************************************************************************************
  if(num_as_string[m] != '\b');
-  else for(int p = m; p < strln-1; p++){num_as_string[p-1] = num_as_string[p+1]; num_as_string[p+1] = '\0';m = 0;} }
+  //else for(int p = m; p < strln-1; p++){num_as_string[p-1] = num_as_string[p+1]; num_as_string[p+1] = '\0';m = 0;} }
+else for(int p = m; p < strln-1; p++){num_as_string[p-1] = num_as_string[p+1]; num_as_string[p+1] = 0;num_as_string[p] = 0;m = 0;} } 
 
 num_as_string[strln] = 0;
 return atof(num_as_string);}												//Askii to float
@@ -129,9 +131,14 @@ Check_num_for_to_big_or_small(num);								//Exit before attempting to do arithm
 
 if (num < 0){sign = '-'; num = num * (-1);}						//Only process positive numbers
 
-while(--pre_dp){A = A*10;}										//Convert FPN to Scientific format (real + exponent)
+/*while(--pre_dp){A = A*10;}										//Convert FPN to Scientific format (real + exponent)
 while (num >= A){num = num/10.0; expt += 1;}
-while (num <= A){num = num*10.0; expt -= 1;}
+while (num <= A){num = num*10.0; expt -= 1;}*/
+if(pre_dp){
+while(pre_dp--)A = A*10;}
+if (num >= 1.0)while (num >= A){num = num/10.0; expt += 1;}
+else {while (num*10.0 < A){num = num*10.0; expt -= 1;}}
+
 
 if(sign == '-')num = num * (-1);								//Restore sign
 
