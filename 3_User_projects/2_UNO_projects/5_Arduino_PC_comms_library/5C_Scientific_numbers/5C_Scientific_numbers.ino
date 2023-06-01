@@ -41,16 +41,23 @@ int main (void)
     char num_string[Buff_Length + 2];
     float  num_1, num_2, num_3;
     float index;
+    char pre_dp;
  
  setup_HW_Arduino_IO;
     
    if (watch_dog_reset == 1) {watch_dog_reset = 0; User_prompt_A;}
   else {Serial.write("\r\n\r\nUsing Arduino functions to receive and print scientific numbers.\r\n");}
-   Serial.write("\r\nScientific number? Then press AK.\r\n");
+   Serial.write("\r\nEnter scientific number\r\nthen the number of digits before the decimal point.\r\n");
    
-num_1 = Sc_Num_from_PC_A_Local(num_string, Buff_Length);
+num_1 = Sc_Num_from_PC_A(num_string, Buff_Length);
+
+while(1){pre_dp = waitforkeypress_A();
+if ((pre_dp < '0')||(pre_dp > '9'))Serial.write("!");
+else break;}
+pre_dp -= '0';
+
 newline_A;
-  Sc_Num_to_PC_A_Local(num_1,2,6,'\r');
+  Sc_Num_to_PC_A(num_1,pre_dp,6,'\r');
 
 if (num_1 < 0.0) index = 3;                                   //Raise negative numbers to the power of 3
 else {
@@ -61,7 +68,7 @@ while(1){
   while(!(Serial.available()))wdr();
 Serial.read();                                            //The equivalent of waitforkeypress()
 num_2 = pow (num_1,index);                                    //-C- library function
-Sc_Num_to_PC_A_Local(num_2, 2, 4, '\r');
+Sc_Num_to_PC_A_Local(num_2, pre_dp, 6, '\r');
 
 if ((index < 0.0) || (index > 1.0));
 else 
@@ -86,9 +93,17 @@ Check_num_for_to_big_or_small(num);                       //SW_reset required to
 
 if (num < 0){sign = '-'; num = num * (-1);}
 
+/*
 while(--pre_dp){A = A*10;} 
 while (num >= A){num = num/10.0; Exp += 1;}               //Repetitively divide large numbers by 10
 while (num <= A){num = num*10.0; Exp -= 1;}               //and multiply small ones by 10
+*/
+if(pre_dp){
+while(pre_dp--)A = A*10;}
+if (num >= 1.0)while (num >= A){num = num/10.0; Exp += 1;}
+else {while (num*10.0 < A){num = num*10.0; Exp -= 1;}}
+
+
 
 if(sign == '-')num = num * (-1);
 
@@ -105,7 +120,7 @@ Serial.write(next_char);}
 
 
 /******************************************************************************************/
-float Sc_Num_from_PC_A_Local(char * num_as_string, int BL)
+float Sc_Num_from_PC_A_Local(char * num_as_string, int BL)            //Library version supports backspace key
 {char strln;                                                          //Length of a string of characters
 
 Serial.flush();                                                       //Clear the Arduino serial buffer   
