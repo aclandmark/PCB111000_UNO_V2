@@ -47,9 +47,9 @@ int main (void)
     
    if (watch_dog_reset == 1) {watch_dog_reset = 0; User_prompt_A;}
   else {Serial.write("\r\n\r\nUsing Arduino functions to receive and print scientific numbers.\r\n");}
-   Serial.write("\r\nScientific number? Then press AK.\r\n");
+   Serial.write("\r\nEnter scientific number\r\nthen the number of digits before the decimal point.\r\n");
    
-num_1 = Sc_Num_from_PC_A_Local(num_string, Buff_Length);
+num_1 = Sc_Num_from_PC_A(num_string, Buff_Length);
 
 while(1){pre_dp = waitforkeypress_A();
 if ((pre_dp < '0')||(pre_dp > '9'))Serial.write("!");
@@ -68,7 +68,7 @@ while(1){
   while(!(Serial.available()))wdr();
 Serial.read();                                            //The equivalent of waitforkeypress()
 num_2 = pow (num_1,index);                                    //-C- library function
-Sc_Num_to_PC_A_Local(num_2, pre_dp, 6, '\r');
+Sc_Num_to_PC_A(num_2, pre_dp, 6, '\r');
 
 if ((index < 0.0) || (index > 1.0));
 else 
