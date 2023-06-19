@@ -93,8 +93,9 @@ ISR(PCINT2_vect){
   disable_pci_on_sw1;
 
 data = PCI_triggers_data_from_PC(digits);
-if(!(data)){Timer_T1_sub_with_interrupt(T1_delay_250ms);return;} 
+if(!(data - '0')){Timer_T1_sub_with_interrupt(T1_delay_250ms);return;} 
 if(data < 10)eeprom_write_byte((uint8_t*)(0x0),data);
+else Serial.print(data);
 
 SW_reset;}
   
@@ -103,9 +104,10 @@ SW_reset;}
 /*******************************************************************************************************************/
 int PCI_triggers_data_from_PC(char * num_as_string)  
 {int m= 0;
-while(1){if (Serial.available()) num_as_string[m++] = Serial.read(); else break;}
+while(1){if (Serial.available()) {num_as_string[m] = Serial.read(); 
+if(decimal_digit_A(num_as_string[m]))m += 1;} else break;}
 num_as_string[m] = '\0';
-if (!(m))return 0;
+if (!(m))return '0';
 return atoi(num_as_string);}
 
 
