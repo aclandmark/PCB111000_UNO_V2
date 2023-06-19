@@ -100,6 +100,8 @@ else Serial.print(data);
 SW_reset;}
   
 
+ISR(TIMER1_OVF_vect) {TIMSK1 &= (~(1 << TOIE1)); enable_pci_on_sw1;Serial.write("!?");}
+
 
 /*******************************************************************************************************************/
 int PCI_triggers_data_from_PC(char * num_as_string)  
