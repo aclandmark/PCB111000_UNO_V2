@@ -105,10 +105,6 @@ cos(2.0 * pi * Time * (float) p) / (float) p; }                         //Formul
 
 amplitude *= 2.0 * pulse_amplitude / pi;                                //Scale result as in Wikipedia
 
-//if(n == 0){test_1 = Sc_Num_to_PC_A(float_from_EEPROM(0x5), 1, 2, ' ');
-//print_offset -= (test_1*2 + test_1/4);}
-//else print_offset = 25;
-
 print_spaces = print_offset + 
 (int)(pulse_amplitude * duty_cycle)  + (int)(amplitude);                //Add in DC term + arbitrary offset to center waveform on screen
 for (int n = 0; n < print_spaces; n++){Serial.write(' ');}
@@ -151,9 +147,10 @@ float_to_EEPROM (Num_2, 0x5);
 Timer_T1_sub_with_interrupt(T1_delay_250ms);
 return;}
 
-
 data = PCI_triggers_data_from_PC(digits);
-if(!(data)){Timer_T1_sub_with_interrupt(T1_delay_250ms);return;} 
+if((!(data - '0')) || (!(data))){Timer_T1_sub_with_interrupt(T1_delay_250ms);return;} 
+//data = PCI_triggers_data_from_PC(digits);
+//if(!(data)){Timer_T1_sub_with_interrupt(T1_delay_250ms);return;} 
 
 if((switch_2_up) && (switch_3_up)){                                     //Set duty cycle
 if(data > 9)data = data%10 + 1;
@@ -213,8 +210,13 @@ return num;}
 /*******************************************************************************************************************/
 int PCI_triggers_data_from_PC(char * num_as_string)  
 {int m= 0;
-for(int m = 0; m <= 7; m++)num_as_string[m] = 0;
-while(1){if (Serial.available()) num_as_string[m++] = Serial.read(); else break;}
-if (!(m))return 0;
+while(1){if (Serial.available()) {num_as_string[m] = Serial.read(); 
+if(decimal_digit_A(num_as_string[m]))m += 1;} else break;}
+num_as_string[m] = '\0';
+if (!(m))return '0';
 return atoi(num_as_string);}
+
+
+
+
 /*******************************************************************************************************************/
