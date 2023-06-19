@@ -133,28 +133,23 @@ ISR(PCINT2_vect){
   sei();
   disable_pci_on_sw1;
 
-
-
 if((switch_2_down) && (switch_3_down)){                                 //Do some arithmetic
 Num_1 = float_from_EEPROM(0x5);
 Num_2 = pow(Num_1, 1.2);
 if(Num_2 == Num_1)while(1);                                             //Zero or infinity: Force timeout
-
 
 FPN_to_String(Num_2, 1, 2, ' ', digits);
 reverse(digits);
 for(int m = 0; m < 11; m++)digits[m] = digits[m+1];
 I2C_Tx_8_byte_array(digits);
 
-
 float_to_EEPROM (Num_2, 0x5);
 
 Timer_T1_sub_with_interrupt(T1_delay_250ms);
 return;}
 
-
 data = PCI_triggers_data_from_PC(digits);
-if(!(data)){Timer_T1_sub_with_interrupt(T1_delay_250ms);return;} 
+if((!(data - '0')) || (!(data))){Timer_T1_sub_with_interrupt(T1_delay_250ms);return;} 
 
 if((switch_2_up) && (switch_3_up)){                                     //Set duty cycle
 if(data > 9)data = data%10 + 1;
@@ -214,8 +209,15 @@ return num;}
 /*******************************************************************************************************************/
 int PCI_triggers_data_from_PC(char * num_as_string)  
 {int m= 0;
-for(int m = 0; m <= 7; m++)num_as_string[m] = 0;
-while(1){if (Serial.available()) num_as_string[m++] = Serial.read(); else break;}
-if (!(m))return 0;
+while(1){if (Serial.available()) {num_as_string[m] = Serial.read(); 
+if(decimal_digit_A(num_as_string[m]))m += 1;} else break;}
+num_as_string[m] = '\0';
+if (!(m))return '0';
 return atoi(num_as_string);}
+
+
+
+
+
+
 /*******************************************************************************************************************/
