@@ -42,6 +42,8 @@ enable_pci_on_sw1;
 num_time_slots = 45;
 num_harmonics = 45;
 
+
+newline_A;
 for(int n = 0; n <= 100; n++){if (n<40)Serial.write (' ');              //Print plot axis
 else Serial.write('_');}
 newline_A;
