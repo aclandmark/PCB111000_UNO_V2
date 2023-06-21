@@ -51,7 +51,7 @@ SW_reset;}
 
 
 
-//ISR (WDT_vect){Signal_WDTout_with_interrupt;wdt_enable(WDTO_15MS); }            //Optional
+ISR (WDT_vect){Signal_WDTout_with_interrupt;wdt_enable(WDTO_15MS); }            //Optional
 
 
 
