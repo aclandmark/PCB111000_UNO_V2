@@ -2,9 +2,9 @@
 PCB111000_1 was a version of PCB11100 designed to plug in to a UNO rather than be a stand-a-lone PCB.
 System code for PCB111000_1 otherwise known as PCB111000_UNO was developed using winAVR.
 
-I believe that winAVR has largely been replaced by Atmel Studio.
+I believe that winAVR has largely been replaced by Atmel Studio and Arduino.
 PCB111000_UNO is therefore being replaced by PCB111000_UNO_V2 in which all winAVR project work is being
-transferred to Atmel Studio. Small changes will be introduced at the same time. For examle:
+transferred to these compilers. Small changes will be introduced at the same time. For examle:
 The rando number generator writes to EEPROM far to frequently resulting in EEPROM burn-out. 
 This will be ofset so that burn out takes far longer to occur.
 
