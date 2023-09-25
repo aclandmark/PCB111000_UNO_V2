@@ -1,0 +1,6 @@
+
+Also may apply to the PCB111000_CP2102_projects
+
+5_Arduino_PC_comms_library\5C_Scientific_numbers.c
+
+in subroutine Sc_Num_to_PC_A/Local() variable A should be long not int
