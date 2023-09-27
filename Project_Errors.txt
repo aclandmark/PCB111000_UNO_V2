@@ -4,3 +4,36 @@ Also may apply to the PCB111000_CP2102_projects
 5_Arduino_PC_comms_library\5C_Scientific_numbers.c
 
 in subroutine Sc_Num_to_PC_A/Local() variable A should be long not int
+
+*****************************************************************************************
+
+Change to
+#define I2C_Tx_float_display_control \
+{\
+PCMSK0_backup= PCMSK0;\
+PCMSK2_backup= PCMSK2;\
+float_display_mode = '0';\
+if (PCIenabled){disable_pci_on_sw2;disable_pci_on_sw1_and_sw3;}\
+while(1){\
+if(switch_2_down)float_display_mode = '1'; else float_display_mode = '0';\
+if(switch_3_down)float_display_mode = '2';\
+waiting_for_I2C_master;\
+send_byte_with_Nack(float_display_mode);\
+clear_I2C_interrupt;\
+if(float_display_mode == '2')break;}\
+PCMSK0 = PCMSK0_backup;\
+PCMSK2 = PCMSK2_backup;}
+
+***************************************************************************************
+
+Change in 6F_FPN_from_IO.ino
+ISR(PCINT0_vect){
+  if(switch_2_up)return;                                 //Ignore switch release
+  I2C_Tx_any_segment_clear_all();
+  Timer_T0_10mS_delay_x_m(25);                           //Flash display
+  I2C_Tx_8_byte_array(digits);
+Data_Entry_complete=1;digit_entry = 1;
+while(switch_2_down);}                                  //Extra line
+
+
+
