@@ -36,4 +36,8 @@ Data_Entry_complete=1;digit_entry = 1;
 while(switch_2_down);}                                  //Extra line
 
 
+***************************************************************************************
+
+
+5C		Enter post_dp as well as pre dp
 
