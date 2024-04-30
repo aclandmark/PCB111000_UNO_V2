@@ -14,8 +14,7 @@ See repository "PCB-111000/1_Documentation/1_PCB 111000 leaflet.pdf" for general
 There are three versions of PCB111000:
 
 PCB_111000_V2 using two Atmega devices and the FTDI FT230XS USB bridge  
-PCB_111000_UNO_V2 A simplified plug in version for use with the UNO
-
+PCB_111000_UNO_V2 A simplified plug in version for use with the UNO  
 PCB_111000_CP2102 Using one Atmega one ATtiny and a CP2102 module for USB connectivity.
 
 
