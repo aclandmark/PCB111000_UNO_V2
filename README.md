@@ -1,15 +1,23 @@
 # PCB111000_UNO_V2
-PCB111000_1 was a version of PCB11100 designed to plug in to a UNO rather than be a stand-a-lone PCB.
-System code for PCB111000_1 otherwise known as PCB111000_UNO was developed using winAVR.
 
-I believe that winAVR has largely been replaced by Atmel Studio and Arduino.
-PCB111000_UNO is therefore being replaced by PCB111000_UNO_V2 in which all winAVR project work is being
-transferred to these compilers. Small changes will be introduced at the same time. For examle:
-The rando number generator writes to EEPROM far to frequently resulting in EEPROM burn-out. 
-This will be ofset so that burn out takes far longer to occur.
+PCB111000 has beeen developed as a learning aid for the C language when applied to AVR devices.  
+It consists of a USB bridge to communicate with a PC, an 8 digit display and two AVR devices. 
+One of the AVR devices (Atmega 328) hosts a programmer and miniOS which drives the display, 
+the other (Atmega168), the user device, hosts user projects.
 
-In addition sample user projects developed for PCB111000_UNO will be made compatible with those developed for PCB111000_CP2102.
-The UNO projects will use the I2C bus to trandfer data to the display while the CP2102 projects will use a firmware one wire UART link.
+An I2C bus is used to link the two devices.
+All user projects are compiled using Arduino, system projects use Arduino or Studio 7 if needed.
+The boards are set up using the UNO to host a bespoke programer.  See repository "UNO_as_an_AVR_programer". 
 
-See repository "PCB-111000/Documentation/leaflet" for general information and a block diagram of the original development.
+See repository "PCB-111000/1_Documentation/1_PCB 111000 leaflet.pdf" for general information and a block diagram of the original development. 
 
+There are three versions of PCB111000:
+
+PCB_111000_V2 using two Atmega devices and the FTDI FT230XS USB bridge
+PCB_111000_UNO_V2 A simplified plug in version for use with the UNO
+PCB_111000_CP2102 Using one Atmega one ATtiny and a CP2102 module for USB connectivity.
+
+In PCB_111000_UNO_V2 and PCB_111000_CP2102 the user device is an Atmega328 which hosts
+a bootloader as well as the user projects.
+
+In PCB_111000_CP2102 the I2C bus is replaced with a one wire firmware UART.
