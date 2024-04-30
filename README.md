@@ -11,3 +11,5 @@ This will be ofset so that burn out takes far longer to occur.
 In addition sample user projects developed for PCB111000_UNO will be made compatible with those developed for PCB111000_CP2102.
 The UNO projects will use the I2C bus to trandfer data to the display while the CP2102 projects will use a firmware one wire UART link.
 
+See repository "PCB-111000/Documentation/leaflet" for general information and a block diagram or the original development
+
