@@ -1,27 +1,14 @@
 
 
-unsigned char PRN_8bit_GEN(unsigned char start, char * counter){
-    unsigned char bit, lfsr;
-    char EEP_offset;
+unsigned char PRN_8bit_GEN(void){
+unsigned int bit;
+unsigned char lfsr;
 
-     EEP_offset = eeprom_read_byte((uint8_t*)(0x3EF));
-    if(EEP_offset > 4)EEP_offset = 0;
-
-    if((!(*counter)) && (!(start)))   
-    {lfsr = eeprom_read_byte((uint8_t*)(0x3F4 - EEP_offset));}
-        
-    else lfsr = start;
-    
-    bit = (( lfsr >> 0) ^ (lfsr >> 2) ^ (lfsr >> 3) ^ (lfsr >> 4)) & 1;
-    lfsr = (lfsr >> 1) | (bit << 7);
-        
-    if(!(*counter)){Char_to_PC_Basic(EEP_offset + '0');Toggle_LED_1;
-    eeprom_write_byte((uint8_t*)(0x3F4 - EEP_offset),lfsr);}
-	
-	*counter = *counter + 1;
-	*counter = *counter%56;
-	
-  return lfsr;}
+lfsr = eeprom_read_byte((uint8_t*)(0x1FC));
+bit = (( lfsr >> 0) ^ (lfsr >> 2) ^ (lfsr >> 3) ^ (lfsr >> 4)) & 1;
+lfsr = (lfsr >> 1) | (bit << 7);
+eeprom_write_byte((uint8_t*)(0x1FC),lfsr);
+return lfsr;}
 
 
 
@@ -54,36 +41,6 @@ Toggle_LED_1;																			//Note: Saving every one burns out the EEPROM lo
 Char_to_PC_Basic(eep_offset + '0');}
 
 return lfsr;}
-
-
-/************************************************************************/
-/*void I2C_Tx_snowstorm_display(void){
-
-int PRN;
-
-while(1){
-PRN = PRN_16bit_GEN (0);									//Generate a new PRN (0) tells subroutine to use the EEPROM
-I2C_Tx_2_integers(PRN, (PRN<<1));							//Display two "pseudo random numbers"
-Timer_T1_sub(T1_delay_100ms);}}
-
-*/
-
-
-/*****************************************************************/
-
-
-/************************************************************************/
-/*void I2C_Tx_snowstorm_display_UNO(void){
-
-int PRN;
-
-while(1){
-PRN = PRN_16bit_GEN_UNO (0);									//Generate a new PRN (0) tells subroutine to use the EEPROM
-I2C_Tx_2_integers(PRN, (PRN<<1));							//Display two "pseudo random numbers"
-Timer_T1_sub(T1_delay_100ms);}}*/
-
-
-
 
 
 
