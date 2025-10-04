@@ -23,7 +23,7 @@ int main (void)                //Example 6
 
 mem_add = (char*)256;
 
-for(int m = 0; m <=185; m++){
+for(int m = 0; m <=320; m++){
   if ((*(mem_add + m))== '\0')Long_Hex_and_Int_to_PC_Basic (10,256+m);
  else Char_to_PC_Basic(*(mem_add + m));}
 
