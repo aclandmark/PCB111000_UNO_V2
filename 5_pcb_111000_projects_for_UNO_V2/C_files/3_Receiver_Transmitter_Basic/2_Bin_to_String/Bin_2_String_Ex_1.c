@@ -5,7 +5,7 @@ int main (void)              //Example 1
   { int i = 0;              //Convert number to string
   int number = 12345;
   char s[12];
-  setup_HW_Basic;
+  setup_HW_basic;
   //Set up watchdog timer to generate a reset
   wdt_enable(WDTO_120MS);
  while(switch_1_down)wdr();
