@@ -34,7 +34,7 @@ int main (void)              //Example 1
  char direction = 0;
  int str_len;
   
-  setup_HW-basic;
+  setup_HW_basic;
  
 while(number) {
 str_len = Bin_to_string_Local(number, num_string);
