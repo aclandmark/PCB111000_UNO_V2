@@ -16,7 +16,7 @@
 
 
 void  drive_led(int ON_time){
-  Timer_T1_sub_with_interrupt(T1_delay_100ms);
+  Start_timer_T1_sub(T1_delay_100ms);
 
   while (!(TIFR1 & (1 << TOV1))){
   
