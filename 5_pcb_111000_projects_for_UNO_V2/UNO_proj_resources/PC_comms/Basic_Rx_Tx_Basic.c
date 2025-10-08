@@ -90,61 +90,17 @@ Char_to_PC_Basic(s[i++]);}}												//Transmit character and increment "i" so
 
 
 /**********************************************************************************************************************************************************************************/
+void Num_string_to_PC_Basic(char s[]){
+{int m = 0;while(1)
+{if(!(s[m]))break; 
+else Char_to_PC_Basic(s[m++]);}}}
+
+
+
+/**********************************************************************************************************************************************************************************/
 char decimal_digit_Basic (char data){											//Returns 1 if data is a character of 0 to 9 inclusive
 if (((data > '9') || (data < '0')) )return 0;							//Otherwise return zero
 else return 1;}
-
-
-
-/**********************************************************************************************************************************************************************************/
-void Int_to_PC_Basic (long number)
-{ int i = 0;
-  char s[12];
-   do
-  { s[i++] = number % 10 + '0';
-  }
-  while ((number = number / 10) > 0);
-  s[i] = '\0';
-  for (int m = i; m > 0; m--)Char_to_PC_Basic(s[m - 1]);
-  Char_to_PC_Basic(' ');
-}
-
-
-
-/**********************************************************************************************************************************************************************************/
-int Int_from_PC_Basic(char digits[]){
-char keypress;
-for(int n = 0; n<=7; n++) digits[n] = 0; 
-
-do
-{keypress =  waitforkeypress_Basic();} 
-while (!(decimal_digit_Basic(keypress)));                                      //(non_decimal_char(keypress));  //Not -,0,1,2,3,4,5,6,7,8 or 9
-digits[0] = keypress;
-I2C_Tx_8_byte_array(digits);
-
-while(1){
-if ((keypress = wait_for_return_key_Basic())  =='\r')break;
-if (decimal_digit_Basic (keypress))                                           //012345678or9  :Builds up the number one keypress at a time
-{for(int n = 7; n>=1; n--)
-digits[n] = digits[n-1];                                                //Shifts display left for each keypress
-digits[0] = keypress;
-I2C_Tx_8_byte_array(digits);}}
-            
-return I2C_displayToNum();}
-
-
-
-/**********************************************************************************************************************************************************************************/
-char wait_for_return_key_Basic(void){                  						//Returns key presses one at a time
-char keypress,temp;
-while(1){																//Remain in while loop until a character is received
-if (isCharavailable_Basic(8)){												//Pauses but returns 1 immediately that a character is received
-keypress = Char_from_PC_Basic();												//Skip if no character has been received 
-break;}}																//Exit while loop when character has been read
-if((keypress == '\r') || (keypress == '\n')){							//Detect \r\n, \r or \n and converts to \r
-if (isCharavailable_Basic(1)){temp = Char_from_PC_Basic();}
-keypress = '\r';}
-return keypress;}
 
 
 
@@ -170,5 +126,33 @@ if (error_mag < 750) String_to_PC_Basic("  OK\r\n");}
 
 
 
-/**********************************************************************************************************************************************************************************/
+/***************************************************************************************************************************************************/
+void Read_Hello_world_string(void){
+char receive_byte;
+
+I2C_Tx_initiate_mode('H');
+waiting_for_I2C_master;									//Initiate comuninations:master to send string
+do{receive_byte = receive_byte_with_Ack();				//print out string as characters are received
+if(receive_byte)Char_to_PC_Basic(receive_byte);}
+while(receive_byte);									//Detect '\0' character used to terminate a string
+receive_byte_with_Nack();								//Receve a second null char at the end of the string
+clear_I2C_interrupt;}									//Complete transaction
+
+
+
+
+/************************************************************************/
+void I2C_Rx_get_version(char str_type){
+char num_bytes=1; char mode='P';
+char s[2];
+
+s[0]= str_type; s[1]=0;
+I2C_Tx(num_bytes,mode, s);
+waiting_for_I2C_master;
+num_bytes = (receive_byte_with_Ack() - '0') * 10;
+num_bytes += (receive_byte_with_Ack() - '0');
+for (int m = 0; m < num_bytes; m++){
+if (m ==(num_bytes-1)){Char_to_PC_Basic(receive_byte_with_Nack());}
+else {Char_to_PC_Basic(receive_byte_with_Ack());}}
+TWCR = (1 << TWINT);}
 
