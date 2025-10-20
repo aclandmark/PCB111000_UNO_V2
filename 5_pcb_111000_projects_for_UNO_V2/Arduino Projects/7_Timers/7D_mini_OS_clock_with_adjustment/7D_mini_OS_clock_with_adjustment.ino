@@ -33,7 +33,7 @@
   //Always pulse sw2 when the time is correct
 
  //Switch location SW1(PD2) - SW2(PD7) – SW3(PB2)
-
+#define SB_delay Timer_T0_10mS_delay_x_m(10);
 
 
 #define message_1 \
@@ -61,26 +61,28 @@ char keypress;
 
 //Enter main routine here
 
+
+
 while(1){
 
 switch (display_mode){                                    //Beware of switch bounce
 
 case 0: if(switch_3_down){Timer_T0_10mS_delay_x_m(50); display_mode = 'A';}
     if(switch_1_down){display_mode = 'B';I2C_Tx_Clock_command(hide_clock);while(switch_1_down);}
-    if(switch_2_down){display_mode = 'C';I2C_Tx_Clock_command(pause_clock);while(switch_2_down);}break;
+    if(switch_2_down){display_mode = 'C';I2C_Tx_Clock_command(pause_clock);while(switch_2_down);}SB_delay;break;
 
-case 'A': if(switch_3_up)display_mode = 1; else {while(switch_3_down); display_mode = 2;} break;
-case 'B':if(switch_1_down){display_mode = 0;I2C_Tx_Clock_command(display_clock);while(switch_1_down);}break;
-case 'C':if(switch_2_down){display_mode = 0; I2C_Tx_Clock_command(display_clock);while(switch_2_down);}break;
+case 'A': if(switch_3_up)display_mode = 1; else {while(switch_3_down); display_mode = 2;} SB_delay;break;
+case 'B':if(switch_1_down){display_mode = 0;I2C_Tx_Clock_command(display_clock);while(switch_1_down);}SB_delay;break;
+case 'C':if(switch_2_down){display_mode = 0; I2C_Tx_Clock_command(display_clock);while(switch_2_down);}SB_delay;break;
 
 
 case 1: if (switch_2_down){I2C_Tx_Clock_command(increment_seconds);Timer_T0_10mS_delay_x_m(20);}
     if (switch_1_down){I2C_Tx_Clock_command(increment_minutes);Timer_T0_10mS_delay_x_m(20);}
-    if(switch_3_down){ while (switch_3_down);display_mode = 0; }break;
+    if(switch_3_down){ while (switch_3_down);display_mode = 0; }SB_delay;break;
     
 case 2: if (switch_2_down){I2C_Tx_Clock_command(decrement_seconds);Timer_T0_10mS_delay_x_m(20);}
     if (switch_1_down){I2C_Tx_Clock_command(decrement_minutes);Timer_T0_10mS_delay_x_m(20);}
-    if(switch_3_down){while (switch_3_down);display_mode = 0; }break;}}}  
+    if(switch_3_down){while (switch_3_down);display_mode = 0; }SB_delay;break;}}}  
  
 
 
