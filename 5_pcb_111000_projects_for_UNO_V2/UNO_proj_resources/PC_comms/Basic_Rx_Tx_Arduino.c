@@ -1,5 +1,27 @@
 
 
+void I2C_Tx(char, char, char*);
+void I2C_Tx_initiate_mode(char);
+
+
+
+/***********************************************************/
+unsigned char receive_byte_with_Ack_Local(void){
+char byte;
+TWCR = (1 << TWEA) | (1 << TWEN) | (1 << TWINT);		//Set Ack enable and clear interrupt
+while (!(TWCR & (1 << TWINT)));						//Wait for interrupt
+byte = TWDR;
+return byte;}
+
+/***********************************************************/
+unsigned char receive_byte_with_Nack_Local(void){
+char byte;
+TWCR = (1 << TWEN) | (1 << TWINT);		//Set Ack enable and clear interrupt
+while (!(TWCR & (1 << TWINT)));						//Wait for interrupt
+byte = TWDR;
+return byte;}
+
+
 
 /**********************************************************************************************************************************************************************************/
 char isCharavailable_A (int m){int n = 0;								//Version of isCharavailable_Basic() that uses the Arduino library
@@ -29,11 +51,11 @@ keypress = '\r';}
 return keypress;}
 
 
+
 /**********************************************************************************************************************************************************************************/
 char decimal_digit_A (char data){											//Returns 1 if data is a character of 0 to 9 inclusive
 if (((data > '9') || (data < '0')) )return 0;							//Otherwise return zero
 else return 1;}
-
 
 
 
@@ -58,9 +80,9 @@ User_prompt_A;
 I2C_Tx_initiate_mode('R');
 Serial.write("\r\nPCB_A (mini_OS) device calibrating");
 waiting_for_I2C_master;  
-OSCCAL_mini_OS = receive_byte_with_Ack();
-error_mag = receive_byte_with_Ack() << 8;
-error_mag += receive_byte_with_Nack();
+OSCCAL_mini_OS = receive_byte_with_Ack_Local();
+error_mag = receive_byte_with_Ack_Local() << 8;
+error_mag += receive_byte_with_Nack_Local();
 clear_I2C_interrupt;
 Serial.write("\r\nOSCCAL user value   "); 
 itoa(OSCCAL_mini_OS, cal_string, 10);Serial.write(cal_string);
