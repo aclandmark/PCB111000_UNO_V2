@@ -17,6 +17,22 @@ void Check_num_for_to_big_or_small(float);						//Prototype required by Sc_Num_t
 
 
 
+void Int_num_string_from_PC(char digits[]){              	//Acquires an integer string from the keyboard
+char keypress;
+char digit_counter = 0;
+while(1){
+if ((keypress = wait_for_return_key_A())  =='\r')break;     //Detect return key press (i.e \r or\r\n)
+if ((decimal_digit_A(keypress)) || (keypress == '\b')
+ || (keypress == '-'))
+{Serial.write(keypress);
+if (keypress == '\b'){  digit_counter -= 1; }                      				//Backspace key
+else
+{digits[digit_counter++] = keypress;}                             			//Add new keypress           
+}}
+digits[digit_counter] = 0;}
+
+
+
 /******************************************************************************************/
 unsigned long Unsigned_Int_from_PC_A
 	(char * num_as_string,char next_char)						//Location for numerical string entered at the PC keyboard 
