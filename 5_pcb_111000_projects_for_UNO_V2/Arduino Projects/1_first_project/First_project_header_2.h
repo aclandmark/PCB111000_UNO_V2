@@ -16,7 +16,7 @@ if ((eeprom_read_byte((uint8_t*)0x3FE) > 0x0F)\
 
 
 /*****************************************************************************/
-#define User_prompt \
+#define User_prompt_Basic \
 while(1){\
 do{String_to_PC_Basic("R?    ");}  while((isCharavailable_Basic(250) == 0));\
 User_response = Char_from_PC_Basic();\
