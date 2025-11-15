@@ -18,7 +18,7 @@ char digit=1, op, mode;
 ISR(PCINT0_vect){                                          //sw3 (PB2) interrupt service routine
 if(switch_3_up)return;                                     //Ignore sw3 key release
 if((switch_1_down) || (switch_2_down))return;              //Ignore if sw1 or 2 are still down
-_delay_ms(100);
+_delay_ms(250);
 if (mode == 's')  
 {mode = 'u'; I2C_Tx_display_char(digit,mode);return;}      //toggle display from signed to unsigned
 if (mode == 'u')
