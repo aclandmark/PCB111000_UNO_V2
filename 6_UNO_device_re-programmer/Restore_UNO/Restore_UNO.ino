@@ -97,7 +97,7 @@ Num_to_PC(16, (byte)Atmel_config(read_fuse_bits_h, 0));sendString("  ");
 Num_to_PC(16, (byte)Atmel_config(read_lock_bits_h, 0));newline();
 
 sendString("Hex_file_size:");
-sendString("\r\nCommands downloaded, programmed and read back:");
+sendString("\r\nCommands downloaded, programmed and read back:\t");
 
 Num_to_PC(10,cmd_counter); 
 sendSpace();sendString("d'loaded:"); 
