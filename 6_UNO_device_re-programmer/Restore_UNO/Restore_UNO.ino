@@ -11,6 +11,7 @@ This sets the fuses as follows:
 
 **** Using bread board connect the Atmega168 to a CP2102 USB module and the Atmega 328 or UNO progamming interface
 
+Set Br@y++ terminal baud rate to 57600
 
 At the standard user prompt "P/S   P/S   P/S........" 
 press P and the user prompt changes to "p/r   p/r   p/r   p/r........"
