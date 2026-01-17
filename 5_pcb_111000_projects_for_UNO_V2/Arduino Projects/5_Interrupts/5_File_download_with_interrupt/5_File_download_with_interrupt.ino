@@ -1,3 +1,8 @@
+/*
+May need to insert delay between adjacent bytes  (click in box next to send file button)
+to keep Bray++ stable
+*/
+
 
 #include "File_download_with_interrupt_header.h"
 
